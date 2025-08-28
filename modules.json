@@ -244,11 +244,6 @@
                         "git_sha": "05954dab2ff481bcb999f24455da29a5828af08d",
                         "installed_by": ["subworkflows"]
                     },
-                    "utils_nfschema_plugin": {
-                        "branch": "master",
-                        "git_sha": "dcd088f483cede0c3df4034d405126f05a764cc7",
-                        "installed_by": ["subworkflows"]
-                    },
                     "vcf_annotate_ensemblvep": {
                         "branch": "master",
                         "git_sha": "48ca3de1737b0144aa9fe05bea2b681f0ae45a95",
