@@ -50,6 +50,7 @@ include { PREPARE_GENOME                  } from './subworkflows/local/prepare_g
 include { MULTIQC                         } from './modules/nf-core/multiqc'
 include { collectCitationsFromFiles       } from 'plugin/nf-core-utils'
 include { getWorkflowVersion              } from 'plugin/nf-core-utils'
+include { processVersionsFromFile         } from 'plugin/nf-core-utils'
 include { methodsDescriptionText          } from './subworkflows/local/utils_nfcore_rnavar_pipeline'
 include { paramsSummaryMap                } from 'plugin/nf-schema'
 
@@ -301,15 +302,6 @@ def getGenomeAttribute(attribute) {
 }
 
 //
-// Get software versions for pipeline
-//
-def processVersionsFromYAML(yaml_file) {
-    def yaml = new org.yaml.snakeyaml.Yaml()
-    def versions = yaml.load(yaml_file).collectEntries { k, v -> [k.tokenize(':')[-1], v] }
-    return yaml.dumpAsMap(versions).trim()
-}
-
-//
 // Get workflow version for pipeline
 //
 def workflowVersionToYAML() {
@@ -324,7 +316,7 @@ def workflowVersionToYAML() {
 // Get channel of software versions used in pipeline in YAML format
 //
 def softwareVersionsToYAML(ch_versions) {
-    return ch_versions.unique().map { version -> processVersionsFromYAML(version) }.unique().mix(Channel.of(workflowVersionToYAML()))
+    return ch_versions.unique().map { version -> processVersionsFromFile([version.toString()]) }.unique().mix(Channel.of(workflowVersionToYAML()))
 }
 
 //
