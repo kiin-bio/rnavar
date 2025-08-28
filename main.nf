@@ -48,7 +48,6 @@ include { PREPARE_GENOME                  } from './subworkflows/local/prepare_g
 
 // MULTIQC
 include { MULTIQC                         } from './modules/nf-core/multiqc'
-include { collectCitationsFromFiles       } from 'plugin/nf-core-utils'
 include { getWorkflowVersion              } from 'plugin/nf-core-utils'
 include { processVersionsFromFile         } from 'plugin/nf-core-utils'
 include { methodsDescriptionText          } from './subworkflows/local/utils_nfcore_rnavar_pipeline'
