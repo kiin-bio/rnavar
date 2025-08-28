@@ -234,11 +234,6 @@
                         "git_sha": "05954dab2ff481bcb999f24455da29a5828af08d",
                         "installed_by": ["subworkflows"]
                     },
-                    "utils_nfcore_pipeline": {
-                        "branch": "master",
-                        "git_sha": "05954dab2ff481bcb999f24455da29a5828af08d",
-                        "installed_by": ["subworkflows"]
-                    },
                     "vcf_annotate_ensemblvep": {
                         "branch": "master",
                         "git_sha": "48ca3de1737b0144aa9fe05bea2b681f0ae45a95",

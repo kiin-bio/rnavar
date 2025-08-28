@@ -8,15 +8,14 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { completionEmail      } from '../../nf-core/utils_nfcore_pipeline'
-include { completionSummary    } from '../../nf-core/utils_nfcore_pipeline'
-include { imNotification       } from '../../nf-core/utils_nfcore_pipeline'
-
 include { checkCondaChannels   } from 'plugin/nf-core-utils'
 include { checkConfigProvided  } from 'plugin/nf-core-utils'
 include { checkProfileProvided } from 'plugin/nf-core-utils'
+include { completionEmail      } from 'plugin/nf-core-utils'
+include { completionSummary    } from 'plugin/nf-core-utils'
 include { dumpParametersToJSON } from 'plugin/nf-core-utils'
 include { getWorkflowVersion   } from 'plugin/nf-core-utils'
+include { imNotification       } from 'plugin/nf-core-utils'
 
 include { paramsSummaryLog     } from 'plugin/nf-schema'
 include { paramsSummaryMap     } from 'plugin/nf-schema'
@@ -224,6 +223,7 @@ def genomeExistsError() {
         error(error_string)
     }
 }
+
 //
 // Generate methods description for MultiQC
 //
