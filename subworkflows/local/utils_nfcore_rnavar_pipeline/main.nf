@@ -8,16 +8,19 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { completionEmail         } from '../../nf-core/utils_nfcore_pipeline'
-include { completionSummary       } from '../../nf-core/utils_nfcore_pipeline'
-include { imNotification          } from '../../nf-core/utils_nfcore_pipeline'
-include { UTILS_NFCORE_PIPELINE   } from '../../nf-core/utils_nfcore_pipeline'
-include { UTILS_NEXTFLOW_PIPELINE } from '../../nf-core/utils_nextflow_pipeline'
+include { completionEmail       } from '../../nf-core/utils_nfcore_pipeline'
+include { completionSummary     } from '../../nf-core/utils_nfcore_pipeline'
+include { imNotification        } from '../../nf-core/utils_nfcore_pipeline'
+include { UTILS_NFCORE_PIPELINE } from '../../nf-core/utils_nfcore_pipeline'
 
-include { paramsSummaryLog        } from 'plugin/nf-schema'
-include { paramsSummaryMap        } from 'plugin/nf-schema'
-include { samplesheetToList       } from 'plugin/nf-schema'
-include { validateParameters      } from 'plugin/nf-schema'
+include { getWorkflowVersion    } from 'plugin/nf-core-utils'
+include { dumpParametersToJSON  } from 'plugin/nf-core-utils'
+include { checkCondaChannels    } from 'plugin/nf-core-utils'
+
+include { paramsSummaryLog      } from 'plugin/nf-schema'
+include { paramsSummaryMap      } from 'plugin/nf-schema'
+include { samplesheetToList     } from 'plugin/nf-schema'
+include { validateParameters    } from 'plugin/nf-schema'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -36,15 +39,21 @@ workflow PIPELINE_INITIALISATION {
 
     ch_versions = Channel.empty()
 
-    //
-    // Print version and exit if required and dump pipeline parameters to JSON file
-    //
-    UTILS_NEXTFLOW_PIPELINE(
-        version,
-        true,
-        outdir,
-        workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1,
-    )
+    // Print workflow version and exit on --version
+    if (version) {
+        log.info("${workflow.manifest.name} ${getWorkflowVersion()}")
+        System.exit(0)
+    }
+
+    // Dump pipeline parameters to a JSON file
+    if (outdir) {
+        dumpParametersToJSON(outdir, params)
+    }
+
+    // When running with Conda, warn if channels have not been set-up appropriately
+    if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
+        checkCondaChannels()
+    }
 
     // Validate parameters and generate parameter summary to stdout
     log.info(paramsSummaryLog(workflow))
