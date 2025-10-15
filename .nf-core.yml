@@ -1,4 +1,7 @@
-nf_core_version: 3.3.2
+lint:
+  nf_test_content: false
+  schema_params: false
+nf_core_version: 3.4.0
 repository_type: pipeline
 template:
   author: Praveen Raj, Maxime U Garcia, Nicolas Vannieuwkerke
@@ -8,4 +11,4 @@ template:
   name: rnavar
   org: nf-core
   outdir: .
-  version: 1.2.0dev
+  version: 1.2.1
