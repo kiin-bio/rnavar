@@ -34,16 +34,14 @@ nextflow_workflow {
 
         then {
             assert workflow.success
-            assertAll(
-                { assert snapshot(
-                    workflow.out.collectEntries { key, val ->
-                        if(key.matches("\\d+")) {
-                            return null
+            assert snapshot(
+                sanitizeOutput(workflow.out).collectEntries { key, val ->
+                        if (key == "versions") {
+                            return [key, val.collect { path(it).yaml }]
                         }
-                        return [key,val]
-                    }.findAll { it != null }
-                ).match() }
-            )
+                        return [key, val]
+                    }
+            ).match()
         }
     }
 }

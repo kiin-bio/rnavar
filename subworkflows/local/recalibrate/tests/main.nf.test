@@ -91,19 +91,17 @@ nextflow_workflow {
 
         then {
             assert workflow.success
-            assertAll(
-                { assert snapshot(
-                    workflow.out.collectEntries { key, val ->
-                        if(key.matches("\\d+")) {
-                            return null
+            assert snapshot(
+                sanitizeOutput(workflow.out).collectEntries { key, val ->
+                        if (key == "bam") {
+                            return [key, val.collect { [file(it[1].toString()).name + ":md5sum," + bam(it[1]).readsMD5, file(it[2].toString()).name] }]
                         }
-                        if(key == "bam") {
-                            return [key, val.collect { [it[0], bam(it[1]).readsMD5, file(it[2].toString()).name]}]
+                        else if (key == "versions") {
+                            return [key, val.collect { path(it).yaml }]
                         }
                         return [key, val]
-                    }.findAll { it != null }
-                ).match() }
-            )
+                    }
+            ).match()
         }
     }
 
@@ -145,19 +143,17 @@ nextflow_workflow {
 
         then {
             assert workflow.success
-            assertAll(
-                { assert snapshot(
-                    workflow.out.collectEntries { key, val ->
-                        if(key.matches("\\d+")) {
-                            return null
+            assert snapshot(
+                sanitizeOutput(workflow.out).collectEntries { key, val ->
+                        if (key == "bam") {
+                            return [key, val.collect { [file(it[1].toString()).name + ":md5sum," + bam(it[1]).readsMD5, file(it[2].toString()).name] }]
                         }
-                        if(key == "bam") {
-                            return [key, val.collect { [it[0], bam(it[1]).readsMD5, file(it[2].toString()).name]}]
+                        else if (key == "versions") {
+                            return [key, val.collect { path(it).yaml }]
                         }
                         return [key, val]
-                    }.findAll { it != null }
-                ).match() }
-            )
+                    }
+            ).match()
         }
     }
 }

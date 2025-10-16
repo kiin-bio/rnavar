@@ -86,7 +86,6 @@ workflow PREPARE_GENOME {
     def ch_gtf2bed_input = !exon_bed ? ch_gtf : Channel.empty()
 
     GTF2BED(ch_gtf2bed_input, feature_type)
-    ch_versions = ch_versions.mix(GTF2BED.out.versions)
 
     def ch_exon_bed_input = exon_bed
         ? Channel.fromPath(exon_bed).map { exon_bed_ -> [[id: exon_bed_.baseName], exon_bed_] }.collect()
@@ -95,7 +94,6 @@ workflow PREPARE_GENOME {
     def ch_remove_unknown_regions_input = !skip_exon_bed_check ? ch_exon_bed_input : Channel.empty()
 
     REMOVE_UNKNOWN_REGIONS(ch_remove_unknown_regions_input, ch_dict)
-    ch_versions = ch_versions.mix(REMOVE_UNKNOWN_REGIONS.out.versions)
 
     def ch_exon_bed = skip_exon_bed_check ? REMOVE_UNKNOWN_REGIONS.out.bed.flatten() : ch_exon_bed_input
 

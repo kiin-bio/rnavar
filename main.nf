@@ -222,7 +222,7 @@ workflow {
         params.input,
         params.help,
         params.help_full,
-        params.show_hidden
+        params.show_hidden,
     )
 
     //
@@ -233,8 +233,35 @@ workflow {
         PIPELINE_INITIALISATION.out.align,
     )
 
+    //
     // Collate and save software versions
-    def collated_versions = softwareVersionsToYAML(NFCORE_RNAVAR.out.versions).collectFile(storeDir: "${params.outdir}/pipeline_info", name: 'nf_core_rnavar_software_mqc_versions.yml', sort: true, newLine: true)
+    //
+    def topic_versions = channel
+        .topic("versions")
+        .distinct()
+        .branch { entry ->
+            versions_file: entry instanceof Path
+            versions_tuple: true
+        }
+
+    def topic_versions_string = topic_versions.versions_tuple
+        .map { process, tool, version ->
+            [process[process.lastIndexOf(':') + 1..-1], "  ${tool}: ${version}"]
+        }
+        .groupTuple(by: 0)
+        .map { process, tool_versions ->
+            tool_versions.unique().sort()
+            "${process}:\n${tool_versions.join('\n')}"
+        }
+
+    def collated_versions = softwareVersionsToYAML(NFCORE_RNAVAR.out.versions.mix(topic_versions.versions_file))
+        .mix(topic_versions_string)
+        .collectFile(
+            storeDir: "${params.outdir}/pipeline_info",
+            name: 'nf_core_' + 'rnavar_software_' + 'mqc_' + 'versions.yml',
+            sort: true,
+            newLine: true,
+        )
 
     // MODULE: MultiQC
     // Present summary of reads, alignment, duplicates, BSQR stats for all samples as well as workflow summary/parameters as single report
@@ -303,6 +330,15 @@ def getGenomeAttribute(attribute) {
 }
 
 //
+// Get software versions for pipeline
+//
+def processVersionsFromYAML(yaml_file) {
+    def yaml = new org.yaml.snakeyaml.Yaml()
+    def versions = yaml.load(yaml_file).collectEntries { k, v -> [k.tokenize(':')[-1], v] }
+    return yaml.dumpAsMap(versions).trim()
+}
+
+//
 // Get workflow version for pipeline
 //
 def workflowVersionToYAML() {
@@ -317,7 +353,20 @@ def workflowVersionToYAML() {
 // Get channel of software versions used in pipeline in YAML format
 //
 def softwareVersionsToYAML(ch_versions) {
-    return ch_versions.unique().map { version -> processVersionsFromFile([version.toString()]) }.unique().mix(Channel.of(workflowVersionToYAML()))
+    return ch_versions.unique().map { version -> processVersionsFromYAML(version) }.unique().mix(Channel.of(workflowVersionToYAML()))
+}
+
+//
+// Process versions from topic channel
+//
+def topicVersionToYAML(taskProcess, tools, versions) {
+    def toolsVersions = [tools, versions]
+        .transpose()
+        .collect { k, v -> "${k}: ${v}" }
+    return """
+    |${taskProcess.tokenize(':').last()}:
+    |  ${toolsVersions.join('\n|  ')}
+    """.stripMargin().trim()
 }
 
 //
