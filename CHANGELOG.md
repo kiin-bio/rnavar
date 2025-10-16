@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- [#242](https://github.com/nf-core/rnavar/pull/242) - Back to dev
 - [#242](https://github.com/nf-core/rnavar/pull/242) - Update MultiQC to 1.31
 - [#242](https://github.com/nf-core/rnavar/pull/242) - Update Picard to 3.4.0
 - [#242](https://github.com/nf-core/rnavar/pull/242) - Update Samtools to 1.22.1
