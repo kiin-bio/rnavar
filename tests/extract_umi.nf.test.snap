@@ -36,40 +36,40 @@
                     "Rscript": "3.5.1 (2018-07-02)"
                 },
                 "PICARD_MARKDUPLICATES": {
-                    "picard": "3.3.0"
+                    "picard": "3.4.0"
                 },
                 "REMOVE_UNKNOWN_REGIONS": {
                     "python": "3.8.3"
                 },
                 "SAMTOOLS_FAIDX": {
-                    "samtools": 1.21
+                    "samtools": "1.22.1"
                 },
                 "SAMTOOLS_FLAGSTAT": {
-                    "samtools": 1.21
+                    "samtools": "1.22.1"
                 },
                 "SAMTOOLS_IDXSTATS": {
-                    "samtools": 1.21
+                    "samtools": "1.22.1"
                 },
                 "SAMTOOLS_INDEX": {
-                    "samtools": 1.21
+                    "samtools": "1.22.1"
                 },
                 "SAMTOOLS_MERGE": {
-                    "samtools": 1.21
+                    "samtools": "1.22.1"
                 },
                 "SAMTOOLS_SORT": {
-                    "samtools": 1.21
+                    "samtools": "1.22.1"
                 },
                 "SAMTOOLS_STATS": {
-                    "samtools": 1.21
+                    "samtools": "1.22.1"
                 },
                 "STAR_ALIGN": {
                     "gawk": "5.1.0",
-                    "samtools": 1.21,
+                    "samtools": "1.22.1",
                     "star": "2.7.11b"
                 },
                 "STAR_INDEXVERSION": {
                     "gawk": "5.1.0",
-                    "samtools": 1.21,
+                    "samtools": "1.22.1",
                     "star": "2.7.11b"
                 },
                 "TABIX": {
