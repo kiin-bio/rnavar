@@ -1,4 +1,3 @@
-
 .DS_Store
 annotation/**/*.vcf.{gz,gz.tbi}
 fastqc/*_fastqc.{html,zip}
