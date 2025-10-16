@@ -22,14 +22,14 @@
                     "python": "3.8.3"
                 },
                 "SAMTOOLS_FAIDX": {
-                    "samtools": "1.22.1"
+                    "samtools": 1.21
                 },
                 "SNPEFF_SNPEFF": {
                     "snpeff": "5.1d"
                 },
                 "STAR_INDEXVERSION": {
                     "gawk": "5.1.0",
-                    "samtools": "1.22.1",
+                    "samtools": 1.21,
                     "star": "2.7.11b"
                 },
                 "TABIX_BGZIPTABIX": {
@@ -152,14 +152,14 @@
                     "python": "3.8.3"
                 },
                 "SAMTOOLS_FAIDX": {
-                    "samtools": "1.22.1"
+                    "samtools": 1.21
                 },
                 "SNPEFF_SNPEFF": {
                     "snpeff": "5.1d"
                 },
                 "STAR_INDEXVERSION": {
                     "gawk": "5.1.0",
-                    "samtools": "1.22.1",
+                    "samtools": 1.21,
                     "star": "2.7.11b"
                 },
                 "TABIX_BGZIPTABIX": {

@@ -42,7 +42,7 @@
                     "python": "3.8.3"
                 },
                 "SAMTOOLS_FAIDX": {
-                    "samtools": "1.22.1"
+                    "samtools": 1.21
                 },
                 "SAMTOOLS_FLAGSTAT": {
                     "samtools": "1.22.1"
@@ -54,7 +54,7 @@
                     "samtools": "1.22.1"
                 },
                 "SAMTOOLS_MERGE": {
-                    "samtools": "1.22.1"
+                    "samtools": 1.21
                 },
                 "SAMTOOLS_SORT": {
                     "samtools": "1.22.1"
@@ -64,12 +64,12 @@
                 },
                 "STAR_ALIGN": {
                     "gawk": "5.1.0",
-                    "samtools": "1.22.1",
+                    "samtools": 1.21,
                     "star": "2.7.11b"
                 },
                 "STAR_INDEXVERSION": {
                     "gawk": "5.1.0",
-                    "samtools": "1.22.1",
+                    "samtools": 1.21,
                     "star": "2.7.11b"
                 },
                 "TABIX": {
