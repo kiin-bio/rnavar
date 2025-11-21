@@ -139,7 +139,7 @@ workflow PIPELINE_INITIALISATION {
         ? true
         : false
 
-    ch_samplesheet = Channel.fromList(samplesheetList)
+    ch_samplesheet = channel.fromList(samplesheetList)
         .map { meta, fastq_1, fastq_2, bam, bai, cram, crai, vcf, tbi ->
             def new_meta = meta + [single_end: !fastq_2]
             [meta.id, new_meta, fastq_1, fastq_2, bam, bai, cram, crai, vcf, tbi]

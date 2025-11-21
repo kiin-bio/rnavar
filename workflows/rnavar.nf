@@ -86,8 +86,8 @@ workflow RNAVAR {
     main:
 
     // To gather all QC reports and versions for MultiQC
-    reports = Channel.empty()
-    versions = Channel.empty()
+    reports = channel.empty()
+    versions = channel.empty()
 
     // Parse the input data
     parsed_input = input
@@ -127,7 +127,7 @@ workflow RNAVAR {
 
     // MODULE: Extract UMIs from reads
 
-    def umi_extracted_reads = Channel.empty()
+    def umi_extracted_reads = channel.empty()
     if (extract_umi) {
         UMITOOLS_EXTRACT(
             cat_fastq
@@ -146,7 +146,7 @@ workflow RNAVAR {
     versions = versions.mix(GATK4_BEDTOINTERVALLIST.out.versions)
 
     // MODULE: Scatter one interval-list into many interval-files using GATK4 IntervalListTools
-    def interval_list_split = Channel.empty()
+    def interval_list_split = channel.empty()
     if (!skip_intervallisttools) {
         GATK4_INTERVALLISTTOOLS(interval_list)
         interval_list_split = GATK4_INTERVALLISTTOOLS.out.interval_list.map { _meta, bed -> [bed] }.collect()
@@ -222,7 +222,7 @@ workflow RNAVAR {
 
         // MODULE: BaseRecalibrator from GATK4
         // Generates a recalibration table based on various co-variates
-        def bam_variant_calling = Channel.empty()
+        def bam_variant_calling = channel.empty()
 
         if (!skip_baserecalibration) {
             def interval_list_recalib = interval_list.map { _meta, bed -> [bed] }.flatten()
@@ -300,7 +300,7 @@ workflow RNAVAR {
 
         versions = versions.mix(GATK4_HAPLOTYPECALLER.out.versions)
 
-        def haplotypecaller_vcf = Channel.empty()
+        def haplotypecaller_vcf = channel.empty()
         if (!generate_gvcf) {
             // MODULE: MergeVCFS from GATK4
             // Merge multiple VCF files into one VCF
@@ -322,7 +322,7 @@ workflow RNAVAR {
 
             def haplotypecaller_vcf_tbi = haplotypecaller_vcf.join(haplotypecaller_indices, failOnDuplicate: true, failOnMismatch: true)
 
-            def final_vcf = Channel.empty()
+            def final_vcf = channel.empty()
 
             // MODULE: VariantFiltration from GATK4
             // Filter variant calls based on certain criteria
