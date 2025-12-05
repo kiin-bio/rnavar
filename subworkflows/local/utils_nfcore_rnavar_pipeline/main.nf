@@ -8,14 +8,20 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { UTILS_NFSCHEMA_PLUGIN   } from '../../nf-core/utils_nfschema_plugin'
-include { paramsSummaryMap        } from 'plugin/nf-schema'
-include { samplesheetToList       } from 'plugin/nf-schema'
-include { completionEmail         } from '../../nf-core/utils_nfcore_pipeline'
-include { completionSummary       } from '../../nf-core/utils_nfcore_pipeline'
-include { imNotification          } from '../../nf-core/utils_nfcore_pipeline'
-include { UTILS_NFCORE_PIPELINE   } from '../../nf-core/utils_nfcore_pipeline'
-include { UTILS_NEXTFLOW_PIPELINE } from '../../nf-core/utils_nextflow_pipeline'
+include { checkCondaChannels   } from 'plugin/nf-core-utils'
+include { checkConfigProvided  } from 'plugin/nf-core-utils'
+include { checkProfileProvided } from 'plugin/nf-core-utils'
+include { completionEmail      } from 'plugin/nf-core-utils'
+include { completionSummary    } from 'plugin/nf-core-utils'
+include { dumpParametersToJSON } from 'plugin/nf-core-utils'
+include { getWorkflowVersion   } from 'plugin/nf-core-utils'
+include { imNotification       } from 'plugin/nf-core-utils'
+
+include { paramsHelp           } from 'plugin/nf-schema'
+include { paramsSummaryLog     } from 'plugin/nf-schema'
+include { paramsSummaryMap     } from 'plugin/nf-schema'
+include { samplesheetToList    } from 'plugin/nf-schema'
+include { validateParameters   } from 'plugin/nf-schema'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -25,81 +31,117 @@ include { UTILS_NEXTFLOW_PIPELINE } from '../../nf-core/utils_nextflow_pipeline'
 
 workflow PIPELINE_INITIALISATION {
     take:
-    version           // boolean: Display version and exit
-    validate_params   // boolean: Boolean whether to validate parameters against the schema at runtime
+    version // boolean: Display version and exit
+    validate_params // boolean: Boolean whether to validate parameters against the schema at runtime
     nextflow_cli_args //   array: List of positional nextflow CLI args
-    outdir            //  string: The output directory where the results will be saved
+    outdir //  string: The output directory where the results will be saved
+    input //  string: Path to input samplesheet
+    help // boolean: Display help message and exit
+    help_full // boolean: Show the full help message
+    show_hidden // boolean: Show hidden parameters in the help message
 
     main:
 
-    ch_versions = Channel.empty()
+    ch_versions = channel.empty()
 
-    //
-    // Print version and exit if required and dump pipeline parameters to JSON file
-    //
-    UTILS_NEXTFLOW_PIPELINE(
-        version,
-        true,
-        outdir,
-        workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1,
-    )
+    // Print workflow version and exit on --version
+    if (version) {
+        log.info("${workflow.manifest.name} ${getWorkflowVersion()}")
+        System.exit(0)
+    }
 
-    //
+    // Dump pipeline parameters to a JSON file
+    if (outdir) {
+        dumpParametersToJSON(outdir, params)
+    }
+
+    // When running with Conda, warn if channels have not been set-up appropriately
+    if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
+        checkCondaChannels()
+    }
+
     // Validate parameters and generate parameter summary to stdout
     //
-    UTILS_NFSCHEMA_PLUGIN(
-        workflow,
-        validate_params,
-        null,
-    )
+    before_text = """
+-\033[2m----------------------------------------------------\033[0m-
+                                        \033[0;32m,--.\033[0;30m/\033[0;32m,-.\033[0m
+\033[0;34m        ___     __   __   __   ___     \033[0;32m/,-._.--~\'\033[0m
+\033[0;34m  |\\ | |__  __ /  ` /  \\ |__) |__         \033[0;33m}  {\033[0m
+\033[0;34m  | \\| |       \\__, \\__/ |  \\ |___     \033[0;32m\\`-._,-`-,\033[0m
+                                        \033[0;32m`._,._,\'\033[0m
+\033[0;35m  nf-core/rnavar ${workflow.manifest.version}\033[0m
+-\033[2m----------------------------------------------------\033[0m-
+"""
+    after_text = """${workflow.manifest.doi ? "\n* The pipeline\n" : ""}${workflow.manifest.doi.tokenize(",").collect { doi -> "    https://doi.org/${doi.trim().replace('https://doi.org/', '')}" }.join("\n")}${workflow.manifest.doi ? "\n" : ""}
+* The nf-core framework
+    https://doi.org/10.1038/s41587-020-0439-x
+
+* Software dependencies
+    https://github.com/nf-core/rnavar/blob/master/CITATIONS.md
+"""
+    command = "nextflow run ${workflow.manifest.name} -profile <docker/singularity/.../institute> --input samplesheet.csv --outdir <OUTDIR>"
+
+    if (help || help_full) {
+        help_options = [
+            beforeText: before_text,
+            afterText: after_text,
+            command: command,
+            showHidden: show_hidden,
+            fullHelp: help_full,
+        ]
+        if (null) {
+            help_options << [parametersSchema: null]
+        }
+        log.info(
+            paramsHelp(
+                help_options,
+                params.help instanceof String ? params.help : "",
+            )
+        )
+        exit(0)
+    }
+
+    checkProfileProvided(nextflow_cli_args)
 
     //
-    // Check config provided to the pipeline
+    // Print parameter summary to stdout. This will display the parameters
+    // that differ from the default given in the JSON schema
     //
-    UTILS_NFCORE_PIPELINE(
-        nextflow_cli_args
-    )
+
+    summary_options = [:]
+    if (null) {
+        summary_options << [parametersSchema: null]
+    }
+    log.info(before_text)
+    log.info(paramsSummaryLog(summary_options, workflow))
+    log.info(after_text)
+
+    //
+    // Validate the parameters using nextflow_schema.json or the schema
+    // given via the validation.parametersSchema configuration option
+    //
+    if (validate_params) {
+        validateOptions = [:]
+        if (null) {
+            validateOptions << [parametersSchema: null]
+        }
+        validateParameters(validateOptions)
+    }
 
     //
     // Custom validation for pipeline parameters
     //
     validateInputParameters()
 
-    // Check input path parameters to see if they exist
-    def checkPathParamList = [
-        params.dbsnp,
-        params.dbsnp_tbi,
-        params.dict,
-        params.fasta,
-        params.fasta_fai,
-        params.gff,
-        params.gtf,
-        params.input,
-        params.known_indels,
-        params.known_indels_tbi,
-        params.star_index,
-    ]
-
-    // only check if we are using the tools
-    if (params.tools && (params.tools.split(',').contains('snpeff') || params.tools.split(',').contains('merge'))) {
-        checkPathParamList.add(params.snpeff_cache)
-    }
-    if (params.tools && (params.tools.split(',').contains('vep') || params.tools.split(',').contains('merge'))) {
-        checkPathParamList.add(params.vep_cache)
-    }
-
-    //
-    // Create channel from input file provided through params.input
-    //
-
-    def samplesheetList = samplesheetToList(params.input, "${projectDir}/assets/schema_input.json")
+    // Create channel from input file provided through input
+    def samplesheetList = samplesheetToList(input, "${projectDir}/assets/schema_input.json")
     def bool_align = samplesheetList.find { _meta, fastq_1, _fastq_2, _bam, _bai, _cram, _crai, _vcf, _tbi ->
         fastq_1
     }
         ? true
         : false
 
-    ch_samplesheet = Channel.fromList(samplesheetList)
+    ch_samplesheet = channel.fromList(samplesheetList)
         .map { meta, fastq_1, fastq_2, bam, bai, cram, crai, vcf, tbi ->
             def new_meta = meta + [single_end: !fastq_2]
             [meta.id, new_meta, fastq_1, fastq_2, bam, bai, cram, crai, vcf, tbi]
@@ -119,13 +161,13 @@ workflow PIPELINE_INITIALISATION {
 
 workflow PIPELINE_COMPLETION {
     take:
-    email           //  string: email address
-    email_on_fail   //  string: email address sent on pipeline failure
+    email //  string: email address
+    email_on_fail //  string: email address sent on pipeline failure
     plaintext_email // boolean: Send plain-text email instead of HTML
-    outdir          //    path: Path to output directory where results will be published
+    outdir //    path: Path to output directory where results will be published
     monochrome_logs // boolean: Disable ANSI colour codes in log output
-    hook_url        //  string: hook URL for notifications
-    multiqc_report  //  string: Path to MultiQC report
+    hook_url //  string: hook URL for notifications
+    multiqc_report //  string: Path to MultiQC report
 
     main:
     summary_params = paramsSummaryMap(workflow, parameters_schema: "nextflow_schema.json")
@@ -229,7 +271,7 @@ def checkSamplesAfterGrouping(input) {
     }
 
     // Check that multiple runs of the same sample are of the same datatype i.e. single-end / paired-end
-    def endedness_ok = metas.collect { it.single_end }.unique().size == 1
+    def endedness_ok = metas.collect { meta -> meta.single_end }.unique().size == 1
     if (!endedness_ok) {
         error("Please check input samplesheet -> Multiple runs of a sample must be of the same datatype i.e. single-end or paired-end: ${metas[0].id}")
     }
@@ -246,6 +288,7 @@ def genomeExistsError() {
         error(error_string)
     }
 }
+
 //
 // Generate methods description for MultiQC
 //

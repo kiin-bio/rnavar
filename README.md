@@ -5,14 +5,13 @@
   </picture>
 </h1>
 
+[![Open in GitHub Codespaces](https://img.shields.io/badge/Open_In_GitHub_Codespaces-black?labelColor=grey&logo=github)](https://github.com/codespaces/new/nf-core/rnavar)
 [![GitHub Actions CI Status](https://github.com/nf-core/rnavar/actions/workflows/nf-test.yml/badge.svg)](https://github.com/nf-core/rnavar/actions/workflows/nf-test.yml)
-[![GitHub Actions Linting Status](https://github.com/nf-core/rnavar/actions/workflows/linting.yml/badge.svg)](https://github.com/nf-core/rnavar/actions/workflows/linting.yml)
-[![AWS CI](https://img.shields.io/badge/CI%20tests-full%20size-FF9900?labelColor=000000&logo=Amazon%20AWS)](https://nf-co.re/rnavar/results)
-[![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.6669636-1073c8?labelColor=000000)](https://doi.org/10.5281/zenodo.6669636)
+[![GitHub Actions Linting Status](https://github.com/nf-core/rnavar/actions/workflows/linting.yml/badge.svg)](https://github.com/nf-core/rnavar/actions/workflows/linting.yml)[![AWS CI](https://img.shields.io/badge/CI%20tests-full%20size-FF9900?labelColor=000000&logo=Amazon%20AWS)](https://nf-co.re/rnavar/results)[![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.6669636-1073c8?labelColor=000000)](https://doi.org/10.5281/zenodo.6669636)
 [![nf-test](https://img.shields.io/badge/unit_tests-nf--test-337ab7.svg)](https://www.nf-test.com)
 
-[![Nextflow](https://img.shields.io/badge/version-%E2%89%A524.10.5-green?style=flat&logo=nextflow&logoColor=white&color=%230DC09D&link=https%3A%2F%2Fnextflow.io)](https://www.nextflow.io/)
-[![nf-core template version](https://img.shields.io/badge/nf--core_template-3.3.2-green?style=flat&logo=nfcore&logoColor=white&color=%2324B064&link=https%3A%2F%2Fnf-co.re)](https://github.com/nf-core/tools/releases/tag/3.3.2)
+[![Nextflow](https://img.shields.io/badge/version-%E2%89%A525.10.2-green?style=flat&logo=nextflow&logoColor=white&color=%230DC09D&link=https%3A%2F%2Fnextflow.io)](https://www.nextflow.io/)
+[![nf-core template version](https://img.shields.io/badge/nf--core_template-3.5.1-green?style=flat&logo=nfcore&logoColor=white&color=%2324B064&link=https%3A%2F%2Fnf-co.re)](https://github.com/nf-core/tools/releases/tag/3.5.1)
 [![run with conda](http://img.shields.io/badge/run%20with-conda-3EB049?labelColor=000000&logo=anaconda)](https://docs.conda.io/en/latest/)
 [![run with docker](https://img.shields.io/badge/run%20with-docker-0db7ed?labelColor=000000&logo=docker)](https://www.docker.com/)
 [![run with singularity](https://img.shields.io/badge/run%20with-singularity-1d355c.svg?labelColor=000000)](https://sylabs.io/docs/)
@@ -69,7 +68,7 @@
 ## Usage
 
 > [!NOTE]
-> If you are new to Nextflow and nf-core, please refer to [this page](https://nf-co.re/docs/usage/installation) on how to set-up Nextflow.Make sure to [test your setup](https://nf-co.re/docs/usage/introduction#how-to-run-a-pipeline) with `-profile test` before running the workflow on actual data.
+> If you are new to Nextflow and nf-core, please refer to [this page](https://nf-co.re/docs/usage/installation) on how to set-up Nextflow. Make sure to [test your setup](https://nf-co.re/docs/usage/introduction#how-to-run-a-pipeline) with `-profile test` before running the workflow on actual data.
 
 First, prepare a samplesheet with your input data that looks as follows:
 
@@ -102,9 +101,9 @@ For more details about the output files and reports, please refer to the
 ## Credits
 
 rnavar was originally written by Praveen Raj and Maxime U Garcia at [The Swedish Childhood Tumor Biobank (Barntumörbanken), Karolinska Institutet](https://ki.se/forskning/barntumorbanken).
-Nicolas Vannieuwkerke at [CMGG](https://www.cmgg.be/en/) later joined and helped with further development (v 1.1.0 and forward).
+Nicolas Vannieuwkerke at [CMGG](https://www.cmgg.be/en/) later joined and helped with further development (1.1.0 and forward).
 
-Maintenance is now lead by Maxime U Garcia (now at [Seqera](https://seqera.io))
+Maintenance is now lead by Maxime U Garcia (before at [Seqera](https://seqera.io), now at [NGI](https://ngisweden.scilifelab.se/))
 
 Main developers:
 

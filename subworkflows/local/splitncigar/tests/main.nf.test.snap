@@ -1,82 +1,114 @@
 {
     "cram": {
         "content": [
-            [
-                [
+            {
+                "bam_bai": [
+                    [
+                        "test.bam:md5sum,67daadcc078bb45be360e1f2af46a8e5",
+                        "test.bam.bai"
+                    ]
+                ],
+                "versions": [
                     {
-                        "groupSize": 2,
-                        "groupTarget": {
-                            "id": "test"
+                        "SPLITNCIGAR:GATK4_SPLITNCIGARREADS": {
+                            "gatk4": "4.6.2.0"
                         }
                     },
-                    "67daadcc078bb45be360e1f2af46a8e5",
-                    "test.bam.bai"
+                    {
+                        "SPLITNCIGAR:GATK4_SPLITNCIGARREADS": {
+                            "gatk4": "4.6.2.0"
+                        }
+                    },
+                    {
+                        "SPLITNCIGAR:SAMTOOLS_INDEX": {
+                            "samtools": "1.22.1"
+                        }
+                    },
+                    {
+                        "SPLITNCIGAR:SAMTOOLS_MERGE": {
+                            "samtools": "1.22.1"
+                        }
+                    }
                 ]
-            ],
-            [
-                "versions.yml:md5,2ee606c033a70f44ba961106bb4727dd",
-                "versions.yml:md5,7809d5e62a9a71923012f7d06dc7a0fb",
-                "versions.yml:md5,7809d5e62a9a71923012f7d06dc7a0fb",
-                "versions.yml:md5,f2707dd02aa42f4f8154476966707508"
-            ]
+            }
         ],
         "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "24.10.4"
+            "nf-test": "0.9.3",
+            "nextflow": "25.04.8"
         },
-        "timestamp": "2025-03-04T17:15:55.786758395"
+        "timestamp": "2025-10-17T12:33:36.718220911"
     },
     "no_intervals": {
         "content": [
-            [
-                [
+            {
+                "bam_bai": [
+                    [
+                        "test.bam:md5sum,7ebc60b3ccddb8489781f46522bc5da1",
+                        "test.bam.bai"
+                    ]
+                ],
+                "versions": [
                     {
-                        "groupSize": 0,
-                        "groupTarget": {
-                            "id": "test"
+                        "SPLITNCIGAR:GATK4_SPLITNCIGARREADS": {
+                            "gatk4": "4.6.2.0"
                         }
                     },
-                    "7ebc60b3ccddb8489781f46522bc5da1",
-                    "test.bam.bai"
+                    {
+                        "SPLITNCIGAR:SAMTOOLS_INDEX": {
+                            "samtools": "1.22.1"
+                        }
+                    },
+                    {
+                        "SPLITNCIGAR:SAMTOOLS_MERGE": {
+                            "samtools": "1.22.1"
+                        }
+                    }
                 ]
-            ],
-            [
-                "versions.yml:md5,2ee606c033a70f44ba961106bb4727dd",
-                "versions.yml:md5,7809d5e62a9a71923012f7d06dc7a0fb",
-                "versions.yml:md5,f2707dd02aa42f4f8154476966707508"
-            ]
+            }
         ],
         "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "24.10.4"
+            "nf-test": "0.9.3",
+            "nextflow": "25.04.8"
         },
-        "timestamp": "2025-03-04T17:16:38.597763964"
+        "timestamp": "2025-10-17T12:33:53.273196988"
     },
     "bam": {
         "content": [
-            [
-                [
+            {
+                "bam_bai": [
+                    [
+                        "test.bam:md5sum,67daadcc078bb45be360e1f2af46a8e5",
+                        "test.bam.bai"
+                    ]
+                ],
+                "versions": [
                     {
-                        "groupSize": 2,
-                        "groupTarget": {
-                            "id": "test"
+                        "SPLITNCIGAR:GATK4_SPLITNCIGARREADS": {
+                            "gatk4": "4.6.2.0"
                         }
                     },
-                    "67daadcc078bb45be360e1f2af46a8e5",
-                    "test.bam.bai"
+                    {
+                        "SPLITNCIGAR:GATK4_SPLITNCIGARREADS": {
+                            "gatk4": "4.6.2.0"
+                        }
+                    },
+                    {
+                        "SPLITNCIGAR:SAMTOOLS_INDEX": {
+                            "samtools": "1.22.1"
+                        }
+                    },
+                    {
+                        "SPLITNCIGAR:SAMTOOLS_MERGE": {
+                            "samtools": "1.22.1"
+                        }
+                    }
                 ]
-            ],
-            [
-                "versions.yml:md5,2ee606c033a70f44ba961106bb4727dd",
-                "versions.yml:md5,7809d5e62a9a71923012f7d06dc7a0fb",
-                "versions.yml:md5,7809d5e62a9a71923012f7d06dc7a0fb",
-                "versions.yml:md5,f2707dd02aa42f4f8154476966707508"
-            ]
+            }
         ],
         "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "24.10.4"
+            "nf-test": "0.9.3",
+            "nextflow": "25.04.8"
         },
-        "timestamp": "2025-03-04T17:15:10.999131603"
+        "timestamp": "2025-10-17T12:33:19.5134345"
     }
 }

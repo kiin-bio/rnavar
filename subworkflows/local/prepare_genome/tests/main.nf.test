@@ -30,25 +30,19 @@ nextflow_workflow {
                 """
             }
         }
-
         then {
             assert workflow.success
-            assertAll(
-                { assert snapshot(
-                    workflow.out.collectEntries { key, val ->
-                        if(key.matches("\\d+")) {
+            assert snapshot(
+                sanitizeOutput(workflow.out).collectEntries { key, val ->
+                        if (key in ["bcfann", "bcfann_tbi", "dbsnp", "dbsnp_tbi", "known_indels", "known_indels_tbi", "known_sites", "known_sites_tbi", "star_index"]) {
                             return null
                         }
-                        else if (val == [[]]) {
-                            return null
+                        else if (key == "versions") {
+                            return [key, val.collect { path(it).yaml }]
                         }
-                        else if(key == "star_index") {
-                            return [key, val.collect { [it[0], path(it[1]).list().collect { file(it.toString()).name }] }]
-                        }
-                        return [key,val]
-                    }.findAll { it != null }
-                ).match() }
-            )
+                        return [key, val]
+                    }
+            ).match()
         }
     }
 
@@ -81,34 +75,25 @@ nextflow_workflow {
 
         then {
             assert workflow.success
-            assertAll(
-                { assert snapshot(
-                    workflow.out.collectEntries { key, val ->
-                        if(key.matches("\\d+")) {
-                            return null
+            assert snapshot(
+                sanitizeOutput(workflow.out).collectEntries { key, val ->
+                        if (key == "star_index") {
+                            return [key, val.collect { [path(it[1]).list().collect { file(it.toString()).name }] }]
                         }
-                        else if (val == [[]]) {
-                            return null
+                        else if (key in ["known_indels", "known_indels_tbi"]) {
+                            def array = [file(val[0][1].toString()).name, file(val[0][3].toString()).name]
+                            return [key, array.sort().unique()]
                         }
-                        else if(key == "known_indels") {
-                            return [key, val.sort { it.toString() }]
+                        else if (key in ["known_sites", "known_sites_tbi"]) {
+                            def array = val[0][1].collect{ file(it.toString()).name }
+                            return [key, array.sort().unique() ]
                         }
-                        else if(key == "known_indels_tbi") {
-                            return [key, val.sort { it.toString() }]
+                        else if (key == "versions") {
+                            return [key, val.collect { path(it).yaml }]
                         }
-                        else if(key == "known_sites") {
-                            return [key, val.sort { it.toString() }]
-                        }
-                        else if(key == "known_sites_tbi") {
-                            return [key, val.sort { it.toString() }]
-                        }
-                        else if(key == "star_index") {
-                            return [key, val.collect { [it[0], path(it[1]).list().collect { file(it.toString()).name }] }]
-                        }
-                        return [key,val]
-                    }.findAll { it != null }
-                ).match() }
-            )
+                        return [key, val]
+                    }
+            ).match()
         }
     }
 }

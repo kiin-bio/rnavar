@@ -3,6 +3,97 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.2](https://github.com/nf-core/rnavar/releases/tag/1.2.2) - Gray Red Tail
+
+### Added
+
+### Changed
+
+- [#242](https://github.com/nf-core/rnavar/pull/242) - Back to dev
+- [#242](https://github.com/nf-core/rnavar/pull/242) - Update MultiQC to 1.31
+- [#242](https://github.com/nf-core/rnavar/pull/242) - Update Picard to 3.4.0
+- [#242](https://github.com/nf-core/rnavar/pull/242) - Update Samtools to 1.22.1
+- [#244](https://github.com/nf-core/rnavar/pull/244) - Downgrade snpeff db to at least 99 due to 105 not being available at the moment
+- [#244](https://github.com/nf-core/rnavar/pull/244) - Update ensembl-vep to 115.2
+- [#244](https://github.com/nf-core/rnavar/pull/244) - Update snpeff to 5.3.0a
+- [#245](https://github.com/nf-core/rnavar/pull/245) - Update gatk4 to 4.6.2.0
+- [#245](https://github.com/nf-core/rnavar/pull/245) - Update htslib to 1.22.1
+- [#245](https://github.com/nf-core/rnavar/pull/245) - Update umi_tools to 1.1.6
+- [#246](https://github.com/nf-core/rnavar/pull/246) - Update bcftools to 1.22
+- [#246](https://github.com/nf-core/rnavar/pull/246) - Update bcftools/annotate to pick up columns file input
+- [#263](https://github.com/nf-core/rnavar/pull/263) - Bump minimal Nextflow version to 25.10.2
+
+### Fixed
+
+- [#243](https://github.com/nf-core/rnavar/pull/243) - Fix issue with known_indels and dbsnp params that was not working as expected when passed along as known_sites to GATK BaseRecalibrator
+
+### Dependencies
+
+| Dependency  | Old version | New version |
+| ----------- | ----------- | ----------- |
+| bcftools    | 1.21        | 1.22        |
+| ensembl-vep | 115.1       | 115.2       |
+| gatk4       | 4.6.1.0     | 4.6.2.0     |
+| htslib      | 1.21        | 1.22.1      |
+| multiqc     | 1.30        | 1.31        |
+| picard      | 3.3.0       | 3.4.0       |
+| samtools    | 1.21        | 1.22.1      |
+| snpeff      | 5.1d        | 5.3.0a      |
+| umi_tools   | 1.1.5       | 1.1.6       |
+
+### Parameter
+
+| Old name | New name         |
+| -------- | ---------------- |
+|          | bcftools_columns |
+
+### Modules / Subworkflows
+
+| Dependency   | Old name                | New name |
+| ------------ | ----------------------- | -------- |
+| subworkflows | utils_nextflow_pipeline |          |
+| subworkflows | utils_nfcore_pipeline   |          |
+| subworkflows | utils_nfschema_plugin   |          |
+
+### Plugins
+
+| Dependency     | Old version | New version |
+| -------------- | ----------- | ----------- |
+| nf-core-schema | 2.4.2       | 2.6.1       |
+| nf-core-utils  |             | 0.4.0       |
+
+### Developer section
+
+#### Added
+
+#### Changed
+
+- [#233](https://github.com/nf-core/rnavar/pull/233) - Start to use the nf-core-utils plugins and remove all utils subworfklows from nf-core/modules
+- [#234](https://github.com/nf-core/rnavar/pull/234) - Refactor local modules and subworkflows tests
+- [#234](https://github.com/nf-core/rnavar/pull/234) - Use topics for local modules
+- [#242](https://github.com/nf-core/rnavar/pull/242) - Template update for nf-core/tools v3.4.0
+- [#243](https://github.com/nf-core/rnavar/pull/243) - Template update for nf-core/tools v3.4.1
+- [#247](https://github.com/nf-core/rnavar/pull/247) - Prepare release 1.2.2
+- [#252](https://github.com/nf-core/rnavar/pull/252) - Upgrade nf-core-utils plugins to 0.3.1
+- [#252](https://github.com/nf-core/rnavar/pull/252) - Use `getGenomeAttribute()` and `softwareVersionsToYAML()` from nf-core-utils plugins
+- [#257](https://github.com/nf-core/rnavar/pull/257) - no need to define snpeff_cache and vep_cache in tests
+- [#259](https://github.com/nf-core/rnavar/pull/259) - Template update for nf-core/tools v3.5.0dev
+- [#260](https://github.com/nf-core/rnavar/pull/260) - Template update for nf-core/tools v3.5.1
+- [#261](https://github.com/nf-core/rnavar/pull/261) - Template update for nf-core/tools v3.5.1
+- [#262](https://github.com/nf-core/rnavar/pull/262) - Syntax fixes for Nextflow 25.10.0
+
+#### Fixed
+
+- [#249](https://github.com/nf-core/rnavar/pull/249) - Fix conda environment for gtf2bed module to include r-base dependency
+- [#250](https://github.com/nf-core/rnavar/pull/250) - No name for conda environment for all local modules
+- [#251](https://github.com/nf-core/rnavar/pull/251) - Use the conda env, do not load the dependency in the gtf2bed module
+- [#264](https://github.com/nf-core/rnavar/pull/264) - Use NXF 25.10.2 for the megatests GHA
+- [#264](https://github.com/nf-core/rnavar/pull/264) - Keep MultiQC 1.31 due to Python issues cf [nf-core/modules/#9500](https://github.com/nf-core/modules/issues/9500)
+
+#### Removed
+
+- [#249](https://github.com/nf-core/rnavar/pull/249) - Remove default channels from remove_unknown_regions conda environment
+
 ## [1.2.1](https://github.com/nf-core/rnavar/releases/tag/1.2.1) - Red Swordfish II
 
 ### Added
@@ -37,6 +128,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#231](https://github.com/nf-core/rnavar/pull/231) - Back to dev
 - [#232](https://github.com/nf-core/rnavar/pull/232) - Update all modules
 - [#232](https://github.com/nf-core/rnavar/pull/232) - Simplify modules config file
+- [#239](https://github.com/nf-core/rnavar/pull/239) - Prepare release 1.2.1
 
 #### Fixed
 

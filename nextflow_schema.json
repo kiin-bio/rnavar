@@ -414,6 +414,11 @@
                     "fa_icon": "fas fa-file",
                     "description": "Index file for `bcftools_annotations`"
                 },
+                "bcftools_columns": {
+                    "type": "string",
+                    "fa_icon": "fas fa-align-center",
+                    "description": "Optional text file with list of columns to use from `bcftools_annotations`, one name per row"
+                },
                 "bcftools_header_lines": {
                     "type": "string",
                     "fa_icon": "fas fa-align-center",
@@ -797,6 +802,18 @@
                     "fa_icon": "far calendar",
                     "description": "Suffix to add to the trace report filename. Default is the date and time in the format yyyy-MM-dd_HH-mm-ss.",
                     "hidden": true
+                },
+                "help": {
+                    "type": ["boolean", "string"],
+                    "description": "Display the help message."
+                },
+                "help_full": {
+                    "type": "boolean",
+                    "description": "Display the full detailed help message."
+                },
+                "show_hidden": {
+                    "type": "boolean",
+                    "description": "Display hidden parameters in the help message (only works when --help or --help_full are provided)."
                 }
             }
         }

@@ -4,7 +4,7 @@ nextflow_process {
     script "../main.nf"
     process "GTF2BED"
 
-    test("Should run without failures") {
+    test("gtf") {
 
         when {
             process {
@@ -20,14 +20,11 @@ nextflow_process {
 
         then {
             assert process.success
-            assert snapshot(
-                process.out.bed,
-                path(process.out.versions[0]).yaml
-            ).match()
+            assert snapshot(sanitizeOutput(process.out)).match()
         }
     }
 
-    test("Should run without failures - stub") {
+    test("gtf - stub") {
 
         options "-stub"
 
@@ -45,10 +42,7 @@ nextflow_process {
 
         then {
             assert process.success
-            assert snapshot(
-                process.out.bed,
-                path(process.out.versions[0]).yaml
-            ).match()
+            assert snapshot(sanitizeOutput(process.out)).match()
         }
     }
 }

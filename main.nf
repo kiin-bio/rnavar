@@ -11,30 +11,6 @@
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    GENOME PARAMETER VALUES
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-params.bcftools_annotations     = getGenomeAttribute('bcftools_annotations')
-params.bcftools_annotations_tbi = getGenomeAttribute('bcftools_annotations_tbi')
-params.dbsnp                    = getGenomeAttribute('dbsnp')
-params.dbsnp_tbi                = getGenomeAttribute('dbsnp_tbi')
-params.dict                     = getGenomeAttribute('dict')
-params.exon_bed                 = getGenomeAttribute('exon_bed')
-params.fasta                    = getGenomeAttribute('fasta')
-params.fasta_fai                = getGenomeAttribute('fasta_fai')
-params.gff                      = getGenomeAttribute('gff')
-params.gtf                      = getGenomeAttribute('gtf')
-params.known_indels             = getGenomeAttribute('known_indels')
-params.known_indels_tbi         = getGenomeAttribute('known_indels_tbi')
-params.snpeff_db                = getGenomeAttribute('snpeff_db')
-params.star_index               = getGenomeAttribute('star')
-params.vep_cache_version        = getGenomeAttribute('vep_cache_version')
-params.vep_genome               = getGenomeAttribute('vep_genome')
-params.vep_species              = getGenomeAttribute('vep_species')
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     IMPORT FUNCTIONS / MODULES / SUBWORKFLOWS / WORKFLOWS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
@@ -45,15 +21,35 @@ include { DOWNLOAD_CACHE_SNPEFF_VEP       } from './subworkflows/local/download_
 include { PIPELINE_INITIALISATION         } from './subworkflows/local/utils_nfcore_rnavar_pipeline'
 include { PIPELINE_COMPLETION             } from './subworkflows/local/utils_nfcore_rnavar_pipeline'
 include { PREPARE_GENOME                  } from './subworkflows/local/prepare_genome'
-include { methodsDescriptionText          } from './subworkflows/local/utils_nfcore_rnavar_pipeline'
 
-// nf-core
-include { paramsSummaryMultiqc            } from './subworkflows/nf-core/utils_nfcore_pipeline'
-include { softwareVersionsToYAML          } from './subworkflows/nf-core/utils_nfcore_pipeline'
+// MULTIQC
 include { MULTIQC                         } from './modules/nf-core/multiqc'
-
-// plugin
+include { getGenomeAttribute              } from 'plugin/nf-core-utils'
+include { softwareVersionsToYAML          } from 'plugin/nf-core-utils'
+include { methodsDescriptionText          } from './subworkflows/local/utils_nfcore_rnavar_pipeline'
 include { paramsSummaryMap                } from 'plugin/nf-schema'
+
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    GENOME PARAMETER VALUES
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
+
+params.dbsnp             = getGenomeAttribute('dbsnp')
+params.dbsnp_tbi         = getGenomeAttribute('dbsnp_tbi')
+params.dict              = getGenomeAttribute('dict')
+params.exon_bed          = getGenomeAttribute('exon_bed')
+params.fasta             = getGenomeAttribute('fasta')
+params.fasta_fai         = getGenomeAttribute('fasta_fai')
+params.gff               = getGenomeAttribute('gff')
+params.gtf               = getGenomeAttribute('gtf')
+params.known_indels      = getGenomeAttribute('known_indels')
+params.known_indels_tbi  = getGenomeAttribute('known_indels_tbi')
+params.snpeff_db         = getGenomeAttribute('snpeff_db')
+params.star_index        = getGenomeAttribute('star')
+params.vep_cache_version = getGenomeAttribute('vep_cache_version')
+params.vep_genome        = getGenomeAttribute('vep_genome')
+params.vep_species       = getGenomeAttribute('vep_species')
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -70,8 +66,8 @@ workflow NFCORE_RNAVAR {
     align
 
     main:
-    reports = Channel.empty()
-    versions = Channel.empty()
+    reports = channel.empty()
+    versions = channel.empty()
 
     if (params.gtf && params.gff) {
         error("Using both --gtf and --gff is not supported. Please use only one of these parameters")
@@ -112,8 +108,8 @@ workflow NFCORE_RNAVAR {
     // Download cache
     if (params.download_cache) {
         // Assuming that even if the cache is provided, if the user specify download_cache, rnavar will download the cache
-        ensemblvep_info = Channel.of([[id: "${params.vep_cache_version}_${params.vep_genome}"], params.vep_genome, params.vep_species, params.vep_cache_version])
-        snpeff_info = Channel.of([[id: "${params.snpeff_db}"], params.snpeff_db])
+        ensemblvep_info = channel.of([[id: "${params.vep_cache_version}_${params.vep_genome}"], params.vep_genome, params.vep_species, params.vep_cache_version])
+        snpeff_info = channel.of([[id: "${params.snpeff_db}"], params.snpeff_db])
         DOWNLOAD_CACHE_SNPEFF_VEP(ensemblvep_info, snpeff_info)
         snpeff_cache = DOWNLOAD_CACHE_SNPEFF_VEP.out.snpeff_cache
         vep_cache = DOWNLOAD_CACHE_SNPEFF_VEP.out.ensemblvep_cache.map { _meta, cache -> [cache] }
@@ -165,7 +161,8 @@ workflow NFCORE_RNAVAR {
         samplesheet,
         PREPARE_GENOME.out.bcfann,
         PREPARE_GENOME.out.bcfann_tbi,
-        params.bcftools_header_lines ? Channel.fromPath(params.bcftools_header_lines).collect() : Channel.empty(),
+        params.bcftools_columns ? channel.fromPath(params.bcftools_columns).collect() : channel.value([]),
+        params.bcftools_header_lines ? channel.fromPath(params.bcftools_header_lines).collect() : channel.empty(),
         PREPARE_GENOME.out.dbsnp,
         PREPARE_GENOME.out.dbsnp_tbi,
         PREPARE_GENOME.out.dict,
@@ -203,7 +200,7 @@ workflow NFCORE_RNAVAR {
     versions = versions.mix(RNAVAR.out.versions)
 
     emit:
-    reports  // channel: qc reports for multiQC
+    reports // channel: qc reports for multiQC
     versions // channel: [ path(versions.yml) ]
 }
 /*
@@ -221,6 +218,10 @@ workflow {
         params.validate_params,
         args,
         params.outdir,
+        params.input,
+        params.help,
+        params.help_full,
+        params.show_hidden,
     )
 
     //
@@ -231,23 +232,31 @@ workflow {
         PIPELINE_INITIALISATION.out.align,
     )
 
-    // Collate and save software versions
-    def collated_versions = softwareVersionsToYAML(NFCORE_RNAVAR.out.versions).collectFile(storeDir: "${params.outdir}/pipeline_info", name: 'nf_core_rnavar_software_mqc_versions.yml', sort: true, newLine: true)
+    def collated_versions = softwareVersionsToYAML(
+        softwareVersions: NFCORE_RNAVAR.out.versions.mix(channel.topic("versions")),
+        nextflowVersion: workflow.nextflow.version,
+    ).collectFile(
+        storeDir: "${params.outdir}/pipeline_info",
+        name: 'nf_core_' + 'rnavar_software_' + 'mqc_' + 'versions.yml',
+        sort: true,
+        newLine: true,
+    )
 
     // MODULE: MultiQC
     // Present summary of reads, alignment, duplicates, BSQR stats for all samples as well as workflow summary/parameters as single report
-    def multiqc_report = Channel.empty()
+    def multiqc_report = channel.empty()
 
+    // MULTIQC
     if (!params.skip_multiqc) {
-        def multiqc_files = Channel.empty()
+        def multiqc_files = channel.empty()
 
-        def multiqc_config = Channel.fromPath("${projectDir}/assets/multiqc_config.yml", checkIfExists: true)
-        def multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multiqc_config, checkIfExists: true) : Channel.empty()
-        def multiqc_logo = params.multiqc_logo ? Channel.fromPath(params.multiqc_logo, checkIfExists: true) : Channel.empty()
+        def multiqc_config = channel.fromPath("${projectDir}/assets/multiqc_config.yml", checkIfExists: true)
+        def multiqc_custom_config = params.multiqc_config ? channel.fromPath(params.multiqc_config, checkIfExists: true) : channel.empty()
+        def multiqc_logo = params.multiqc_logo ? channel.fromPath(params.multiqc_logo, checkIfExists: true) : channel.empty()
         def summary_params = paramsSummaryMap(workflow, parameters_schema: "nextflow_schema.json")
-        def workflow_summary = Channel.value(paramsSummaryMultiqc(summary_params))
+        def workflow_summary = channel.value(paramsSummaryMultiqc(summary_params))
         def multiqc_custom_methods_description = params.multiqc_methods_description ? file(params.multiqc_methods_description, checkIfExists: true) : file("${projectDir}/assets/methods_description_template.yml", checkIfExists: true)
-        def methods_description = Channel.value(methodsDescriptionText(multiqc_custom_methods_description))
+        def methods_description = channel.value(methodsDescriptionText(multiqc_custom_methods_description))
 
         multiqc_files = multiqc_files.mix(NFCORE_RNAVAR.out.reports)
         multiqc_files = multiqc_files.mix(workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
@@ -287,14 +296,35 @@ workflow {
 */
 
 //
-// Get attribute from genome config file e.g. fasta
+// Get workflow summary for MultiQC
 //
-
-def getGenomeAttribute(attribute) {
-    if (params.genomes && params.genome && params.genomes.containsKey(params.genome)) {
-        if (params.genomes[params.genome].containsKey(attribute)) {
-            return params.genomes[params.genome][attribute]
+def paramsSummaryMultiqc(summary_params) {
+    def summary_section = ''
+    summary_params
+        .keySet()
+        .each { group ->
+            def group_params = summary_params.get(group)
+            // This gets the parameters of that particular group
+            if (group_params) {
+                summary_section += "    <p style=\"font-size:110%\"><b>${group}</b></p>\n"
+                summary_section += "    <dl class=\"dl-horizontal\">\n"
+                group_params
+                    .keySet()
+                    .sort()
+                    .each { param ->
+                        summary_section += "        <dt>${param}</dt><dd><samp>${group_params.get(param) ?: '<span style=\"color:#999999;\">N/A</a>'}</samp></dd>\n"
+                    }
+                summary_section += "    </dl>\n"
+            }
         }
-    }
-    return null
+
+    def yaml_file_text = "id: '${workflow.manifest.name.replace('/', '-')}-summary'\n" as String
+    yaml_file_text += "description: ' - this information is collected when the pipeline is started.'\n"
+    yaml_file_text += "section_name: '${workflow.manifest.name} Workflow Summary'\n"
+    yaml_file_text += "section_href: 'https://github.com/${workflow.manifest.name}'\n"
+    yaml_file_text += "plot_type: 'html'\n"
+    yaml_file_text += "data: |\n"
+    yaml_file_text += "${summary_section}"
+
+    return yaml_file_text
 }

@@ -49,6 +49,7 @@ workflow RNAVAR {
     input
     bcftools_annotations
     bcftools_annotations_tbi
+    bcftools_columns
     bcftools_header_lines
     dbsnp
     dbsnp_tbi
@@ -85,8 +86,8 @@ workflow RNAVAR {
     main:
 
     // To gather all QC reports and versions for MultiQC
-    reports = Channel.empty()
-    versions = Channel.empty()
+    reports = channel.empty()
+    versions = channel.empty()
 
     // Parse the input data
     parsed_input = input
@@ -126,7 +127,7 @@ workflow RNAVAR {
 
     // MODULE: Extract UMIs from reads
 
-    def umi_extracted_reads = Channel.empty()
+    def umi_extracted_reads = channel.empty()
     if (extract_umi) {
         UMITOOLS_EXTRACT(
             cat_fastq
@@ -145,7 +146,7 @@ workflow RNAVAR {
     versions = versions.mix(GATK4_BEDTOINTERVALLIST.out.versions)
 
     // MODULE: Scatter one interval-list into many interval-files using GATK4 IntervalListTools
-    def interval_list_split = Channel.empty()
+    def interval_list_split = channel.empty()
     if (!skip_intervallisttools) {
         GATK4_INTERVALLISTTOOLS(interval_list)
         interval_list_split = GATK4_INTERVALLISTTOOLS.out.interval_list.map { _meta, bed -> [bed] }.collect()
@@ -179,8 +180,8 @@ workflow RNAVAR {
         def genome_bam = FASTQ_ALIGN_STAR.out.bam
 
         // Gather QC reports
-        reports = reports.mix(FASTQ_ALIGN_STAR.out.log_out.collect { _meta, log_out -> log_out })
-        reports = reports.mix(FASTQ_ALIGN_STAR.out.log_final.collect { it[1] }.ifEmpty([]))
+        reports = reports.mix(FASTQ_ALIGN_STAR.out.log_out.collect { _meta, log -> log })
+        reports = reports.mix(FASTQ_ALIGN_STAR.out.log_final.collect { _meta, log -> log }.ifEmpty([]))
         versions = versions.mix(FASTQ_ALIGN_STAR.out.versions)
 
         // SUBWORKFLOW: Mark duplicates with GATK4
@@ -199,10 +200,10 @@ workflow RNAVAR {
             .mix(PREPARE_ALIGNMENT.out.bam)
 
         //Gather QC reports
-        reports = reports.mix(BAM_MARKDUPLICATES_PICARD.out.metrics.collect { it[1] }.ifEmpty([]))
-        reports = reports.mix(BAM_MARKDUPLICATES_PICARD.out.stats.collect { it[1] }.ifEmpty([]))
-        reports = reports.mix(BAM_MARKDUPLICATES_PICARD.out.flagstat.collect { it[1] }.ifEmpty([]))
-        reports = reports.mix(BAM_MARKDUPLICATES_PICARD.out.idxstats.collect { it[1] }.ifEmpty([]))
+        reports = reports.mix(BAM_MARKDUPLICATES_PICARD.out.metrics.collect { _meta, log -> log }.ifEmpty([]))
+        reports = reports.mix(BAM_MARKDUPLICATES_PICARD.out.stats.collect { _meta, log -> log }.ifEmpty([]))
+        reports = reports.mix(BAM_MARKDUPLICATES_PICARD.out.flagstat.collect { _meta, log -> log }.ifEmpty([]))
+        reports = reports.mix(BAM_MARKDUPLICATES_PICARD.out.idxstats.collect { _meta, log -> log }.ifEmpty([]))
         versions = versions.mix(BAM_MARKDUPLICATES_PICARD.out.versions)
 
         // SUBWORKFLOW: SplitNCigarReads from GATK4 over the intervals
@@ -221,7 +222,7 @@ workflow RNAVAR {
 
         // MODULE: BaseRecalibrator from GATK4
         // Generates a recalibration table based on various co-variates
-        def bam_variant_calling = Channel.empty()
+        def bam_variant_calling = channel.empty()
 
         if (!skip_baserecalibration) {
             def interval_list_recalib = interval_list.map { _meta, bed -> [bed] }.flatten()
@@ -261,7 +262,7 @@ workflow RNAVAR {
             bam_variant_calling = RECALIBRATE.out.bam
 
             // Gather QC reports
-            reports = reports.mix(RECALIBRATE.out.qc.collect { it[1] }.ifEmpty([]))
+            reports = reports.mix(RECALIBRATE.out.qc.collect { _meta, log_out -> log_out }.ifEmpty([]))
             versions = versions.mix(RECALIBRATE.out.versions)
         }
         else {
@@ -299,7 +300,7 @@ workflow RNAVAR {
 
         versions = versions.mix(GATK4_HAPLOTYPECALLER.out.versions)
 
-        def haplotypecaller_vcf = Channel.empty()
+        def haplotypecaller_vcf = channel.empty()
         if (!generate_gvcf) {
             // MODULE: MergeVCFS from GATK4
             // Merge multiple VCF files into one VCF
@@ -321,7 +322,7 @@ workflow RNAVAR {
 
             def haplotypecaller_vcf_tbi = haplotypecaller_vcf.join(haplotypecaller_indices, failOnDuplicate: true, failOnMismatch: true)
 
-            def final_vcf = Channel.empty()
+            def final_vcf = channel.empty()
 
             // MODULE: VariantFiltration from GATK4
             // Filter variant calls based on certain criteria
@@ -361,6 +362,7 @@ workflow RNAVAR {
                     vep_extra_files,
                     bcftools_annotations,
                     bcftools_annotations_tbi,
+                    bcftools_columns,
                     bcftools_header_lines,
                 )
 
