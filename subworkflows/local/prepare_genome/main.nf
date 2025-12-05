@@ -110,8 +110,8 @@ workflow PREPARE_GENOME {
     }
     else if (!bcftools_annotations_tbi && bcftools_annotations) {
         BGZIPTABIX_BCFTOOLS_ANNOTATIONS(ch_bcftools_annotations.map { vcf -> [[id: vcf.baseName], vcf] })
-        ch_bcftools_annotations = BGZIPTABIX_BCFTOOLS_ANNOTATIONS.out.gz_tbi.map { _meta, file, _index -> [file] }.collect()
-        ch_bcftools_annotations_tbi = BGZIPTABIX_BCFTOOLS_ANNOTATIONS.out.gz_tbi.map { _meta, _file, tbi -> [tbi] }.collect()
+        ch_bcftools_annotations = BGZIPTABIX_BCFTOOLS_ANNOTATIONS.out.gz_index.map { _meta, file, _index -> [file] }.collect()
+        ch_bcftools_annotations_tbi = BGZIPTABIX_BCFTOOLS_ANNOTATIONS.out.gz_index.map { _meta, _file, tbi -> [tbi] }.collect()
         ch_versions = ch_versions.mix(BGZIPTABIX_BCFTOOLS_ANNOTATIONS.out.versions)
     }
 
@@ -128,8 +128,8 @@ workflow PREPARE_GENOME {
     }
     else if (!dbsnp_tbi && dbsnp) {
         BGZIPTABIX_DBSNP(ch_dbsnp)
-        ch_dbsnp = BGZIPTABIX_DBSNP.out.gz_tbi.map { meta, file, _index -> [meta, file] }
-        ch_dbsnp_tbi = BGZIPTABIX_DBSNP.out.gz_tbi.map { meta, _file, tbi -> [meta, tbi] }
+        ch_dbsnp = BGZIPTABIX_DBSNP.out.gz_index.map { meta, file, _index -> [meta, file] }
+        ch_dbsnp_tbi = BGZIPTABIX_DBSNP.out.gz_index.map { meta, _file, tbi -> [meta, tbi] }
         ch_versions = ch_versions.mix(BGZIPTABIX_DBSNP.out.versions)
     }
 
@@ -146,8 +146,8 @@ workflow PREPARE_GENOME {
     }
     else if (!known_indels_tbi && known_indels) {
         BGZIPTABIX_KNOWN_INDELS(ch_known_indels)
-        ch_known_indels = BGZIPTABIX_KNOWN_INDELS.out.gz_tbi.map { meta, file, _index -> [meta, file] }
-        ch_known_indels_tbi = BGZIPTABIX_KNOWN_INDELS.out.gz_tbi.map { meta, _file, tbi -> [meta, tbi] }
+        ch_known_indels = BGZIPTABIX_KNOWN_INDELS.out.gz_index.map { meta, file, _index -> [meta, file] }
+        ch_known_indels_tbi = BGZIPTABIX_KNOWN_INDELS.out.gz_index.map { meta, _file, tbi -> [meta, tbi] }
         ch_versions = ch_versions.mix(BGZIPTABIX_KNOWN_INDELS.out.versions)
     }
 

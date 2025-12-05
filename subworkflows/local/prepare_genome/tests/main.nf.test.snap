@@ -120,22 +120,8 @@
                         }
                     },
                     {
-                        "PREPARE_GENOME:TABIX_KNOWN_INDELS": {
-                            "tabix": 1.21
-                        }
-                    },
-                    {
-                        "PREPARE_GENOME:TABIX_KNOWN_INDELS": {
-                            "tabix": 1.21
-                        }
-                    },
-                    {
-                        "PREPARE_GENOME:TABIX_BCFTOOLS_ANNOTATIONS": {
-                            "tabix": 1.21
-                        }
-                    },
-                    {
                         "PREPARE_GENOME:BGZIPTABIX_DBSNP": {
+                            "bgzip": 1.21,
                             "tabix": 1.21
                         }
                     }
@@ -144,9 +130,9 @@
         ],
         "meta": {
             "nf-test": "0.9.3",
-            "nextflow": "25.04.8"
+            "nextflow": "25.10.2"
         },
-        "timestamp": "2025-10-16T18:42:15.965653807"
+        "timestamp": "2025-12-05T13:35:48.724861729"
     },
     "only essentials": {
         "content": [
