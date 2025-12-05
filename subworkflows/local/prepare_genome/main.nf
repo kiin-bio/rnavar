@@ -106,7 +106,7 @@ workflow PREPARE_GENOME {
 
     if (!bcftools_annotations_tbi && bcftools_annotations && bcftools_annotations.toString().endsWith(".gz")) {
         TABIX_BCFTOOLS_ANNOTATIONS(ch_bcftools_annotations.map { vcf -> [[id: vcf.baseName], vcf] })
-        ch_bcftools_annotations_tbi = TABIX_BCFTOOLS_ANNOTATIONS.out.tbi.map { _meta, tbi -> [tbi] }.collect()
+        ch_bcftools_annotations_tbi = TABIX_BCFTOOLS_ANNOTATIONS.out.index.map { _meta, tbi -> [tbi] }.collect()
         ch_versions = ch_versions.mix(TABIX_BCFTOOLS_ANNOTATIONS.out.versions)
     }
     else if (!bcftools_annotations_tbi && bcftools_annotations) {
@@ -125,7 +125,7 @@ workflow PREPARE_GENOME {
 
     if (!dbsnp_tbi && dbsnp && (dbsnp.toString().endsWith(".gz") || dbsnp[0].toString().endsWith(".gz"))) {
         TABIX_DBSNP(ch_dbsnp)
-        ch_dbsnp_tbi = TABIX_DBSNP.out.tbi.map { meta, tbi -> [meta, tbi] }
+        ch_dbsnp_tbi = TABIX_DBSNP.out.index.map { meta, tbi -> [meta, tbi] }
         ch_versions = ch_versions.mix(TABIX_DBSNP.out.versions)
     }
     else if (!dbsnp_tbi && dbsnp) {
@@ -144,7 +144,7 @@ workflow PREPARE_GENOME {
 
     if (!known_indels_tbi && known_indels && (known_indels.toString().endsWith(".gz") || known_indels[0].toString().endsWith(".gz"))) {
         TABIX_KNOWN_INDELS(ch_known_indels)
-        ch_known_indels_tbi = TABIX_KNOWN_INDELS.out.tbi.map { meta, tbi -> [meta, tbi] }
+        ch_known_indels_tbi = TABIX_KNOWN_INDELS.out.index.map { meta, tbi -> [meta, tbi] }
         ch_versions = ch_versions.mix(TABIX_KNOWN_INDELS.out.versions)
     }
     else if (!known_indels_tbi && known_indels) {

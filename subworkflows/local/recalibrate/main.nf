@@ -42,7 +42,6 @@ workflow RECALIBRATE {
     if (!skip_samtools) {
         SAMTOOLS_STATS(bam_recalibrated_index, [[], []])
         ch_reports = SAMTOOLS_STATS.out.stats
-        ch_versions = ch_versions.mix(SAMTOOLS_STATS.out.versions)
     }
 
     emit:
