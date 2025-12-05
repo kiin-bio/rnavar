@@ -48,22 +48,24 @@
 
 ### Summary of tools and version used in the pipeline
 
-| Tool        | Version |
-| ----------- | ------- |
-| BCFtools    | 1.21    |
-| BEDtools    | 2.31.1  |
-| Ensembl VEP | 114.2   |
-| FastQC      | 0.12.1  |
-| GATK        | 4.6.1.0 |
-| mosdepth    | 0.3.10  |
-| MultiQC     | 1.29    |
-| Picard      | 3.3.0   |
-| Samtools    | 1.21    |
-| Seq2HLA     | 2.3     |
-| SnpEff      | 5.1     |
-| STAR        | 2.7.11b |
-| Tabix       | 1.20    |
-| UMI-tools   | 1.1.5   |
+| Tool       | Version |
+| ---------- | ------- |
+| BCFTools   | 1.22    |
+| BEDTools   | 2.31.1  |
+| EnsemblVEP | 115.2   |
+| FastQC     | 0.12.1  |
+| GATK       | 4.6.2.0 |
+| GffRead    | 0.12.7  |
+| HTSlib     | 1.21    |
+| Mosdepth   | 0.3.10  |
+| MultiQC    | 1.31    |
+| Picard     | 3.4.0   |
+| SAMtools   | 1.22.1  |
+| Seq2HLA    | 2.3     |
+| SnpEff     | 5.3.0a  |
+| STAR       | 2.7.11b |
+| Tabix      | 1.21    |
+| UMI-tools  | 1.1.6   |
 
 ## Usage
 
