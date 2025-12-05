@@ -33,10 +33,11 @@
                     "star": "2.7.11b"
                 },
                 "TABIX_BGZIPTABIX": {
+                    "bgzip": 1.21,
                     "tabix": 1.21
                 },
                 "TABIX_TABIX": {
-                    "tabix": 1.21
+                    "tabix": "1.21"
                 }
             },
             [
@@ -125,9 +126,9 @@
         ],
         "meta": {
             "nf-test": "0.9.3",
-            "nextflow": "25.04.8"
+            "nextflow": "25.10.2"
         },
-        "timestamp": "2025-10-17T12:38:12.043875644"
+        "timestamp": "2025-12-05T12:15:16.193430279"
     },
     "-profile test --tools merge": {
         "content": [
@@ -163,10 +164,11 @@
                     "star": "2.7.11b"
                 },
                 "TABIX_BGZIPTABIX": {
+                    "bgzip": 1.21,
                     "tabix": 1.21
                 },
                 "TABIX_TABIX": {
-                    "tabix": 1.21
+                    "tabix": "1.21"
                 }
             },
             [
@@ -244,8 +246,8 @@
         ],
         "meta": {
             "nf-test": "0.9.3",
-            "nextflow": "25.04.8"
+            "nextflow": "25.10.2"
         },
-        "timestamp": "2025-10-17T12:37:26.535925527"
+        "timestamp": "2025-12-05T12:14:23.960567582"
     }
 }

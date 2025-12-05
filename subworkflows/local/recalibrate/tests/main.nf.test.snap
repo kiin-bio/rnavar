@@ -58,19 +58,14 @@
                         "RECALIBRATE:GATK4_APPLYBQSR": {
                             "gatk4": "4.6.2.0"
                         }
-                    },
-                    {
-                        "RECALIBRATE:SAMTOOLS_STATS": {
-                            "samtools": "1.22.1"
-                        }
                     }
                 ]
             }
         ],
         "meta": {
             "nf-test": "0.9.3",
-            "nextflow": "25.04.8"
+            "nextflow": "25.10.2"
         },
-        "timestamp": "2025-10-17T12:32:44.092124677"
+        "timestamp": "2025-12-05T13:36:15.022106173"
     }
 }

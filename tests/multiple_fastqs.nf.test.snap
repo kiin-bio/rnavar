@@ -76,7 +76,7 @@
                     "star": "2.7.11b"
                 },
                 "TABIX": {
-                    "tabix": 1.21
+                    "tabix": "1.21"
                 },
                 "UNTAR": {
                     "untar": 1.34
@@ -239,9 +239,9 @@
         ],
         "meta": {
             "nf-test": "0.9.3",
-            "nextflow": "25.04.8"
+            "nextflow": "25.10.2"
         },
-        "timestamp": "2025-10-20T15:16:35.140628077"
+        "timestamp": "2025-12-05T12:37:22.908299901"
     },
     "Test multiple FASTQ files pair end": {
         "content": [
@@ -320,7 +320,7 @@
                     "star": "2.7.11b"
                 },
                 "TABIX": {
-                    "tabix": 1.21
+                    "tabix": "1.21"
                 },
                 "UNTAR": {
                     "untar": 1.34
@@ -425,8 +425,8 @@
         ],
         "meta": {
             "nf-test": "0.9.3",
-            "nextflow": "25.04.8"
+            "nextflow": "25.10.2"
         },
-        "timestamp": "2025-10-17T11:14:04.309761028"
+        "timestamp": "2025-12-05T12:40:17.970854098"
     }
 }
