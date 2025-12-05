@@ -37,7 +37,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 #### Changed
 
-- [#265](https://github.com/nf-core/rnavar/pull/265) - Back to dev
+- [#266](https://github.com/nf-core/rnavar/pull/266) - Back to dev
 
 #### Fixed
 
