@@ -1,0 +1,23 @@
+{
+    "-profile test --tools vep --vep_cache_version 1": {
+        "content": [
+            [
+                "pipeline_info"
+            ],
+            "No stable content",
+            "No BAM files",
+            "No unstable recal BAM files",
+            "No CRAM files",
+            "No VCF files",
+            [
+                "This path is not available within annotation-cache.",
+                "Please check https://annotation-cache.github.io/ to create a request for it."
+            ]
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
+        },
+        "timestamp": "2025-12-11T14:47:19.415446541"
+    }
+}

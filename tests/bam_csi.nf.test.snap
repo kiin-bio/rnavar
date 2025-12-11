@@ -1,6 +1,7 @@
 {
     "-profile test --bam_csi_index": {
         "content": [
+            40,
             {
                 "CAT_FASTQ": {
                     "cat": 9.5
@@ -199,8 +200,10 @@
             ],
             [
                 "GM12878.md.bam:md5,3a9888b45f85aa1d7515e0aad8215923",
+                "GM12878.recal.bam:md5,1078c5aa688c49bc1b15aea0801cfe44",
                 "GM12878.bam:md5,3a9888b45f85aa1d7515e0aad8215923"
             ],
+            "No unstable recal BAM files",
             "No CRAM files",
             [
                 "GM12878.haplotypecaller.vcf.gz:md5,cc54a8cbfe0d47239cf12298d5da3b48"
@@ -210,6 +213,6 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2025-12-05T12:18:52.941483523"
+        "timestamp": "2025-12-10T17:42:29.759039002"
     }
 }

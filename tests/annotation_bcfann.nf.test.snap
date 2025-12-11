@@ -1,6 +1,7 @@
 {
     "-profile test --tools bcfann": {
         "content": [
+            9,
             {
                 "BCFTOOLS_ANNOTATE": {
                     "bcftools": 1.22
@@ -50,6 +51,7 @@
                 "multiqc_citations.txt:md5,4c806e63a283ec1b7e78cdae3a923d4f"
             ],
             "No BAM files",
+            "No unstable recal BAM files",
             "No CRAM files",
             [
                 "test_BCF.ann.vcf.gz:md5,bc7bf3ee9e8430e064c539eb81e59bf9"
@@ -57,12 +59,13 @@
         ],
         "meta": {
             "nf-test": "0.9.3",
-            "nextflow": "25.04.8"
+            "nextflow": "25.10.2"
         },
-        "timestamp": "2025-10-17T12:04:40.070455661"
+        "timestamp": "2025-12-11T13:23:20.185337394"
     },
     "-profile test --tools bcfann --bcftools_columns": {
         "content": [
+            9,
             {
                 "BCFTOOLS_ANNOTATE": {
                     "bcftools": 1.22
@@ -112,6 +115,7 @@
                 "multiqc_citations.txt:md5,4c806e63a283ec1b7e78cdae3a923d4f"
             ],
             "No BAM files",
+            "No unstable recal BAM files",
             "No CRAM files",
             [
                 "test_BCF.ann.vcf.gz:md5,bc7bf3ee9e8430e064c539eb81e59bf9"
@@ -119,8 +123,8 @@
         ],
         "meta": {
             "nf-test": "0.9.3",
-            "nextflow": "25.04.8"
+            "nextflow": "25.10.2"
         },
-        "timestamp": "2025-10-17T12:54:49.833026594"
+        "timestamp": "2025-12-11T13:24:03.013814545"
     }
 }

@@ -1,6 +1,7 @@
 {
     "-profile test --input all.csv": {
         "content": [
+            79,
             {
                 "CAT_FASTQ": {
                     "cat": 9.5
@@ -226,6 +227,11 @@
                 "GM12878_fastq.md.bam:md5,3a9888b45f85aa1d7515e0aad8215923",
                 "GM12878_fastq.bam:md5,3a9888b45f85aa1d7515e0aad8215923"
             ],
+            [
+                "GM12878_bam.recal.bam:stats[maxReadLength:151, minReadLength:93, meanReadLength:145, maxQuality:60, minQuality:1, meanQuality:52, readCount:185]",
+                "GM12878_cram.recal.bam:stats[maxReadLength:151, minReadLength:93, meanReadLength:145, maxQuality:60, minQuality:1, meanQuality:52, readCount:185]",
+                "GM12878_fastq.recal.bam:stats[maxReadLength:151, minReadLength:93, meanReadLength:145, maxQuality:60, minQuality:1, meanQuality:55, readCount:188]"
+            ],
             "No CRAM files",
             [
                 "GM12878_bam.haplotypecaller.filtered.vcf.gz:md5,91b7a35bf1cf66f4cd8ec164bed11152",
@@ -240,6 +246,6 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2025-12-05T12:09:50.443787702"
+        "timestamp": "2025-12-11T13:22:37.319072936"
     }
 }
