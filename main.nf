@@ -259,7 +259,10 @@ workflow {
         def multiqc_custom_methods_description = params.multiqc_methods_description ? file(params.multiqc_methods_description, checkIfExists: true) : file("${projectDir}/assets/methods_description_template.yml", checkIfExists: true)
         def methods_description = channel.value(methodsDescriptionText(multiqc_custom_methods_description))
 
-        multiqc_files = multiqc_files.mix(NFCORE_RNAVAR.out.reports)
+        multiqc_files = multiqc_files.mix(
+            channel.topic("multiqc_files").map { _meta, _process, _tool, reports -> reports },
+            NFCORE_RNAVAR.out.reports,
+        )
         multiqc_files = multiqc_files.mix(workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
         multiqc_files = multiqc_files.mix(collated_versions)
         multiqc_files = multiqc_files.mix(methods_description.collectFile(name: 'methods_description_mqc.yaml', sort: true))
@@ -291,11 +294,24 @@ workflow {
 
     publish:
     multiqc = MULTIQC.out.data.mix(MULTIQC.out.plots, MULTIQC.out.report)
+    reports = channel.topic("multiqc_files").filter { _meta, _process, tool, _file ->
+        return !(tool == 'snpeff' && !params.tools.split(',').contains('snpeff'))
+    }
 }
 
 output {
     multiqc {
         path "reports/multiqc"
+    }
+    reports {
+        path { meta, _process, tool, file ->
+            if (tool == 'ensemblvep') {
+                file >> "reports/EnsemblVEP/${meta.id}/"
+            }
+            else {
+                file >> "reports/${tool}/${meta.id}/"
+            }
+        }
     }
 }
 
