@@ -4,7 +4,7 @@
             9,
             {
                 "BCFTOOLS_ANNOTATE": {
-                    "bcftools": 1.22
+                    "bcftools": "1.22"
                 },
                 "GATK4_BEDTOINTERVALLIST": {
                     "gatk4": "4.6.2.0"
@@ -25,8 +25,6 @@
                     "samtools": "1.22.1"
                 },
                 "STAR_INDEXVERSION": {
-                    "gawk": "5.1.0",
-                    "samtools": 1.21,
                     "star": "2.7.11b"
                 }
             },
@@ -63,14 +61,14 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2026-01-14T14:43:17.06187894"
+        "timestamp": "2026-01-20T11:58:12.653954081"
     },
     "-profile test --tools bcfann --bcftools_columns": {
         "content": [
             9,
             {
                 "BCFTOOLS_ANNOTATE": {
-                    "bcftools": 1.22
+                    "bcftools": "1.22"
                 },
                 "GATK4_BEDTOINTERVALLIST": {
                     "gatk4": "4.6.2.0"
@@ -91,8 +89,6 @@
                     "samtools": "1.22.1"
                 },
                 "STAR_INDEXVERSION": {
-                    "gawk": "5.1.0",
-                    "samtools": 1.21,
                     "star": "2.7.11b"
                 }
             },
@@ -129,6 +125,6 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2026-01-14T14:43:55.475413075"
+        "timestamp": "2026-01-20T11:59:11.736947674"
     }
 }
