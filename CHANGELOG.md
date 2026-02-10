@@ -3,7 +3,7 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## dev
+## [1.2.3](https://github.com/nf-core/rnavar/releases/tag/1.2.3) - Yellow Hammer Head
 
 ### Added
 
@@ -56,6 +56,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#277](https://github.com/nf-core/rnavar/pull/277) - Continue workflow output migration with reports from snpeff and vep
 - [#280](https://github.com/nf-core/rnavar/pull/280) - Continue topics migration with all remaining modules and subworkflows
 - [#281](https://github.com/nf-core/rnavar/pull/281) - Minor code refactor, and medium usage of Nextflow autoformatting
+- [#282](https://github.com/nf-core/rnavar/pull/282) - Prepare release 1.2.3
 
 #### Fixed
 
