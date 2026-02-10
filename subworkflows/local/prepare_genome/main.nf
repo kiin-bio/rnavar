@@ -39,8 +39,6 @@ workflow PREPARE_GENOME {
     align // boolean: The pipeline needs aligner indices or not
 
     main:
-    def ch_versions = channel.empty()
-
     // Unzip reference genome files if needed
     def ch_gunzip_fasta_input = fasta.toString().endsWith('.gz')
         ? channel.fromPath(fasta).map { fasta_ -> [[id: fasta_.baseName], fasta_] }.collect()
@@ -52,12 +50,9 @@ workflow PREPARE_GENOME {
         ? GUNZIP_FASTA.out.gunzip.collect()
         : channel.fromPath(fasta).map { fasta_ -> [[id: fasta_.baseName], fasta_] }.collect()
 
-    ch_versions = ch_versions.mix(GUNZIP_FASTA.out.versions)
-
     def dict_input = dict ? channel.empty() : ch_fasta
 
     GATK4_CREATESEQUENCEDICTIONARY(dict_input)
-    ch_versions = ch_versions.mix(GATK4_CREATESEQUENCEDICTIONARY.out.versions)
 
     def ch_dict = dict
         ? channel.fromPath(dict).map { dict_ -> [[id: dict_.baseName], dict_] }.collect()
@@ -68,14 +63,12 @@ workflow PREPARE_GENOME {
         : channel.empty()
 
     GUNZIP_GTF(gtf_input)
-    ch_versions = ch_versions.mix(GUNZIP_GTF.out.versions)
 
     def ch_gffread_input = gff
         ? channel.fromPath(gff).map { gff_ -> [[id: gff_.baseName], gff_] }
         : channel.empty()
 
     GFFREAD(ch_gffread_input, ch_fasta.map { _meta, fasta_ -> fasta_ })
-    ch_versions = ch_versions.mix(GFFREAD.out.versions)
 
     def ch_gtf = gtf.toString().endsWith('.gz')
         ? GUNZIP_GTF.out.gunzip.collect()
@@ -106,14 +99,12 @@ workflow PREPARE_GENOME {
 
     if (!bcftools_annotations_tbi && bcftools_annotations && bcftools_annotations.toString().endsWith(".gz")) {
         TABIX_BCFTOOLS_ANNOTATIONS(ch_bcftools_annotations.map { vcf -> [[id: vcf.baseName], vcf] })
-        ch_bcftools_annotations_tbi = TABIX_BCFTOOLS_ANNOTATIONS.out.tbi.map { _meta, tbi -> [tbi] }.collect()
-        ch_versions = ch_versions.mix(TABIX_BCFTOOLS_ANNOTATIONS.out.versions)
+        ch_bcftools_annotations_tbi = TABIX_BCFTOOLS_ANNOTATIONS.out.index.map { _meta, tbi -> [tbi] }.collect()
     }
     else if (!bcftools_annotations_tbi && bcftools_annotations) {
         BGZIPTABIX_BCFTOOLS_ANNOTATIONS(ch_bcftools_annotations.map { vcf -> [[id: vcf.baseName], vcf] })
-        ch_bcftools_annotations = BGZIPTABIX_BCFTOOLS_ANNOTATIONS.out.gz_tbi.map { _meta, file, _index -> [file] }.collect()
-        ch_bcftools_annotations_tbi = BGZIPTABIX_BCFTOOLS_ANNOTATIONS.out.gz_tbi.map { _meta, _file, tbi -> [tbi] }.collect()
-        ch_versions = ch_versions.mix(BGZIPTABIX_BCFTOOLS_ANNOTATIONS.out.versions)
+        ch_bcftools_annotations = BGZIPTABIX_BCFTOOLS_ANNOTATIONS.out.gz_index.map { _meta, file, _index -> [file] }.collect()
+        ch_bcftools_annotations_tbi = BGZIPTABIX_BCFTOOLS_ANNOTATIONS.out.gz_index.map { _meta, _file, tbi -> [tbi] }.collect()
     }
 
     def ch_dbsnp = dbsnp
@@ -125,14 +116,12 @@ workflow PREPARE_GENOME {
 
     if (!dbsnp_tbi && dbsnp && (dbsnp.toString().endsWith(".gz") || dbsnp[0].toString().endsWith(".gz"))) {
         TABIX_DBSNP(ch_dbsnp)
-        ch_dbsnp_tbi = TABIX_DBSNP.out.tbi.map { meta, tbi -> [meta, tbi] }
-        ch_versions = ch_versions.mix(TABIX_DBSNP.out.versions)
+        ch_dbsnp_tbi = TABIX_DBSNP.out.index.map { meta, tbi -> [meta, tbi] }
     }
     else if (!dbsnp_tbi && dbsnp) {
         BGZIPTABIX_DBSNP(ch_dbsnp)
-        ch_dbsnp = BGZIPTABIX_DBSNP.out.gz_tbi.map { meta, file, _index -> [meta, file] }
-        ch_dbsnp_tbi = BGZIPTABIX_DBSNP.out.gz_tbi.map { meta, _file, tbi -> [meta, tbi] }
-        ch_versions = ch_versions.mix(BGZIPTABIX_DBSNP.out.versions)
+        ch_dbsnp = BGZIPTABIX_DBSNP.out.gz_index.map { meta, file, _index -> [meta, file] }
+        ch_dbsnp_tbi = BGZIPTABIX_DBSNP.out.gz_index.map { meta, _file, tbi -> [meta, tbi] }
     }
 
     def ch_known_indels = known_indels
@@ -144,14 +133,12 @@ workflow PREPARE_GENOME {
 
     if (!known_indels_tbi && known_indels && (known_indels.toString().endsWith(".gz") || known_indels[0].toString().endsWith(".gz"))) {
         TABIX_KNOWN_INDELS(ch_known_indels)
-        ch_known_indels_tbi = TABIX_KNOWN_INDELS.out.tbi.map { meta, tbi -> [meta, tbi] }
-        ch_versions = ch_versions.mix(TABIX_KNOWN_INDELS.out.versions)
+        ch_known_indels_tbi = TABIX_KNOWN_INDELS.out.index.map { meta, tbi -> [meta, tbi] }
     }
     else if (!known_indels_tbi && known_indels) {
         BGZIPTABIX_KNOWN_INDELS(ch_known_indels)
-        ch_known_indels = BGZIPTABIX_KNOWN_INDELS.out.gz_tbi.map { meta, file, _index -> [meta, file] }
-        ch_known_indels_tbi = BGZIPTABIX_KNOWN_INDELS.out.gz_tbi.map { meta, _file, tbi -> [meta, tbi] }
-        ch_versions = ch_versions.mix(BGZIPTABIX_KNOWN_INDELS.out.versions)
+        ch_known_indels = BGZIPTABIX_KNOWN_INDELS.out.gz_index.map { meta, file, _index -> [meta, file] }
+        ch_known_indels_tbi = BGZIPTABIX_KNOWN_INDELS.out.gz_index.map { meta, _file, tbi -> [meta, tbi] }
     }
 
     // known_sites is made by grouping both the dbsnp and the known indels resources
@@ -171,7 +158,6 @@ workflow PREPARE_GENOME {
         : ch_fasta
 
     SAMTOOLS_FAIDX(fai_input, [[id: 'no_fai'], []], false)
-    ch_versions = ch_versions.mix(SAMTOOLS_FAIDX.out.versions)
 
     def ch_fai = fasta_fai
         ? channel.fromPath(fasta_fai).map { fai_ -> [[id: fai_.baseName], fai_] }.collect()
@@ -201,10 +187,8 @@ workflow PREPARE_GENOME {
         }
 
     UNTAR(ch_star_index_input.tarzipped)
-    ch_versions = ch_versions.mix(UNTAR.out.versions)
 
     STAR_INDEXVERSION()
-    ch_versions = ch_versions.mix(STAR_INDEXVERSION.out.versions)
 
     def star_index_check = ch_star_index_input.index
         .mix(UNTAR.out.untar)
@@ -233,7 +217,6 @@ workflow PREPARE_GENOME {
         }
 
     STAR_GENOMEGENERATE(genomegenerate_input, ch_gtf)
-    ch_versions = ch_versions.mix(STAR_GENOMEGENERATE.out.versions)
 
     star_index_output = STAR_GENOMEGENERATE.out.index
         .mix(star_index_check.compatible)
@@ -254,7 +237,6 @@ workflow PREPARE_GENOME {
     known_sites      = ch_known_sites // path: {known_sites*}.vcf.gz
     known_sites_tbi  = ch_known_sites_tbi // path: {known_sites*}.vcf.gz.tbi
     star_index       = star_index_output // path: star/index/
-    versions         = ch_versions // channel: [ versions.yml ]
 }
 
 /*

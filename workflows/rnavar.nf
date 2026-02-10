@@ -4,9 +4,6 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-// local
-include { GTF2BED                   } from '../modules/local/gtf2bed'
-
 // nf-core
 include { CAT_FASTQ                 } from '../modules/nf-core/cat/fastq'
 include { FASTQC                    } from '../modules/nf-core/fastqc'
@@ -14,22 +11,21 @@ include { GATK4_BASERECALIBRATOR    } from '../modules/nf-core/gatk4/baserecalib
 include { GATK4_BEDTOINTERVALLIST   } from '../modules/nf-core/gatk4/bedtointervallist'
 include { GATK4_COMBINEGVCFS        } from '../modules/nf-core/gatk4/combinegvcfs'
 include { GATK4_HAPLOTYPECALLER     } from '../modules/nf-core/gatk4/haplotypecaller'
-include { GATK4_INDEXFEATUREFILE    } from '../modules/nf-core/gatk4/indexfeaturefile'
 include { GATK4_INTERVALLISTTOOLS   } from '../modules/nf-core/gatk4/intervallisttools'
 include { GATK4_MERGEVCFS           } from '../modules/nf-core/gatk4/mergevcfs'
 include { GATK4_VARIANTFILTRATION   } from '../modules/nf-core/gatk4/variantfiltration'
+include { MOSDEPTH                  } from '../modules/nf-core/mosdepth'
 include { MULTIQC                   } from '../modules/nf-core/multiqc'
-include { SAMTOOLS_INDEX            } from '../modules/nf-core/samtools/index'
 include { SEQ2HLA                   } from '../modules/nf-core/seq2hla/main'
 include { TABIX_TABIX as TABIX      } from '../modules/nf-core/tabix/tabix'
 include { TABIX_TABIX as TABIXGVCF  } from '../modules/nf-core/tabix/tabix'
 include { UMITOOLS_EXTRACT          } from '../modules/nf-core/umitools/extract'
 
 // local
+include { PREPARE_ALIGNMENT         } from '../subworkflows/local/prepare_alignment'
 include { RECALIBRATE               } from '../subworkflows/local/recalibrate'
 include { SPLITNCIGAR               } from '../subworkflows/local/splitncigar'
 include { VCF_ANNOTATE_ALL          } from '../subworkflows/local/vcf_annotate_all'
-include { PREPARE_ALIGNMENT         } from '../subworkflows/local/prepare_alignment'
 
 // nf-core
 include { BAM_MARKDUPLICATES_PICARD } from '../subworkflows/nf-core/bam_markduplicates_picard'
@@ -87,7 +83,6 @@ workflow RNAVAR {
 
     // To gather all QC reports and versions for MultiQC
     reports = channel.empty()
-    versions = channel.empty()
 
     // Parse the input data
     parsed_input = input
@@ -111,19 +106,21 @@ workflow RNAVAR {
         parsed_input.cram,
         parsed_input.bam,
     )
-    versions = versions.mix(PREPARE_ALIGNMENT.out.versions)
+
+    MOSDEPTH(parsed_input.cram.map { meta, cram, crai -> [meta, cram, crai, []] }, fasta)
+
+    // Gather all reports generated
+    reports = reports.mix(MOSDEPTH.out.global_txt.map { _meta, reports_ -> [reports_] })
+    reports = reports.mix(MOSDEPTH.out.regions_txt.map { _meta, reports_ -> [reports_] })
 
     // MODULE: Concatenate FastQ files from same sample if required
     CAT_FASTQ(parsed_input.multiple)
 
     def cat_fastq = CAT_FASTQ.out.reads.mix(parsed_input.single)
 
-    versions = versions.mix(CAT_FASTQ.out.versions)
-
     // MODULE: Generate QC summary using FastQC
     FASTQC(cat_fastq)
     reports = reports.mix(FASTQC.out.zip.collect { _meta, logs -> logs })
-    versions = versions.mix(FASTQC.out.versions)
 
     // MODULE: Extract UMIs from reads
 
@@ -132,7 +129,6 @@ workflow RNAVAR {
         UMITOOLS_EXTRACT(
             cat_fastq
         )
-        versions = versions.mix(UMITOOLS_EXTRACT.out.versions)
         umi_extracted_reads = UMITOOLS_EXTRACT.out.reads
     }
     else {
@@ -143,14 +139,12 @@ workflow RNAVAR {
 
     GATK4_BEDTOINTERVALLIST(exon_bed, dict)
     def interval_list = GATK4_BEDTOINTERVALLIST.out.interval_list
-    versions = versions.mix(GATK4_BEDTOINTERVALLIST.out.versions)
 
     // MODULE: Scatter one interval-list into many interval-files using GATK4 IntervalListTools
     def interval_list_split = channel.empty()
     if (!skip_intervallisttools) {
         GATK4_INTERVALLISTTOOLS(interval_list)
         interval_list_split = GATK4_INTERVALLISTTOOLS.out.interval_list.map { _meta, bed -> [bed] }.collect()
-        versions = versions.mix(GATK4_INTERVALLISTTOOLS.out.versions)
     }
     else {
         interval_list_split = interval_list.map { _meta, bed -> bed }
@@ -159,7 +153,6 @@ workflow RNAVAR {
     // MODULE: HLATyping with Seq2HLA
     if (tools.contains('seq2hla')) {
         SEQ2HLA(umi_extracted_reads)
-        versions = versions.mix(SEQ2HLA.out.versions)
     }
 
     // SUBWORKFLOW: Perform read alignment using STAR aligner
@@ -182,7 +175,6 @@ workflow RNAVAR {
         // Gather QC reports
         reports = reports.mix(FASTQ_ALIGN_STAR.out.log_out.collect { _meta, log -> log })
         reports = reports.mix(FASTQ_ALIGN_STAR.out.log_final.collect { _meta, log -> log }.ifEmpty([]))
-        versions = versions.mix(FASTQ_ALIGN_STAR.out.versions)
 
         // SUBWORKFLOW: Mark duplicates with GATK4
         BAM_MARKDUPLICATES_PICARD(
@@ -204,7 +196,6 @@ workflow RNAVAR {
         reports = reports.mix(BAM_MARKDUPLICATES_PICARD.out.stats.collect { _meta, log -> log }.ifEmpty([]))
         reports = reports.mix(BAM_MARKDUPLICATES_PICARD.out.flagstat.collect { _meta, log -> log }.ifEmpty([]))
         reports = reports.mix(BAM_MARKDUPLICATES_PICARD.out.idxstats.collect { _meta, log -> log }.ifEmpty([]))
-        versions = versions.mix(BAM_MARKDUPLICATES_PICARD.out.versions)
 
         // SUBWORKFLOW: SplitNCigarReads from GATK4 over the intervals
         // Splits reads that contain Ns in their cigar string(e.g. spanning splicing events in RNAseq data).
@@ -218,7 +209,6 @@ workflow RNAVAR {
         )
 
         def splitncigar_bam_bai = SPLITNCIGAR.out.bam_bai
-        versions = versions.mix(SPLITNCIGAR.out.versions)
 
         // MODULE: BaseRecalibrator from GATK4
         // Generates a recalibration table based on various co-variates
@@ -240,7 +230,6 @@ workflow RNAVAR {
 
             // Gather QC reports
             reports = reports.mix(bqsr_table.map { _meta, table -> table })
-            versions = versions.mix(GATK4_BASERECALIBRATOR.out.versions)
 
             def bam_applybqsr = splitncigar_bam_bai.join(bqsr_table)
 
@@ -263,7 +252,6 @@ workflow RNAVAR {
 
             // Gather QC reports
             reports = reports.mix(RECALIBRATE.out.qc.collect { _meta, log_out -> log_out }.ifEmpty([]))
-            versions = versions.mix(RECALIBRATE.out.versions)
         }
         else {
             bam_variant_calling = splitncigar_bam_bai
@@ -298,7 +286,6 @@ workflow RNAVAR {
             }
             .groupTuple()
 
-        versions = versions.mix(GATK4_HAPLOTYPECALLER.out.versions)
 
         def haplotypecaller_vcf = channel.empty()
         if (!generate_gvcf) {
@@ -310,17 +297,11 @@ workflow RNAVAR {
                 dict,
             )
             haplotypecaller_vcf = GATK4_MERGEVCFS.out.vcf
-            versions = versions.mix(GATK4_MERGEVCFS.out.versions)
 
             // MODULE: Index the VCF using TABIX
-            TABIX(
-                haplotypecaller_vcf
-            )
-            versions = versions.mix(TABIX.out.versions)
+            TABIX(haplotypecaller_vcf)
 
-            def haplotypecaller_indices = TABIX.out.tbi.mix(TABIX.out.csi)
-
-            def haplotypecaller_vcf_tbi = haplotypecaller_vcf.join(haplotypecaller_indices, failOnDuplicate: true, failOnMismatch: true)
+            def haplotypecaller_vcf_tbi = haplotypecaller_vcf.join(TABIX.out.index, failOnDuplicate: true, failOnMismatch: true)
 
             def final_vcf = channel.empty()
 
@@ -338,7 +319,6 @@ workflow RNAVAR {
 
                 def filtered_vcf = GATK4_VARIANTFILTRATION.out.vcf
                 final_vcf = filtered_vcf
-                versions = versions.mix(GATK4_VARIANTFILTRATION.out.versions)
             }
             else {
                 final_vcf = haplotypecaller_vcf
@@ -365,10 +345,6 @@ workflow RNAVAR {
                     bcftools_columns,
                     bcftools_header_lines,
                 )
-
-                // Gather used softwares versions
-                versions = versions.mix(VCF_ANNOTATE_ALL.out.versions)
-                reports = reports.mix(VCF_ANNOTATE_ALL.out.reports)
             }
         }
         else {
@@ -382,16 +358,12 @@ workflow RNAVAR {
                 dict.map { _meta, dict_ -> dict_ },
             )
             def haplotypecaller_gvcf = GATK4_COMBINEGVCFS.out.combined_gvcf
-            versions = versions.mix(GATK4_COMBINEGVCFS.out.versions)
 
             // MODULE: Index the VCF using TABIX
             TABIXGVCF(haplotypecaller_gvcf)
-
-            versions = versions.mix(TABIXGVCF.out.versions)
         }
     }
 
     emit:
-    reports  = reports // channel: qc reports for multiQC
-    versions = versions // channel: [ path(versions.yml) ]
+    reports // channel: qc reports for multiQC
 }

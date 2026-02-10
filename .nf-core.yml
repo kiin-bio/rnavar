@@ -1,7 +1,9 @@
 lint:
   nf_test_content: false
   schema_params: false
-nf_core_version: 3.5.1
+  files_unchanged:
+    - .github/workflows/linting.yml
+nf_core_version: 3.5.2
 repository_type: pipeline
 template:
   author: Praveen Raj, Maxime U Garcia, Nicolas Vannieuwkerke
@@ -11,4 +13,4 @@ template:
   name: rnavar
   org: nf-core
   outdir: .
-  version: 1.2.2
+  version: 1.2.3

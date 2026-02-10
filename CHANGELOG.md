@@ -3,6 +3,69 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.3](https://github.com/nf-core/rnavar/releases/tag/1.2.3) - Yellow Hammer Head
+
+### Added
+
+### Changed
+
+- [#269](https://github.com/nf-core/rnavar/pull/269) - Update MultiQC to 1.33
+
+### Fixed
+
+- [#273](https://github.com/nf-core/rnavar/pull/273) - Rescue mosdepth usage for input cram file
+- [#275](https://github.com/nf-core/rnavar/pull/275) - Update docs for pipeline output files
+- [#275](https://github.com/nf-core/rnavar/pull/275) - Rescue markduplicates metrics file publication
+
+### Dependencies
+
+| Dependency | Old version | New version |
+| ---------- | ----------- | ----------- |
+| multiqc    | 1.31        | 1.33        |
+| snpeff     | 5.3.0       | 5.4.0       |
+
+### Parameter
+
+| Old name | New name |
+| -------- | -------- |
+
+### Modules / Subworkflows
+
+| Dependency | Old name | New name |
+| ---------- | -------- | -------- |
+
+### Plugins
+
+| Dependency | Old version | New version |
+| ---------- | ----------- | ----------- |
+
+### Developer section
+
+#### Added
+
+- [#274](https://github.com/nf-core/rnavar/pull/274) - Add Nextflow lint test to GHA
+- [#279](https://github.com/nf-core/rnavar/pull/279) - Add test for Nextflow strict syntax v2 mode
+
+#### Changed
+
+- [#266](https://github.com/nf-core/rnavar/pull/266) - Back to dev
+- [#267](https://github.com/nf-core/rnavar/pull/267) - Update modules (some topics update) and versions in all docs
+- [#268](https://github.com/nf-core/rnavar/pull/268) - Refactor nf-test pipeline tests suite using custom lib
+- [#269](https://github.com/nf-core/rnavar/pull/269) - More topics updates
+- [#270](https://github.com/nf-core/rnavar/pull/270) - Always capture warnings in snapshots
+- [#272](https://github.com/nf-core/rnavar/pull/272) - Continue topics migration
+- [#275](https://github.com/nf-core/rnavar/pull/275) - Starting workflow output migration with multiqc
+- [#277](https://github.com/nf-core/rnavar/pull/277) - Continue workflow output migration with reports from snpeff and vep
+- [#280](https://github.com/nf-core/rnavar/pull/280) - Continue topics migration with all remaining modules and subworkflows
+- [#281](https://github.com/nf-core/rnavar/pull/281) - Minor code refactor, and medium usage of Nextflow autoformatting
+- [#282](https://github.com/nf-core/rnavar/pull/282) - Prepare release 1.2.3
+
+#### Fixed
+
+- [#278](https://github.com/nf-core/rnavar/pull/278) - Fix --help with Nextflow strict syntax v2 mode
+
+#### Removed
+
 ## [1.2.2](https://github.com/nf-core/rnavar/releases/tag/1.2.2) - Gray Red Tail
 
 ### Added

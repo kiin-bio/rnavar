@@ -1,10 +1,12 @@
 {
     "-profile test --tools merge,snpeff,vep": {
         "content": [
+            12,
             {
                 "ENSEMBLVEP_VEP": {
-                    "ensemblvep": 115.2,
-                    "tabix": 1.21
+                    "ensemblvep": "115.2",
+                    "perl-math-cdf": "0.1",
+                    "tabix": "1.21"
                 },
                 "GATK4_BEDTOINTERVALLIST": {
                     "gatk4": "4.6.2.0"
@@ -25,18 +27,14 @@
                     "samtools": "1.22.1"
                 },
                 "SNPEFF_SNPEFF": {
-                    "snpeff": "5.3a"
+                    "snpeff": "5.4a"
                 },
                 "STAR_INDEXVERSION": {
-                    "gawk": "5.1.0",
-                    "samtools": 1.21,
                     "star": "2.7.11b"
                 },
                 "TABIX_BGZIPTABIX": {
-                    "tabix": 1.21
-                },
-                "TABIX_TABIX": {
-                    "tabix": 1.21
+                    "bgzip": "1.21",
+                    "tabix": "1.21"
                 }
             },
             [
@@ -51,54 +49,55 @@
                 "pipeline_info",
                 "pipeline_info/nf_core_rnavar_software_mqc_versions.yml",
                 "reports",
-                "reports/EnsemblVEP",
-                "reports/EnsemblVEP/test",
-                "reports/EnsemblVEP/test/test_VEP.ann.summary.html",
-                "reports/EnsemblVEP/test/test_snpEff_VEP.ann.summary.html",
-                "reports/multiqc_data",
-                "reports/multiqc_data/llms-full.txt",
-                "reports/multiqc_data/multiqc.log",
-                "reports/multiqc_data/multiqc.parquet",
-                "reports/multiqc_data/multiqc_citations.txt",
-                "reports/multiqc_data/multiqc_data.json",
-                "reports/multiqc_data/multiqc_general_stats.txt",
-                "reports/multiqc_data/multiqc_snpeff.txt",
-                "reports/multiqc_data/multiqc_software_versions.txt",
-                "reports/multiqc_data/multiqc_sources.txt",
-                "reports/multiqc_data/snpeff_effects.txt",
-                "reports/multiqc_data/snpeff_qualities.txt",
-                "reports/multiqc_data/snpeff_variant_effects_region.txt",
-                "reports/multiqc_data/vep-general-stats.txt",
-                "reports/multiqc_data/vep.txt",
-                "reports/multiqc_plots",
-                "reports/multiqc_plots/pdf",
-                "reports/multiqc_plots/pdf/snpeff_effects-cnt.pdf",
-                "reports/multiqc_plots/pdf/snpeff_effects-pct.pdf",
-                "reports/multiqc_plots/pdf/snpeff_qualities.pdf",
-                "reports/multiqc_plots/pdf/snpeff_variant_effects_region-cnt.pdf",
-                "reports/multiqc_plots/pdf/snpeff_variant_effects_region-log.pdf",
-                "reports/multiqc_plots/pdf/snpeff_variant_effects_region-pct-log.pdf",
-                "reports/multiqc_plots/pdf/snpeff_variant_effects_region-pct.pdf",
-                "reports/multiqc_plots/pdf/vep-general-stats.pdf",
-                "reports/multiqc_plots/png",
-                "reports/multiqc_plots/png/snpeff_effects-cnt.png",
-                "reports/multiqc_plots/png/snpeff_effects-pct.png",
-                "reports/multiqc_plots/png/snpeff_qualities.png",
-                "reports/multiqc_plots/png/snpeff_variant_effects_region-cnt.png",
-                "reports/multiqc_plots/png/snpeff_variant_effects_region-log.png",
-                "reports/multiqc_plots/png/snpeff_variant_effects_region-pct-log.png",
-                "reports/multiqc_plots/png/snpeff_variant_effects_region-pct.png",
-                "reports/multiqc_plots/png/vep-general-stats.png",
-                "reports/multiqc_plots/svg",
-                "reports/multiqc_plots/svg/snpeff_effects-cnt.svg",
-                "reports/multiqc_plots/svg/snpeff_effects-pct.svg",
-                "reports/multiqc_plots/svg/snpeff_qualities.svg",
-                "reports/multiqc_plots/svg/snpeff_variant_effects_region-cnt.svg",
-                "reports/multiqc_plots/svg/snpeff_variant_effects_region-log.svg",
-                "reports/multiqc_plots/svg/snpeff_variant_effects_region-pct-log.svg",
-                "reports/multiqc_plots/svg/snpeff_variant_effects_region-pct.svg",
-                "reports/multiqc_plots/svg/vep-general-stats.svg",
-                "reports/multiqc_report.html",
+                "reports/ensemblvep",
+                "reports/ensemblvep/test",
+                "reports/ensemblvep/test/test_VEP.ann.summary.html",
+                "reports/ensemblvep/test/test_snpEff_VEP.ann.summary.html",
+                "reports/multiqc",
+                "reports/multiqc/multiqc_data",
+                "reports/multiqc/multiqc_data/llms-full.txt",
+                "reports/multiqc/multiqc_data/multiqc.log",
+                "reports/multiqc/multiqc_data/multiqc.parquet",
+                "reports/multiqc/multiqc_data/multiqc_citations.txt",
+                "reports/multiqc/multiqc_data/multiqc_data.json",
+                "reports/multiqc/multiqc_data/multiqc_general_stats.txt",
+                "reports/multiqc/multiqc_data/multiqc_snpeff.txt",
+                "reports/multiqc/multiqc_data/multiqc_software_versions.txt",
+                "reports/multiqc/multiqc_data/multiqc_sources.txt",
+                "reports/multiqc/multiqc_data/snpeff_effects.txt",
+                "reports/multiqc/multiqc_data/snpeff_qualities.txt",
+                "reports/multiqc/multiqc_data/snpeff_variant_effects_region.txt",
+                "reports/multiqc/multiqc_data/vep-general-stats.txt",
+                "reports/multiqc/multiqc_data/vep.txt",
+                "reports/multiqc/multiqc_plots",
+                "reports/multiqc/multiqc_plots/pdf",
+                "reports/multiqc/multiqc_plots/pdf/snpeff_effects-cnt.pdf",
+                "reports/multiqc/multiqc_plots/pdf/snpeff_effects-pct.pdf",
+                "reports/multiqc/multiqc_plots/pdf/snpeff_qualities.pdf",
+                "reports/multiqc/multiqc_plots/pdf/snpeff_variant_effects_region-cnt.pdf",
+                "reports/multiqc/multiqc_plots/pdf/snpeff_variant_effects_region-log.pdf",
+                "reports/multiqc/multiqc_plots/pdf/snpeff_variant_effects_region-pct-log.pdf",
+                "reports/multiqc/multiqc_plots/pdf/snpeff_variant_effects_region-pct.pdf",
+                "reports/multiqc/multiqc_plots/pdf/vep-general-stats.pdf",
+                "reports/multiqc/multiqc_plots/png",
+                "reports/multiqc/multiqc_plots/png/snpeff_effects-cnt.png",
+                "reports/multiqc/multiqc_plots/png/snpeff_effects-pct.png",
+                "reports/multiqc/multiqc_plots/png/snpeff_qualities.png",
+                "reports/multiqc/multiqc_plots/png/snpeff_variant_effects_region-cnt.png",
+                "reports/multiqc/multiqc_plots/png/snpeff_variant_effects_region-log.png",
+                "reports/multiqc/multiqc_plots/png/snpeff_variant_effects_region-pct-log.png",
+                "reports/multiqc/multiqc_plots/png/snpeff_variant_effects_region-pct.png",
+                "reports/multiqc/multiqc_plots/png/vep-general-stats.png",
+                "reports/multiqc/multiqc_plots/svg",
+                "reports/multiqc/multiqc_plots/svg/snpeff_effects-cnt.svg",
+                "reports/multiqc/multiqc_plots/svg/snpeff_effects-pct.svg",
+                "reports/multiqc/multiqc_plots/svg/snpeff_qualities.svg",
+                "reports/multiqc/multiqc_plots/svg/snpeff_variant_effects_region-cnt.svg",
+                "reports/multiqc/multiqc_plots/svg/snpeff_variant_effects_region-log.svg",
+                "reports/multiqc/multiqc_plots/svg/snpeff_variant_effects_region-pct-log.svg",
+                "reports/multiqc/multiqc_plots/svg/snpeff_variant_effects_region-pct.svg",
+                "reports/multiqc/multiqc_plots/svg/vep-general-stats.svg",
+                "reports/multiqc/multiqc_report.html",
                 "reports/snpeff",
                 "reports/snpeff/test",
                 "reports/snpeff/test/snpEff_summary.html",
@@ -116,25 +115,29 @@
                 "test_snpEff.genes.txt:md5,130536bf0237d7f3f746d32aaa32840a"
             ],
             "No BAM files",
+            "No unstable recal BAM files",
             "No CRAM files",
             [
                 "test_VEP.ann.vcf.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "test_snpEff.ann.vcf.gz:md5,fd266e623365c7d1837bc9eb088fe70c",
                 "test_snpEff_VEP.ann.vcf.gz:md5,d41d8cd98f00b204e9800998ecf8427e"
-            ]
+            ],
+            "No warnings"
         ],
         "meta": {
             "nf-test": "0.9.3",
-            "nextflow": "25.04.8"
+            "nextflow": "25.10.3"
         },
-        "timestamp": "2025-10-17T12:38:12.043875644"
+        "timestamp": "2026-02-09T11:47:46.898860143"
     },
     "-profile test --tools merge": {
         "content": [
+            11,
             {
                 "ENSEMBLVEP_VEP": {
-                    "ensemblvep": 115.2,
-                    "tabix": 1.21
+                    "ensemblvep": "115.2",
+                    "perl-math-cdf": "0.1",
+                    "tabix": "1.21"
                 },
                 "GATK4_BEDTOINTERVALLIST": {
                     "gatk4": "4.6.2.0"
@@ -155,18 +158,14 @@
                     "samtools": "1.22.1"
                 },
                 "SNPEFF_SNPEFF": {
-                    "snpeff": "5.3a"
+                    "snpeff": "5.4a"
                 },
                 "STAR_INDEXVERSION": {
-                    "gawk": "5.1.0",
-                    "samtools": 1.21,
                     "star": "2.7.11b"
                 },
                 "TABIX_BGZIPTABIX": {
-                    "tabix": 1.21
-                },
-                "TABIX_TABIX": {
-                    "tabix": 1.21
+                    "bgzip": "1.21",
+                    "tabix": "1.21"
                 }
             },
             [
@@ -177,55 +176,54 @@
                 "pipeline_info",
                 "pipeline_info/nf_core_rnavar_software_mqc_versions.yml",
                 "reports",
-                "reports/EnsemblVEP",
-                "reports/EnsemblVEP/test",
-                "reports/EnsemblVEP/test/test_snpEff_VEP.ann.summary.html",
-                "reports/multiqc_data",
-                "reports/multiqc_data/llms-full.txt",
-                "reports/multiqc_data/multiqc.log",
-                "reports/multiqc_data/multiqc.parquet",
-                "reports/multiqc_data/multiqc_citations.txt",
-                "reports/multiqc_data/multiqc_data.json",
-                "reports/multiqc_data/multiqc_general_stats.txt",
-                "reports/multiqc_data/multiqc_snpeff.txt",
-                "reports/multiqc_data/multiqc_software_versions.txt",
-                "reports/multiqc_data/multiqc_sources.txt",
-                "reports/multiqc_data/snpeff_effects.txt",
-                "reports/multiqc_data/snpeff_qualities.txt",
-                "reports/multiqc_data/snpeff_variant_effects_region.txt",
-                "reports/multiqc_data/vep-general-stats.txt",
-                "reports/multiqc_data/vep.txt",
-                "reports/multiqc_plots",
-                "reports/multiqc_plots/pdf",
-                "reports/multiqc_plots/pdf/snpeff_effects-cnt.pdf",
-                "reports/multiqc_plots/pdf/snpeff_effects-pct.pdf",
-                "reports/multiqc_plots/pdf/snpeff_qualities.pdf",
-                "reports/multiqc_plots/pdf/snpeff_variant_effects_region-cnt.pdf",
-                "reports/multiqc_plots/pdf/snpeff_variant_effects_region-log.pdf",
-                "reports/multiqc_plots/pdf/snpeff_variant_effects_region-pct-log.pdf",
-                "reports/multiqc_plots/pdf/snpeff_variant_effects_region-pct.pdf",
-                "reports/multiqc_plots/pdf/vep-general-stats.pdf",
-                "reports/multiqc_plots/png",
-                "reports/multiqc_plots/png/snpeff_effects-cnt.png",
-                "reports/multiqc_plots/png/snpeff_effects-pct.png",
-                "reports/multiqc_plots/png/snpeff_qualities.png",
-                "reports/multiqc_plots/png/snpeff_variant_effects_region-cnt.png",
-                "reports/multiqc_plots/png/snpeff_variant_effects_region-log.png",
-                "reports/multiqc_plots/png/snpeff_variant_effects_region-pct-log.png",
-                "reports/multiqc_plots/png/snpeff_variant_effects_region-pct.png",
-                "reports/multiqc_plots/png/vep-general-stats.png",
-                "reports/multiqc_plots/svg",
-                "reports/multiqc_plots/svg/snpeff_effects-cnt.svg",
-                "reports/multiqc_plots/svg/snpeff_effects-pct.svg",
-                "reports/multiqc_plots/svg/snpeff_qualities.svg",
-                "reports/multiqc_plots/svg/snpeff_variant_effects_region-cnt.svg",
-                "reports/multiqc_plots/svg/snpeff_variant_effects_region-log.svg",
-                "reports/multiqc_plots/svg/snpeff_variant_effects_region-pct-log.svg",
-                "reports/multiqc_plots/svg/snpeff_variant_effects_region-pct.svg",
-                "reports/multiqc_plots/svg/vep-general-stats.svg",
-                "reports/multiqc_report.html",
-                "reports/snpeff",
-                "reports/snpeff/test"
+                "reports/ensemblvep",
+                "reports/ensemblvep/test",
+                "reports/ensemblvep/test/test_snpEff_VEP.ann.summary.html",
+                "reports/multiqc",
+                "reports/multiqc/multiqc_data",
+                "reports/multiqc/multiqc_data/llms-full.txt",
+                "reports/multiqc/multiqc_data/multiqc.log",
+                "reports/multiqc/multiqc_data/multiqc.parquet",
+                "reports/multiqc/multiqc_data/multiqc_citations.txt",
+                "reports/multiqc/multiqc_data/multiqc_data.json",
+                "reports/multiqc/multiqc_data/multiqc_general_stats.txt",
+                "reports/multiqc/multiqc_data/multiqc_snpeff.txt",
+                "reports/multiqc/multiqc_data/multiqc_software_versions.txt",
+                "reports/multiqc/multiqc_data/multiqc_sources.txt",
+                "reports/multiqc/multiqc_data/snpeff_effects.txt",
+                "reports/multiqc/multiqc_data/snpeff_qualities.txt",
+                "reports/multiqc/multiqc_data/snpeff_variant_effects_region.txt",
+                "reports/multiqc/multiqc_data/vep-general-stats.txt",
+                "reports/multiqc/multiqc_data/vep.txt",
+                "reports/multiqc/multiqc_plots",
+                "reports/multiqc/multiqc_plots/pdf",
+                "reports/multiqc/multiqc_plots/pdf/snpeff_effects-cnt.pdf",
+                "reports/multiqc/multiqc_plots/pdf/snpeff_effects-pct.pdf",
+                "reports/multiqc/multiqc_plots/pdf/snpeff_qualities.pdf",
+                "reports/multiqc/multiqc_plots/pdf/snpeff_variant_effects_region-cnt.pdf",
+                "reports/multiqc/multiqc_plots/pdf/snpeff_variant_effects_region-log.pdf",
+                "reports/multiqc/multiqc_plots/pdf/snpeff_variant_effects_region-pct-log.pdf",
+                "reports/multiqc/multiqc_plots/pdf/snpeff_variant_effects_region-pct.pdf",
+                "reports/multiqc/multiqc_plots/pdf/vep-general-stats.pdf",
+                "reports/multiqc/multiqc_plots/png",
+                "reports/multiqc/multiqc_plots/png/snpeff_effects-cnt.png",
+                "reports/multiqc/multiqc_plots/png/snpeff_effects-pct.png",
+                "reports/multiqc/multiqc_plots/png/snpeff_qualities.png",
+                "reports/multiqc/multiqc_plots/png/snpeff_variant_effects_region-cnt.png",
+                "reports/multiqc/multiqc_plots/png/snpeff_variant_effects_region-log.png",
+                "reports/multiqc/multiqc_plots/png/snpeff_variant_effects_region-pct-log.png",
+                "reports/multiqc/multiqc_plots/png/snpeff_variant_effects_region-pct.png",
+                "reports/multiqc/multiqc_plots/png/vep-general-stats.png",
+                "reports/multiqc/multiqc_plots/svg",
+                "reports/multiqc/multiqc_plots/svg/snpeff_effects-cnt.svg",
+                "reports/multiqc/multiqc_plots/svg/snpeff_effects-pct.svg",
+                "reports/multiqc/multiqc_plots/svg/snpeff_qualities.svg",
+                "reports/multiqc/multiqc_plots/svg/snpeff_variant_effects_region-cnt.svg",
+                "reports/multiqc/multiqc_plots/svg/snpeff_variant_effects_region-log.svg",
+                "reports/multiqc/multiqc_plots/svg/snpeff_variant_effects_region-pct-log.svg",
+                "reports/multiqc/multiqc_plots/svg/snpeff_variant_effects_region-pct.svg",
+                "reports/multiqc/multiqc_plots/svg/vep-general-stats.svg",
+                "reports/multiqc/multiqc_report.html"
             ],
             [
                 "multiqc_citations.txt:md5,ebf9f49bc020eeb38546ddab3a98171e",
@@ -237,15 +235,17 @@
                 "vep.txt:md5,bf54f689bb0ccab5e1566e48373f768c"
             ],
             "No BAM files",
+            "No unstable recal BAM files",
             "No CRAM files",
             [
                 "test_snpEff_VEP.ann.vcf.gz:md5,d41d8cd98f00b204e9800998ecf8427e"
-            ]
+            ],
+            "No warnings"
         ],
         "meta": {
             "nf-test": "0.9.3",
-            "nextflow": "25.04.8"
+            "nextflow": "25.10.3"
         },
-        "timestamp": "2025-10-17T12:37:26.535925527"
+        "timestamp": "2026-02-09T11:47:04.670461053"
     }
 }
