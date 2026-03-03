@@ -42,12 +42,9 @@ workflow SPLITNCIGAR {
         }
         .groupTuple()
 
-    SAMTOOLS_MERGE(
-        bam_splitncigar_interval,
-        fasta,
-        fai,
-        [[:], []],
-    )
+    def fasta_fai_gzi = fasta.join(fai).map { meta, _fasta, _fai -> [meta, _fasta, _fai, []] }
+
+    SAMTOOLS_MERGE(bam_splitncigar_interval, fasta_fai_gzi)
 
     def splitncigar_bam = SAMTOOLS_MERGE.out.bam
 
