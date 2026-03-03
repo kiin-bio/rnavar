@@ -186,11 +186,11 @@
             ],
             "No warnings"
         ],
+        "timestamp": "2026-02-06T11:28:50.106966082",
         "meta": {
             "nf-test": "0.9.3",
             "nextflow": "25.10.3"
-        },
-        "timestamp": "2026-02-06T11:28:50.106966082"
+        }
     },
     "-profile test --input fastq_multiple.csv": {
         "content": [
@@ -441,10 +441,10 @@
             ],
             "No warnings"
         ],
+        "timestamp": "2026-03-03T14:03:47.834268968",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.3"
-        },
-        "timestamp": "2026-02-06T11:25:17.935544621"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
+        }
     }
 }
