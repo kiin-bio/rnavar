@@ -18,13 +18,15 @@ workflow SPLITNCIGAR {
     def bam_interval = bam
         .combine(intervals)
         .map { meta, bam_, bai, intervals_ ->
-            def new_meta = meta + [interval_count: intervals_ instanceof List ? intervals_.size() : 1]
-            [new_meta, bam_, bai, new_meta.interval_count > 1 ? intervals_ : [intervals_]]
+            [
+                meta + [interval_count: intervals_ instanceof List ? intervals_.size() : 1],
+                bam_,
+                bai,
+                intervals_ instanceof List ? intervals_ : [intervals_],
+            ]
         }
         .transpose(by: 3)
-        .map { meta, bam_, bai, interval ->
-            [meta + [id: "${meta.id}_${interval.baseName}", sample: meta.id], bam_, bai, interval]
-        }
+        .map { meta, bam_, bai, interval -> [meta + [id: "${meta.id}_${interval.baseName}", sample: meta.id], bam_, bai, interval] }
 
     GATK4_SPLITNCIGARREADS(
         bam_interval,
@@ -36,11 +38,9 @@ workflow SPLITNCIGAR {
     def bam_splitncigar = GATK4_SPLITNCIGARREADS.out.bam
 
     def bam_splitncigar_interval = bam_splitncigar
-        .map { meta, bam_ ->
-            def new_meta = meta + [id: meta.sample] - meta.subMap('sample') - meta.subMap('interval_count')
-            [groupKey(new_meta, meta.interval_count), bam_]
-        }
+        .map { meta, bam_ -> [groupKey(meta + [id: meta.sample] - meta.subMap('sample') - meta.subMap('interval_count'), meta.interval_count), bam_] }
         .groupTuple()
+        .map { meta, bam_ -> [meta, bam_, []] }
 
     SAMTOOLS_MERGE(
         bam_splitncigar_interval,
