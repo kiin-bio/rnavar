@@ -87,7 +87,7 @@ workflow PREPARE_GENOME {
 
     def ch_remove_unknown_regions_input = !skip_exon_bed_check ? ch_exon_bed_input : channel.empty()
 
-    REMOVE_UNKNOWN_REGIONS(ch_remove_unknown_regions_input, ch_dict)
+    REMOVE_UNKNOWN_REGIONS(ch_remove_unknown_regions_input.join(ch_dict))
 
     def ch_exon_bed = skip_exon_bed_check ? REMOVE_UNKNOWN_REGIONS.out.bed.flatten() : ch_exon_bed_input
 

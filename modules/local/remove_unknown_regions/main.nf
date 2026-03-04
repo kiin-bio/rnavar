@@ -8,8 +8,7 @@ process REMOVE_UNKNOWN_REGIONS {
         : 'biocontainers/python:3.8.3'}"
 
     input:
-    tuple val(meta), path(bed)
-    tuple val(meta2), path(dict)
+    tuple val(meta), path(bed), path(dict)
 
     output:
     tuple val(meta), path('*.bed'), emit: bed

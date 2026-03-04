@@ -10,11 +10,8 @@ nextflow_process {
             process {
                 """
                 input[0] = Channel.value([
-                    [id:'exon_bed'],
-                    file(params.modules_testdata_base_path + '/genomics/homo_sapiens/genome/genome.bed', checkIfExists: true)
-                ])
-                input[1] = Channel.value([
-                    [id:'dict'],
+                    [id:'genome'],
+                    file(params.modules_testdata_base_path + '/genomics/homo_sapiens/genome/genome.bed', checkIfExists: true),
                     file(params.pipelines_testdata_base_path + '/genomics/homo_sapiens/genome/genome.dict', checkIfExists: true)
                 ])
                 """
@@ -35,11 +32,8 @@ nextflow_process {
             process {
                 """
                 input[0] = Channel.value([
-                    [id:'exon_bed'],
-                    file(params.modules_testdata_base_path + '/genomics/homo_sapiens/genome/genome.bed', checkIfExists: true)
-                ])
-                input[1] = Channel.value([
-                    [id:'dict'],
+                    [id:'genome'],
+                    file(params.modules_testdata_base_path + '/genomics/homo_sapiens/genome/genome.bed', checkIfExists: true),
                     file(params.pipelines_testdata_base_path + '/genomics/homo_sapiens/genome/genome.dict', checkIfExists: true)
                 ])
                 """
