@@ -18,9 +18,6 @@ workflow SPLITNCIGAR {
     def bam_interval = channel.empty()
 
     if (intervals) {
-        println(intervals)
-        intervals.view()
-
         bam_interval = bam
             .combine(intervals)
             .map { meta, bam_, bai, intervals_ ->
@@ -38,12 +35,7 @@ workflow SPLITNCIGAR {
         bam_interval = bam.map { meta, bam_, bai -> [meta + [interval_count: 1, sample: meta.id], bam_, bai, []] }
     }
 
-    GATK4_SPLITNCIGARREADS(
-        bam_interval,
-        fasta,
-        fai,
-        dict,
-    )
+    GATK4_SPLITNCIGARREADS(bam_interval, fasta, fai, dict)
 
     def bam_splitncigar = GATK4_SPLITNCIGARREADS.out.bam
 
