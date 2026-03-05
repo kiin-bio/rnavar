@@ -8,9 +8,8 @@ keywords:
   - snpeff
 components:
   - bcftools/annotate
-  - ensemblvep/vep
-  - snpeff/snpeff
-  - tabix/tabix
+  - vcf_annotate_ensemblvep
+  - vcf_annotate_snpeff
 input:
   - vcf:
       description: |

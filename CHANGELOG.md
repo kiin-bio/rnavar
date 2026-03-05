@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Dependencies
 
+| Dependency | Old version | New version |
+| ---------- | ----------- | ----------- |
+| snpeff     | 5.4.0a      | 5.0.4c      |
+
 ### Parameter
 
 | Old name | New name |

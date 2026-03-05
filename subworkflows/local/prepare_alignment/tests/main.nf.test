@@ -10,7 +10,7 @@ nextflow_workflow {
     tag "samtools/convert"
     tag "samtools/index"
 
-    test("only bam") {
+    test("[bam, bai]") {
         when {
 
             workflow {
@@ -29,7 +29,7 @@ nextflow_workflow {
             assert workflow.success
             assert snapshot(
                 sanitizeOutput(workflow.out).collectEntries { key, val ->
-                        if (key == "bam") {
+                        if (key == "reads_index") {
                             return [key, val.collect { [file(it[1].toString()).name, file(it[2].toString()).name] }]
                         }
                         else if (key == "versions") {
@@ -41,7 +41,7 @@ nextflow_workflow {
         }
     }
 
-    test("only cram - no index") {
+    test("[cram, []]") {
         when {
 
             workflow {
@@ -60,7 +60,7 @@ nextflow_workflow {
             assert workflow.success
             assert snapshot(
                 sanitizeOutput(workflow.out).collectEntries { key, val ->
-                        if (key == "bam") {
+                        if (key == "reads_index") {
                             return [key, val.collect { [file(it[1].toString()).name, file(it[2].toString()).name] }]
                         }
                         else if (key == "versions") {
@@ -72,7 +72,7 @@ nextflow_workflow {
         }
     }
 
-    test("bam, cram - no index, index") {
+    test("[bam, []], [cram, crai]") {
         when {
 
             workflow {
@@ -95,7 +95,7 @@ nextflow_workflow {
             assert workflow.success
             assert snapshot(
                 sanitizeOutput(workflow.out).collectEntries { key, val ->
-                        if (key == "bam") {
+                        if (key == "reads_index") {
                             return [key, val.collect { [file(it[1].toString()).name, file(it[2].toString()).name] }]
                         }
                         else if (key == "versions") {

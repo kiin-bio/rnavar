@@ -1,4 +1,4 @@
-process REMOVE_UNKNOWN_REGIONS {
+process REMOVEUNKNOWNREGIONS {
     tag "${meta.id}"
     label 'process_single'
 
