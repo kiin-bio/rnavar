@@ -9,7 +9,7 @@ nextflow_process {
         when {
             process {
                 """
-                input[0] = Channel.value([
+                input[0] = channel.value([
                     [id:'genome'],
                     file(params.modules_testdata_base_path + '/genomics/homo_sapiens/genome/genome.bed', checkIfExists: true),
                     file(params.pipelines_testdata_base_path + '/genomics/homo_sapiens/genome/genome.dict', checkIfExists: true)
@@ -31,7 +31,7 @@ nextflow_process {
         when {
             process {
                 """
-                input[0] = Channel.value([
+                input[0] = channel.value([
                     [id:'genome'],
                     file(params.modules_testdata_base_path + '/genomics/homo_sapiens/genome/genome.bed', checkIfExists: true),
                     file(params.pipelines_testdata_base_path + '/genomics/homo_sapiens/genome/genome.dict', checkIfExists: true)
