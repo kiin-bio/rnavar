@@ -78,7 +78,6 @@ workflow RNAVAR {
     tools
 
     main:
-
     // To gather all QC reports and versions for MultiQC
     reports = channel.empty()
 
@@ -100,10 +99,7 @@ workflow RNAVAR {
         }
 
     // MODULE: Prepare the alignment files (index BAM/CRAM files that are missing an index)
-    PREPARE_ALIGNMENT(
-        parsed_input.cram,
-        parsed_input.bam,
-    )
+    PREPARE_ALIGNMENT(parsed_input.bam, parsed_input.cram)
 
     MOSDEPTH(parsed_input.cram.map { meta, cram, crai -> [meta, cram, crai, []] }, fasta)
 
@@ -124,9 +120,8 @@ workflow RNAVAR {
 
     def umi_extracted_reads = channel.empty()
     if (extract_umi) {
-        UMITOOLS_EXTRACT(
-            cat_fastq
-        )
+        UMITOOLS_EXTRACT(cat_fastq)
+
         umi_extracted_reads = UMITOOLS_EXTRACT.out.reads
     }
     else {
@@ -173,11 +168,7 @@ workflow RNAVAR {
         reports = reports.mix(FASTQ_ALIGN_STAR.out.log_final.collect { _meta, log -> log }.ifEmpty([]))
 
         // SUBWORKFLOW: Mark duplicates with GATK4
-        BAM_MARKDUPLICATES_PICARD(
-            genome_bam,
-            fasta,
-            fasta_fai,
-        )
+        BAM_MARKDUPLICATES_PICARD(genome_bam, fasta, fasta_fai)
 
         def markduplicate_indices = BAM_MARKDUPLICATES_PICARD.out.bai
             .mix(BAM_MARKDUPLICATES_PICARD.out.csi)
@@ -185,7 +176,7 @@ workflow RNAVAR {
 
         def genome_bam_bai = BAM_MARKDUPLICATES_PICARD.out.bam
             .join(markduplicate_indices, failOnDuplicate: true, failOnMismatch: true)
-            .mix(PREPARE_ALIGNMENT.out.bam)
+            .mix(PREPARE_ALIGNMENT.out.reads_index)
 
         //Gather QC reports
         reports = reports.mix(BAM_MARKDUPLICATES_PICARD.out.metrics.collect { _meta, log -> log }.ifEmpty([]))
