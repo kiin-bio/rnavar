@@ -15,18 +15,28 @@ workflow SPLITNCIGAR {
     intervals // channel: [ interval_list]
 
     main:
-    def bam_interval = bam
-        .combine(intervals)
-        .map { meta, bam_, bai, intervals_ ->
-            [
-                meta + [interval_count: intervals_ instanceof List ? intervals_.size() : 1],
-                bam_,
-                bai,
-                intervals_ instanceof List ? intervals_ : [intervals_],
-            ]
-        }
-        .transpose(by: 3)
-        .map { meta, bam_, bai, interval -> [meta + [id: "${meta.id}_${interval.baseName}", sample: meta.id], bam_, bai, interval] }
+    def bam_interval = channel.empty()
+
+    if (intervals) {
+        println(intervals)
+        intervals.view()
+
+        bam_interval = bam
+            .combine(intervals)
+            .map { meta, bam_, bai, intervals_ ->
+                [
+                    meta + [interval_count: intervals_ instanceof List ? intervals_.size() : 1],
+                    bam_,
+                    bai,
+                    intervals_ instanceof List ? intervals_ : [intervals_],
+                ]
+            }
+            .transpose(by: 3)
+            .map { meta, bam_, bai, interval -> [meta + [id: "${meta.id}_${interval.baseName}", sample: meta.id], bam_, bai, interval] }
+    }
+    else {
+        bam_interval = bam.map { meta, bam_, bai -> [meta + [interval_count: 1, sample: meta.id], bam_, bai, []] }
+    }
 
     GATK4_SPLITNCIGARREADS(
         bam_interval,
