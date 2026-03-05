@@ -1,8 +1,8 @@
 nextflow_process {
 
-    name "Test Process REMOVE_UNKNOWN_REGIONS"
+    name "Test Process REMOVEUNKNOWNREGIONS"
     script "../main.nf"
-    process "REMOVE_UNKNOWN_REGIONS"
+    process "REMOVEUNKNOWNREGIONS"
 
     test("bed+dict") {
 

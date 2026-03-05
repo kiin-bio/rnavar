@@ -12,7 +12,7 @@
                 ],
                 "versions_python": [
                     [
-                        "REMOVE_UNKNOWN_REGIONS",
+                        "REMOVEUNKNOWNREGIONS",
                         "python",
                         "3.8.3"
                     ]
@@ -38,7 +38,7 @@
                 ],
                 "versions_python": [
                     [
-                        "REMOVE_UNKNOWN_REGIONS",
+                        "REMOVEUNKNOWNREGIONS",
                         "python",
                         "3.8.3"
                     ]
