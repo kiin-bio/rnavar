@@ -1,4 +1,4 @@
-name: remove_unknown_regions
+name: removeunknownregions
 description: Remove unknown regions from a bed file
 keywords:
   - bed
