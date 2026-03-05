@@ -3,8 +3,8 @@
 //
 
 include { GATK4_SPLITNCIGARREADS } from '../../../modules/nf-core/gatk4/splitncigarreads'
-include { SAMTOOLS_MERGE         } from '../../../modules/nf-core/samtools/merge'
 include { SAMTOOLS_INDEX         } from '../../../modules/nf-core/samtools/index'
+include { SAMTOOLS_MERGE         } from '../../../modules/nf-core/samtools/merge'
 
 workflow SPLITNCIGAR {
     take:

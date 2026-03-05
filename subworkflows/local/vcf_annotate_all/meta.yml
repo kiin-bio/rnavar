@@ -75,9 +75,5 @@ output:
         Structure: [ val(meta), path(json) ]
 authors:
   - "@maxulysse"
-  - "@matthdsm"
-  - "@nvnieuwk"
 maintainers:
   - "@maxulysse"
-  - "@matthdsm"
-  - "@nvnieuwk"
