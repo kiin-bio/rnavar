@@ -15,19 +15,19 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { RNAVAR                          } from './workflows/rnavar'
-include { ANNOTATION_CACHE_INITIALISATION } from './subworkflows/local/annotation_cache_initialisation'
-include { DOWNLOAD_CACHE_SNPEFF_VEP       } from './subworkflows/local/download_cache_snpeff_vep'
-include { PIPELINE_INITIALISATION         } from './subworkflows/local/utils_nfcore_rnavar_pipeline'
-include { PIPELINE_COMPLETION             } from './subworkflows/local/utils_nfcore_rnavar_pipeline'
-include { PREPARE_GENOME                  } from './subworkflows/local/prepare_genome'
+include { RNAVAR                           } from './workflows/rnavar'
+include { PIPELINE_COMPLETION              } from './subworkflows/local/utils_nfcore_rnavar_pipeline'
+include { PIPELINE_INITIALISATION          } from './subworkflows/local/utils_nfcore_rnavar_pipeline'
+include { PREPARE_GENOME                   } from './subworkflows/local/prepare_genome'
+include { CACHE_DOWNLOAD_ENSEMBLVEP_SNPEFF } from './subworkflows/nf-core/cache_download_ensemblvep_snpeff'
+include { UTILS_ANNOTATION_CACHE           } from './subworkflows/nf-core/utils_annotation_cache'
 
 // MULTIQC
-include { MULTIQC                         } from './modules/nf-core/multiqc'
-include { getGenomeAttribute              } from 'plugin/nf-core-utils'
-include { softwareVersionsToYAML          } from 'plugin/nf-core-utils'
-include { methodsDescriptionText          } from './subworkflows/local/utils_nfcore_rnavar_pipeline'
-include { paramsSummaryMap                } from 'plugin/nf-schema'
+include { MULTIQC                          } from './modules/nf-core/multiqc'
+include { getGenomeAttribute               } from 'plugin/nf-core-utils'
+include { softwareVersionsToYAML           } from 'plugin/nf-core-utils'
+include { methodsDescriptionText           } from './subworkflows/local/utils_nfcore_rnavar_pipeline'
+include { paramsSummaryMap                 } from 'plugin/nf-schema'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -93,27 +93,27 @@ workflow {
         // Assuming that even if the cache is provided, if the user specify download_cache, rnavar will download the cache
         ensemblvep_info = channel.of([[id: "${params.vep_cache_version}_${params.vep_genome}"], params.vep_genome, params.vep_species, params.vep_cache_version])
         snpeff_info = channel.of([[id: "${params.snpeff_db}"], params.snpeff_db])
-        DOWNLOAD_CACHE_SNPEFF_VEP(ensemblvep_info, snpeff_info)
-        snpeff_cache = DOWNLOAD_CACHE_SNPEFF_VEP.out.snpeff_cache
-        vep_cache = DOWNLOAD_CACHE_SNPEFF_VEP.out.ensemblvep_cache.map { _meta, cache -> [cache] }
+        CACHE_DOWNLOAD_ENSEMBLVEP_SNPEFF(ensemblvep_info, snpeff_info)
+        snpeff_cache = CACHE_DOWNLOAD_ENSEMBLVEP_SNPEFF.out.snpeff_cache
+        vep_cache = CACHE_DOWNLOAD_ENSEMBLVEP_SNPEFF.out.ensemblvep_cache
     }
     else {
         // Looks for cache information either locally or on the cloud
-        ANNOTATION_CACHE_INITIALISATION(
-            (params.snpeff_cache && params.tools && (params.tools.split(',').contains("snpeff") || params.tools.split(',').contains('merge'))),
+        UTILS_ANNOTATION_CACHE(
+            params.vep_cache,
+            params.vep_cache_version,
+            params.vep_custom_args,
+            params.vep_genome,
+            params.vep_species,
+            (params.vep_cache && params.tools && (params.tools.split(',').contains("vep") || params.tools.split(',').contains('merge'))),
             params.snpeff_cache,
             params.snpeff_db,
-            (params.vep_cache && params.tools && (params.tools.split(',').contains("vep") || params.tools.split(',').contains('merge'))),
-            params.vep_cache,
-            params.vep_species,
-            params.vep_cache_version,
-            params.vep_genome,
-            params.vep_custom_args,
+            (params.snpeff_cache && params.tools && (params.tools.split(',').contains("snpeff") || params.tools.split(',').contains('merge'))),
             "Please refer to https://nf-co.re/rnavar/docs/usage/#how-to-customise-snpeff-and-vep-annotation for more information.",
         )
 
-        snpeff_cache = ANNOTATION_CACHE_INITIALISATION.out.snpeff_cache
-        vep_cache = ANNOTATION_CACHE_INITIALISATION.out.ensemblvep_cache
+        snpeff_cache = UTILS_ANNOTATION_CACHE.out.snpeff_cache
+        vep_cache = UTILS_ANNOTATION_CACHE.out.ensemblvep_cache
     }
 
     vep_extra_files = []

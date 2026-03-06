@@ -28,11 +28,11 @@
                     "ensemblvep/download": {
                         "branch": "master",
                         "git_sha": "90cdd21fd96ccbdb3bc90797ca69570d18391055",
-                        "installed_by": ["modules"]
+                        "installed_by": ["cache_download_ensemblvep_snpeff", "modules"]
                     },
                     "ensemblvep/vep": {
                         "branch": "master",
-                        "git_sha": "34505e1fc5e9f4fd641210ca440acff6bd33b842",
+                        "git_sha": "890fdcff71928fc1470d3e669d4c430c8c770297",
                         "installed_by": ["modules", "vcf_annotate_ensemblvep"]
                     },
                     "fastqc": {
@@ -168,7 +168,7 @@
                     "snpeff/download": {
                         "branch": "master",
                         "git_sha": "b9d6ae8d65f33e04068aa5fe86dcc87c43ee81b0",
-                        "installed_by": ["modules"]
+                        "installed_by": ["cache_download_ensemblvep_snpeff", "modules"]
                     },
                     "snpeff/snpeff": {
                         "branch": "master",
@@ -229,14 +229,24 @@
                         "git_sha": "7ac6cbe7c17c2dad685da7f70496c8f48ea48687",
                         "installed_by": ["bam_markduplicates_picard", "bam_sort_stats_samtools"]
                     },
+                    "cache_download_ensemblvep_snpeff": {
+                        "branch": "master",
+                        "git_sha": "8937908d70a5bd862adb5caa7848ec5dbce9fdbb",
+                        "installed_by": ["subworkflows"]
+                    },
                     "fastq_align_star": {
                         "branch": "master",
                         "git_sha": "cebe21bbd158c15c8fab172e37cfe97a239f4b77",
                         "installed_by": ["subworkflows"]
                     },
+                    "utils_annotation_cache": {
+                        "branch": "master",
+                        "git_sha": "4068160bf33db57f33793989e08cda44ba1fefbf",
+                        "installed_by": ["subworkflows"]
+                    },
                     "vcf_annotate_ensemblvep": {
                         "branch": "master",
-                        "git_sha": "b0bd00e83b18957bd409cd9e31e98b965ebc593b",
+                        "git_sha": "890fdcff71928fc1470d3e669d4c430c8c770297",
                         "installed_by": ["subworkflows"]
                     },
                     "vcf_annotate_snpeff": {

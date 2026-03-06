@@ -2,16 +2,10 @@
 // DOWNLOAD CACHE SNPEFF VEP
 //
 
-// Initialize channels based on params or indices that were just built
-// For all modules here:
-// A when clause condition is defined in the conf/modules.config to determine if the module should be run
-// Condition is based on params.step and params.tools
-// If and extra condition exists, it's specified in comments
-
 include { ENSEMBLVEP_DOWNLOAD } from '../../../modules/nf-core/ensemblvep/download'
 include { SNPEFF_DOWNLOAD     } from '../../../modules/nf-core/snpeff/download'
 
-workflow DOWNLOAD_CACHE_SNPEFF_VEP {
+workflow CACHE_DOWNLOAD_ENSEMBLVEP_SNPEFF {
     take:
     ensemblvep_info
     snpeff_info
