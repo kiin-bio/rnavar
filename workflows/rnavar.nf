@@ -69,7 +69,6 @@ workflow RNAVAR {
     bam_csi_index
     extract_umi
     generate_gvcf
-    skip_multiqc
     skip_baserecalibration
     skip_intervallisttools
     skip_variantannotation
@@ -179,10 +178,10 @@ workflow RNAVAR {
             .mix(PREPARE_ALIGNMENT.out.reads_index)
 
         //Gather QC reports
-        reports = reports.mix(BAM_MARKDUPLICATES_PICARD.out.metrics.collect { _meta, log -> log }.ifEmpty([]))
-        reports = reports.mix(BAM_MARKDUPLICATES_PICARD.out.stats.collect { _meta, log -> log }.ifEmpty([]))
         reports = reports.mix(BAM_MARKDUPLICATES_PICARD.out.flagstat.collect { _meta, log -> log }.ifEmpty([]))
         reports = reports.mix(BAM_MARKDUPLICATES_PICARD.out.idxstats.collect { _meta, log -> log }.ifEmpty([]))
+        reports = reports.mix(BAM_MARKDUPLICATES_PICARD.out.metrics.collect { _meta, log -> log }.ifEmpty([]))
+        reports = reports.mix(BAM_MARKDUPLICATES_PICARD.out.stats.collect { _meta, log -> log }.ifEmpty([]))
 
         // SUBWORKFLOW: SplitNCigarReads from GATK4 over the intervals
         // Splits reads that contain Ns in their cigar string(e.g. spanning splicing events in RNAseq data).
@@ -228,17 +227,18 @@ workflow RNAVAR {
             // MODULE: ApplyBaseRecalibrator from GATK4
             // Recalibrates the base qualities of the input reads based on the recalibration table produced by the GATK BaseRecalibrator tool.
             RECALIBRATE(
-                skip_multiqc,
                 applybqsr_bam_bai_interval,
                 dict.map { _meta, dict_ -> [dict_] },
                 fasta_fai.map { _meta, fai -> fai },
-                fasta.map { _meta, fasta_ -> [fasta_] },
+                fasta,
             )
 
             bam_variant_calling = RECALIBRATE.out.bam
 
             // Gather QC reports
-            reports = reports.mix(RECALIBRATE.out.qc.collect { _meta, log_out -> log_out }.ifEmpty([]))
+            reports = reports.mix(RECALIBRATE.out.flagstat.collect { _meta, log -> log }.ifEmpty([]))
+            reports = reports.mix(RECALIBRATE.out.idxstats.collect { _meta, log -> log }.ifEmpty([]))
+            reports = reports.mix(RECALIBRATE.out.stats.collect { _meta, log -> log }.ifEmpty([]))
         }
         else {
             bam_variant_calling = splitncigar_bam_bai

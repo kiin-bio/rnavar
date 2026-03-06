@@ -159,8 +159,12 @@
                 "reports/stats/GM12878/markduplicates",
                 "reports/stats/GM12878/markduplicates/GM12878.md.metrics.txt",
                 "reports/stats/GM12878/samtools",
-                "reports/stats/GM12878/samtools/GM12878.flagstat",
-                "reports/stats/GM12878/samtools/GM12878.stats",
+                "reports/stats/GM12878/samtools/GM12878.aligned.flagstat",
+                "reports/stats/GM12878/samtools/GM12878.aligned.idxstats",
+                "reports/stats/GM12878/samtools/GM12878.aligned.stats",
+                "reports/stats/GM12878/samtools/GM12878.md.flagstat",
+                "reports/stats/GM12878/samtools/GM12878.md.idxstats",
+                "reports/stats/GM12878/samtools/GM12878.md.stats",
                 "variant_calling",
                 "variant_calling/GM12878",
                 "variant_calling/GM12878/GM12878.haplotypecaller.filtered.vcf.gz",
@@ -171,15 +175,15 @@
             [
                 "multiqc_citations.txt:md5,ca2184e168cc68367f244272041e555a",
                 "multiqc_picard_dups.txt:md5,3c2ee70029b964a56b5eb0b2473eb147",
-                "multiqc_samtools_idxstats.txt:md5,776a2525b1f9482ef584682efe5241c1",
+                "multiqc_samtools_idxstats.txt:md5,c8c6c0f16b73519f6a1e7f7231c79f44",
                 "multiqc_star.txt:md5,7e6521313553e98304f39d749df30dc6",
                 "picard_MarkIlluminaAdapters_histogram.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "picard_MeanQualityByCycle_histogram.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "picard_MeanQualityByCycle_histogram_1.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "picard_QualityScoreDistribution_histogram.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
-                "samtools-idxstats-mapped-reads-plot_Normalised_Counts.txt:md5,c889fc29548ffb38c05964526820b8b6",
-                "samtools-idxstats-mapped-reads-plot_Observed_over_Expected_Counts.txt:md5,c889fc29548ffb38c05964526820b8b6",
-                "samtools-idxstats-mapped-reads-plot_Raw_Counts.txt:md5,c3f2cf9e3aed7d33c686f1908d198ac1",
+                "samtools-idxstats-mapped-reads-plot_Normalised_Counts.txt:md5,ccf0a7d09f6bfd491680e15bedbd97c8",
+                "samtools-idxstats-mapped-reads-plot_Observed_over_Expected_Counts.txt:md5,ccf0a7d09f6bfd491680e15bedbd97c8",
+                "samtools-idxstats-mapped-reads-plot_Raw_Counts.txt:md5,7c1515601dfa669e2064afc7cd417b51",
                 "star_alignment_plot.txt:md5,112fac650331136449a83b6764ec8f1d",
                 "star_summary_table.txt:md5,028b492d7fb5104dd0de21be819402aa",
                 "GM12878.SJ.out.tab:md5,414fe118e884fddedd742cdac913803d"
@@ -195,10 +199,10 @@
             ],
             "No warnings"
         ],
+        "timestamp": "2026-03-06T17:25:39.317872862",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.3"
-        },
-        "timestamp": "2026-02-06T11:33:56.075788861"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
+        }
     }
 }
