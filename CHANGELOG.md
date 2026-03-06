@@ -58,6 +58,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#287](https://github.com/nf-core/rnavar/pull/287) - Update all modules and subworkflows
 - [#288](https://github.com/nf-core/rnavar/pull/288) - Add meta.yml for most local modules and subworkflows
 - [#289](https://github.com/nf-core/rnavar/pull/289) - Replace local modules for annotation by nf-core/modules versions
+- [#292](https://github.com/nf-core/rnavar/pull/292) - Reorder config files
 
 #### Fixed
 
