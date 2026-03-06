@@ -52,6 +52,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 #### Added
 
+- [#291](https://github.com/nf-core/rnavar/pull/291) - Add tests for save_align_intermeds
+
 #### Changed
 
 - [#284](https://github.com/nf-core/rnavar/pull/284) - Back to dev
