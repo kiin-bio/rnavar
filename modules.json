@@ -198,7 +198,7 @@
                     "tabix/tabix": {
                         "branch": "master",
                         "git_sha": "524a7d5ef99a0cbfb4feec8bf7062eb6a531931a",
-                        "installed_by": ["modules", "vcf_annotate_ensemblvep"]
+                        "installed_by": ["modules"]
                     },
                     "umitools/extract": {
                         "branch": "master",
