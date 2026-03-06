@@ -28,12 +28,12 @@
                     "ensemblvep/download": {
                         "branch": "master",
                         "git_sha": "90cdd21fd96ccbdb3bc90797ca69570d18391055",
-                        "installed_by": ["cache_download_ensemblvep_snpeff", "modules"]
+                        "installed_by": ["cache_download_ensemblvep_snpeff"]
                     },
                     "ensemblvep/vep": {
                         "branch": "master",
                         "git_sha": "890fdcff71928fc1470d3e669d4c430c8c770297",
-                        "installed_by": ["modules", "vcf_annotate_ensemblvep"]
+                        "installed_by": ["vcf_annotate_ensemblvep"]
                     },
                     "fastqc": {
                         "branch": "master",
@@ -133,12 +133,12 @@
                     "samtools/flagstat": {
                         "branch": "master",
                         "git_sha": "1d2fbdcbca677bbe8da0f9d0d2bb7c02f2cab1c9",
-                        "installed_by": ["bam_stats_samtools", "modules"]
+                        "installed_by": ["bam_stats_samtools"]
                     },
                     "samtools/idxstats": {
                         "branch": "master",
                         "git_sha": "1d2fbdcbca677bbe8da0f9d0d2bb7c02f2cab1c9",
-                        "installed_by": ["bam_stats_samtools", "modules"]
+                        "installed_by": ["bam_stats_samtools"]
                     },
                     "samtools/index": {
                         "branch": "master",
@@ -153,7 +153,7 @@
                     "samtools/sort": {
                         "branch": "master",
                         "git_sha": "5cb9a8694da0a0e550921636bb60bc8c56445fd7",
-                        "installed_by": ["bam_sort_stats_samtools", "modules"]
+                        "installed_by": ["bam_sort_stats_samtools"]
                     },
                     "samtools/stats": {
                         "branch": "master",
@@ -168,7 +168,7 @@
                     "snpeff/download": {
                         "branch": "master",
                         "git_sha": "b9d6ae8d65f33e04068aa5fe86dcc87c43ee81b0",
-                        "installed_by": ["cache_download_ensemblvep_snpeff", "modules"]
+                        "installed_by": ["cache_download_ensemblvep_snpeff"]
                     },
                     "snpeff/snpeff": {
                         "branch": "master",
@@ -178,7 +178,7 @@
                     "star/align": {
                         "branch": "master",
                         "git_sha": "cebe21bbd158c15c8fab172e37cfe97a239f4b77",
-                        "installed_by": ["fastq_align_star", "modules"]
+                        "installed_by": ["fastq_align_star"]
                     },
                     "star/genomegenerate": {
                         "branch": "master",
