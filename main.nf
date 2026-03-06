@@ -16,11 +16,11 @@
 */
 
 include { RNAVAR                           } from './workflows/rnavar'
-include { PIPELINE_COMPLETION              } from './subworkflows/local/utils_nfcore_rnavar_pipeline'
-include { PIPELINE_INITIALISATION          } from './subworkflows/local/utils_nfcore_rnavar_pipeline'
 include { PREPARE_GENOME                   } from './subworkflows/local/prepare_genome'
 include { CACHE_DOWNLOAD_ENSEMBLVEP_SNPEFF } from './subworkflows/nf-core/cache_download_ensemblvep_snpeff'
 include { UTILS_ANNOTATION_CACHE           } from './subworkflows/nf-core/utils_annotation_cache'
+include { PIPELINE_INITIALISATION          } from './subworkflows/local/utils_nfcore_rnavar_pipeline'
+include { PIPELINE_COMPLETION              } from './subworkflows/local/utils_nfcore_rnavar_pipeline'
 
 // MULTIQC
 include { MULTIQC                          } from './modules/nf-core/multiqc'
