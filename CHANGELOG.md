@@ -59,12 +59,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 #### Added
 
+- [#291](https://github.com/nf-core/rnavar/pull/291) - Add tests for save_align_intermeds
+
 #### Changed
 
 - [#284](https://github.com/nf-core/rnavar/pull/284) - Back to dev
 - [#287](https://github.com/nf-core/rnavar/pull/287) - Update all modules and subworkflows
 - [#288](https://github.com/nf-core/rnavar/pull/288) - Add meta.yml for most local modules and subworkflows
 - [#289](https://github.com/nf-core/rnavar/pull/289) - Replace local modules for annotation by nf-core/modules versions
+- [#290](https://github.com/nf-core/rnavar/pull/290) - Remove unused modules
+- [#292](https://github.com/nf-core/rnavar/pull/292) - Reorder config files
 
 #### Fixed
 

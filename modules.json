@@ -10,16 +10,6 @@
                         "git_sha": "3d9c2f4beaa4f62b3f006928fd9095a496d1e5a8",
                         "installed_by": ["modules"]
                     },
-                    "bedtools/merge": {
-                        "branch": "master",
-                        "git_sha": "88d43dad73a675e66bff49ebb57fe657a5909018",
-                        "installed_by": ["modules"]
-                    },
-                    "bedtools/sort": {
-                        "branch": "master",
-                        "git_sha": "88d43dad73a675e66bff49ebb57fe657a5909018",
-                        "installed_by": ["modules"]
-                    },
                     "cat/fastq": {
                         "branch": "master",
                         "git_sha": "5d28ea7cfaebcfae6f74d1067ea766d8ff19dff3",
@@ -70,11 +60,6 @@
                         "git_sha": "52b7843bd92ccf833cc12e71cd84aeccf2583852",
                         "installed_by": ["modules"]
                     },
-                    "gatk4/indexfeaturefile": {
-                        "branch": "master",
-                        "git_sha": "52b7843bd92ccf833cc12e71cd84aeccf2583852",
-                        "installed_by": ["modules"]
-                    },
                     "gatk4/intervallisttools": {
                         "branch": "master",
                         "git_sha": "52b7843bd92ccf833cc12e71cd84aeccf2583852",
@@ -119,11 +104,6 @@
                         "branch": "master",
                         "git_sha": "a631e12055f6c23ba2c942d3902b3ed1b9eed859",
                         "installed_by": ["bam_markduplicates_picard"]
-                    },
-                    "samtools/convert": {
-                        "branch": "master",
-                        "git_sha": "51fa714751883254ede046c50acf20076b46ca81",
-                        "installed_by": ["modules"]
                     },
                     "samtools/faidx": {
                         "branch": "master",
