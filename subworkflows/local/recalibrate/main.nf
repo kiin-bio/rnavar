@@ -13,7 +13,7 @@ workflow RECALIBRATE {
     bam // channel: [mandatory] bam
     dict // channel: [mandatory] dict
     fai // channel: [mandatory] fai
-    fasta // channel: [mandatory] fasta
+    fasta // channel: [mandatory] meta, fasta
 
     main:
     GATK4_APPLYBQSR(
