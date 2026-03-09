@@ -257,9 +257,18 @@ workflow NFCORE_RNAVAR {
         params.known_indels_tbi,
         params.star_index,
         params.feature_type,
-        params.skip_exon_bed_check,
         align,
         params.genome ?: "genome",
+        setup_tools(
+            params.bam_csi_index,
+            params.extract_umi,
+            params.generate_gvcf,
+            params.skip_baserecalibration,
+            params.skip_exon_bed_check,
+            params.skip_intervallisttools,
+            params.skip_variantfiltration,
+            params.tools,
+        ),
     )
 
     // WORKFLOW: Run pipeline
@@ -294,6 +303,7 @@ workflow NFCORE_RNAVAR {
             params.extract_umi,
             params.generate_gvcf,
             params.skip_baserecalibration,
+            params.skip_exon_bed_check,
             params.skip_intervallisttools,
             params.skip_variantfiltration,
             params.tools,
@@ -345,7 +355,7 @@ def paramsSummaryMultiqc(summary_params) {
 }
 
 // Setup list of tools to run
-def setup_tools(bam_csi_index, extract_umi, generate_gvcf, skip_baserecalibration, skip_intervallisttools, skip_variantfiltration, input_tools) {
+def setup_tools(bam_csi_index, extract_umi, generate_gvcf, skip_baserecalibration, skip_exon_bed_check, skip_intervallisttools, skip_variantfiltration, input_tools) {
 
     // opt in tools
     def tools_list = input_tools ? input_tools.tokenize(',') : []
@@ -361,6 +371,9 @@ def setup_tools(bam_csi_index, extract_umi, generate_gvcf, skip_baserecalibratio
     // opt out tools
     if (!skip_baserecalibration) {
         tools_list << 'gatk4_baserecalibrator'
+    }
+    if (!skip_exon_bed_check) {
+        tools_list << 'removeunknownregions'
     }
     if (!skip_intervallisttools) {
         tools_list << 'gatk4_intervallisttools'

@@ -35,9 +35,9 @@ workflow PREPARE_GENOME {
     known_indels_tbi // params[path]: params.known_indels_tbi
     star_index // params[path]: params.star_index
     feature_type // params[val]: params.feature_type
-    skip_exon_bed_check // params[boolean]: params.skip_exon_bed_check
     align // boolean: The pipeline needs aligner indices or not
     genome // params[val]: params.genome
+    tools // list: list of tools to run
 
     main:
     // Unzip reference genome files if needed
@@ -85,11 +85,11 @@ workflow PREPARE_GENOME {
         ? channel.fromPath(exon_bed).map { exon_bed_ -> [[id: genome], exon_bed_] }.collect()
         : GTF2BED.out.bed.collect()
 
-    def ch_remove_unknown_regions_input = !skip_exon_bed_check ? ch_exon_bed_input : channel.empty()
+    def ch_remove_unknown_regions_input = 'removeunknownregions' in tools ? ch_exon_bed_input : channel.empty()
 
     REMOVEUNKNOWNREGIONS(ch_remove_unknown_regions_input.join(ch_dict))
 
-    def ch_exon_bed = skip_exon_bed_check ? REMOVEUNKNOWNREGIONS.out.bed.flatten() : ch_exon_bed_input
+    def ch_exon_bed = !('removeunknownregions' in tools) ? REMOVEUNKNOWNREGIONS.out.bed.flatten() : ch_exon_bed_input
 
     def ch_bcftools_annotations = bcftools_annotations
         ? channel.fromPath(bcftools_annotations).collect()
