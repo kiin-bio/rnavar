@@ -288,11 +288,16 @@ workflow NFCORE_RNAVAR {
         vep_cache,
         vep_extra_files,
         params.aligner,
-        params.bam_csi_index,
-        params.extract_umi,
-        params.generate_gvcf,
         params.star_ignore_sjdbgtf,
-        setup_tools(params.skip_baserecalibration, params.skip_intervallisttools, params.skip_variantfiltration, params.tools),
+        setup_tools(
+            params.bam_csi_index,
+            params.extract_umi,
+            params.generate_gvcf,
+            params.skip_baserecalibration,
+            params.skip_intervallisttools,
+            params.skip_variantfiltration,
+            params.tools,
+        ),
     )
 
     reports = reports.mix(RNAVAR.out.reports)
@@ -340,20 +345,29 @@ def paramsSummaryMultiqc(summary_params) {
 }
 
 // Setup list of tools to run
-def setup_tools(skip_baserecalibration, skip_intervallisttools, skip_variantfiltration, input_tools) {
+def setup_tools(bam_csi_index, extract_umi, generate_gvcf, skip_baserecalibration, skip_intervallisttools, skip_variantfiltration, input_tools) {
 
     // opt in tools
     def tools_list = input_tools ? input_tools.tokenize(',') : []
 
+    if (extract_umi) {
+        tools_list << 'umitools_extract'
+    }
+
+    if (generate_gvcf) {
+        tools_list << 'gatk4_combinegvcfs'
+    }
+
     // opt out tools
     if (!skip_baserecalibration) {
-        tools_list << 'baserecalibration'
+        tools_list << 'gatk4_baserecalibrator'
     }
     if (!skip_intervallisttools) {
-        tools_list << 'intervallisttools'
+        tools_list << 'gatk4_intervallisttools'
     }
-    if (!skip_variantfiltration) {
-        tools_list << 'variantfiltration'
+    // no variantfiltration if skip_variantfiltration and bam_csi_index as GATK4_VARIANTFILTRATION does not support csi index
+    if (!(skip_variantfiltration) && !(bam_csi_index)) {
+        tools_list << 'gatk4_variantfiltration'
     }
 
     return tools_list

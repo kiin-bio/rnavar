@@ -65,8 +65,6 @@ workflow RNAVAR {
     vep_cache
     vep_extra_files
     aligner
-    bam_csi_index
-    extract_umi
     generate_gvcf
     star_ignore_sjdbgtf
     tools
@@ -113,7 +111,7 @@ workflow RNAVAR {
     // MODULE: Extract UMIs from reads
 
     def umi_extracted_reads = channel.empty()
-    if (extract_umi) {
+    if ('umitools_extract' in tools) {
         UMITOOLS_EXTRACT(cat_fastq)
 
         umi_extracted_reads = UMITOOLS_EXTRACT.out.reads
@@ -129,7 +127,7 @@ workflow RNAVAR {
 
     // MODULE: Scatter one interval-list into many interval-files using GATK4 IntervalListTools
     def interval_list_split = channel.empty()
-    if ('intervallisttools' in tools) {
+    if ('gatk4_intervallisttools' in tools) {
         GATK4_INTERVALLISTTOOLS(interval_list)
         interval_list_split = GATK4_INTERVALLISTTOOLS.out.interval_list.map { _meta, bed -> [bed] }.collect()
     }
@@ -195,9 +193,8 @@ workflow RNAVAR {
         // Generates a recalibration table based on various co-variates
         def bam_variant_calling = channel.empty()
 
-        if ('baserecalibration' in tools) {
-            def interval_list_recalib = interval_list.map { _meta, bed -> [bed] }.flatten()
-            def splitncigar_bam_bai_interval = splitncigar_bam_bai.combine(interval_list_recalib)
+        if ('gatk4_baserecalibrator' in tools) {
+            def splitncigar_bam_bai_interval = splitncigar_bam_bai.combine(interval_list.map { _meta, bed -> [bed] }.flatten())
 
             GATK4_BASERECALIBRATOR(
                 splitncigar_bam_bai_interval,
@@ -214,9 +211,8 @@ workflow RNAVAR {
 
             def bam_applybqsr = splitncigar_bam_bai.join(bqsr_table)
 
-            def interval_list_applybqsr = interval_list.map { _meta, bed -> [bed] }.flatten()
             def applybqsr_bam_bai_interval = bam_applybqsr
-                .combine(interval_list_applybqsr)
+                .combine(interval_list.map { _meta, bed -> [bed] }.flatten())
                 .map { meta, bam, bai, table, interval -> [meta, bam, bai, table, interval] }
 
             // MODULE: ApplyBaseRecalibrator from GATK4
@@ -243,9 +239,7 @@ workflow RNAVAR {
             .combine(interval_list_split)
             .map { meta, bam, bai, interval_lists -> [meta + [interval_count: interval_lists.size()], bam, bai, interval_lists] }
             .transpose(by: 3)
-            .map { meta, bam, bai, interval_list_ ->
-                [meta + [id: meta.id + "_" + interval_list_.baseName, sample: meta.id, variantcaller: 'haplotypecaller'], bam, bai, interval_list_, []]
-            }
+            .map { meta, bam, bai, interval_list_ -> [meta + [id: meta.id + "_" + interval_list_.baseName, sample: meta.id, variantcaller: 'haplotypecaller'], bam, bai, interval_list_, []] }
 
         // MODULE: HaplotypeCaller from GATK4
         // Calls germline SNPs and indels via local re-assembly of haplotypes.
@@ -261,14 +255,27 @@ workflow RNAVAR {
 
         def haplotypecaller_out = GATK4_HAPLOTYPECALLER.out.vcf
             .join(GATK4_HAPLOTYPECALLER.out.tbi, failOnMismatch: true, failOnDuplicate: true)
-            .map { meta, vcf, tbi ->
-                [groupKey(meta + [id: meta.sample] - meta.subMap('sample', "interval_count"), meta.interval_count), vcf, tbi]
-            }
+            .map { meta, vcf, tbi -> [groupKey(meta + [id: meta.sample] - meta.subMap('sample', "interval_count"), meta.interval_count), vcf, tbi] }
             .groupTuple()
 
 
         def haplotypecaller_vcf = channel.empty()
-        if (!generate_gvcf) {
+
+        if ('gatk4_combinegvcfs' in tools) {
+            // MODULE: CombineGVCFS from GATK4
+            // Merge multiple GVCF files into one GVCF
+            GATK4_COMBINEGVCFS(
+                haplotypecaller_out,
+                fasta.map { _meta, fasta_ -> fasta_ },
+                fasta_fai.map { _meta, fai -> fai },
+                dict.map { _meta, dict_ -> dict_ },
+            )
+            def haplotypecaller_gvcf = GATK4_COMBINEGVCFS.out.combined_gvcf
+
+            // MODULE: Index the VCF using TABIX
+            TABIXGVCF(haplotypecaller_gvcf)
+        }
+        else {
             // MODULE: MergeVCFS from GATK4
             // Merge multiple VCF files into one VCF
             def haplotypecaller_raw = haplotypecaller_out.map { meta, vcfs, _tbis -> [meta, vcfs] }
@@ -287,7 +294,7 @@ workflow RNAVAR {
 
             // MODULE: VariantFiltration from GATK4
             // Filter variant calls based on certain criteria
-            if ('variantfiltration' in tools && !bam_csi_index) {
+            if ('gatk4_variantfiltration' in tools) {
 
                 GATK4_VARIANTFILTRATION(
                     haplotypecaller_vcf_tbi,
@@ -326,21 +333,6 @@ workflow RNAVAR {
                     bcftools_header_lines,
                 )
             }
-        }
-        else {
-
-            // MODULE: CombineGVCFS from GATK4
-            // Merge multiple GVCF files into one GVCF
-            GATK4_COMBINEGVCFS(
-                haplotypecaller_out,
-                fasta.map { _meta, fasta_ -> fasta_ },
-                fasta_fai.map { _meta, fai -> fai },
-                dict.map { _meta, dict_ -> dict_ },
-            )
-            def haplotypecaller_gvcf = GATK4_COMBINEGVCFS.out.combined_gvcf
-
-            // MODULE: Index the VCF using TABIX
-            TABIXGVCF(haplotypecaller_gvcf)
         }
     }
 
