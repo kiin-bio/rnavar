@@ -65,7 +65,6 @@ workflow RNAVAR {
     vep_cache
     vep_extra_files
     aligner
-    generate_gvcf
     star_ignore_sjdbgtf
     tools
 
