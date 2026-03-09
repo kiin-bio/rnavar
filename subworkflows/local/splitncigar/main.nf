@@ -15,10 +15,10 @@ workflow SPLITNCIGAR {
     intervals // channel: [ interval_list]
 
     main:
-    def bam_interval = channel.empty()
+    def bam_for_splincigarreads = channel.empty()
 
     if (intervals) {
-        bam_interval = bam
+        bam_for_splincigarreads = bam
             .combine(intervals)
             .map { meta, bam_, bai, intervals_ ->
                 [
@@ -32,20 +32,20 @@ workflow SPLITNCIGAR {
             .map { meta, bam_, bai, interval -> [meta + [id: "${meta.id}_${interval.baseName}", sample: meta.id], bam_, bai, interval] }
     }
     else {
-        bam_interval = bam.map { meta, bam_, bai -> [meta + [interval_count: 1, sample: meta.id], bam_, bai, []] }
+        bam_for_splincigarreads = bam.map { meta, bam_, bai -> [meta + [interval_count: 1, sample: meta.id], bam_, bai, []] }
     }
 
-    GATK4_SPLITNCIGARREADS(bam_interval, fasta, fai, dict)
+    GATK4_SPLITNCIGARREADS(bam_for_splincigarreads, fasta, fai, dict)
 
     def bam_splitncigar = GATK4_SPLITNCIGARREADS.out.bam
 
-    def bam_splitncigar_interval = bam_splitncigar
+    def bam_to_merge = bam_splitncigar
         .map { meta, bam_ -> [groupKey(meta + [id: meta.sample] - meta.subMap('sample') - meta.subMap('interval_count'), meta.interval_count), bam_] }
         .groupTuple()
         .map { meta, bam_ -> [meta, bam_, []] }
 
     SAMTOOLS_MERGE(
-        bam_splitncigar_interval,
+        bam_to_merge,
         fasta.join(fai).map { meta, _fasta, _fai -> [meta, _fasta, _fai, []] }.collect(),
     )
 

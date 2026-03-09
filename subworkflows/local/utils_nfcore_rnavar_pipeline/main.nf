@@ -43,8 +43,7 @@ workflow PIPELINE_INITIALISATION {
     gff // params: params.gff
     gtf // params: params.gtf
     known_indels // params: params.known_indels
-    skip_tools // params: params.skip_tools
-    input_tools // params: params.tools
+    tools // params: params.tools
     umitools_bc_pattern // params: params.umitools_bc_pattern
 
     main:
@@ -125,9 +124,7 @@ workflow PIPELINE_INITIALISATION {
     log.info(paramsSummaryLog(summary_options, workflow))
     log.info(after_text)
 
-    def tools = setup_tools(bam_csi_index, skip_tools, input_tools)
-
-    log.info("tools: " + tools.join(','))
+    log.info("tools: " + tools.join(', '))
 
     // Fails for missing params
     if (gtf && gff) {
@@ -143,6 +140,10 @@ workflow PIPELINE_INITIALISATION {
 
     if (!('baserecalibrator' in tools) && !dbsnp && !known_indels) {
         error("Known sites are required for performing base recalibration. Supply them with either --dbsnp and/or --known_indels or disable base recalibration with --skip_tools baserecalibrator")
+    }
+
+    if ('variantfiltration' in tools && bam_csi_index) {
+        log.warn('GATK4_VARIANTFILTRATION will not run with params.bam_csi_index')
     }
 
     //
@@ -177,8 +178,8 @@ workflow PIPELINE_INITIALISATION {
         }
 
     emit:
-    samplesheet = ch_samplesheet
     align       = bool_align
+    samplesheet = ch_samplesheet
     versions    = ch_versions
 }
 

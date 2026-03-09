@@ -24,10 +24,15 @@ include { PIPELINE_COMPLETION              } from './subworkflows/local/utils_nf
 
 // MULTIQC
 include { MULTIQC                          } from './modules/nf-core/multiqc'
-include { getGenomeAttribute               } from 'plugin/nf-core-utils'
-include { softwareVersionsToYAML           } from 'plugin/nf-core-utils'
 include { methodsDescriptionText           } from './subworkflows/local/utils_nfcore_rnavar_pipeline'
 include { paramsSummaryMap                 } from 'plugin/nf-schema'
+include { softwareVersionsToYAML           } from 'plugin/nf-core-utils'
+
+// tools selections
+include { setup_tools                      } from './subworkflows/local/utils_nfcore_rnavar_pipeline'
+
+// references
+include { getGenomeAttribute               } from 'plugin/nf-core-utils'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -60,6 +65,8 @@ params.vep_species       = getGenomeAttribute('vep_species')
 workflow {
 
     main:
+    def tools = setup_tools(params.bam_csi_index, params.skip_tools, params.tools)
+
     // SUBWORKFLOW: Run initialisation tasks
     PIPELINE_INITIALISATION(
         params.version,
@@ -75,10 +82,10 @@ workflow {
         params.gff,
         params.gtf,
         params.known_indels,
-        params.skip_tools,
-        params.tools,
+        tools,
         params.umitools_bc_pattern,
     )
+
 
     // Download cache
     if (params.download_cache) {
