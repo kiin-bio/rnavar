@@ -68,10 +68,6 @@ workflow RNAVAR {
     bam_csi_index
     extract_umi
     generate_gvcf
-    skip_baserecalibration
-    skip_intervallisttools
-    skip_variantannotation
-    skip_variantfiltration
     star_ignore_sjdbgtf
     tools
 
@@ -133,16 +129,16 @@ workflow RNAVAR {
 
     // MODULE: Scatter one interval-list into many interval-files using GATK4 IntervalListTools
     def interval_list_split = channel.empty()
-    if (!skip_intervallisttools) {
+    if ('intervallisttools' in tools) {
         GATK4_INTERVALLISTTOOLS(interval_list)
         interval_list_split = GATK4_INTERVALLISTTOOLS.out.interval_list.map { _meta, bed -> [bed] }.collect()
     }
     else {
-        interval_list_split = interval_list.map { _meta, bed -> bed }
+        interval_list_split = interval_list.map { _meta, bed -> [bed] }.collect()
     }
 
     // MODULE: HLATyping with Seq2HLA
-    if (tools.contains('seq2hla')) {
+    if ('seq2hla' in tools) {
         SEQ2HLA(umi_extracted_reads)
     }
 
@@ -199,7 +195,7 @@ workflow RNAVAR {
         // Generates a recalibration table based on various co-variates
         def bam_variant_calling = channel.empty()
 
-        if (!skip_baserecalibration) {
+        if ('baserecalibration' in tools) {
             def interval_list_recalib = interval_list.map { _meta, bed -> [bed] }.flatten()
             def splitncigar_bam_bai_interval = splitncigar_bam_bai.combine(interval_list_recalib)
 
@@ -245,9 +241,7 @@ workflow RNAVAR {
 
         def haplotypecaller_interval_bam = bam_variant_calling
             .combine(interval_list_split)
-            .map { meta, bam, bai, interval_lists ->
-                [meta + [interval_count: interval_lists instanceof List ? interval_lists.size() : 1], bam, bai, interval_lists.size() > 1 ? interval_lists : [interval_lists]]
-            }
+            .map { meta, bam, bai, interval_lists -> [meta + [interval_count: interval_lists.size()], bam, bai, [interval_lists]] }
             .transpose(by: 3)
             .map { meta, bam, bai, interval_list_ ->
                 [meta + [id: meta.id + "_" + interval_list_.baseName, sample: meta.id, variantcaller: 'haplotypecaller'], bam, bai, interval_list_, []]
@@ -293,7 +287,7 @@ workflow RNAVAR {
 
             // MODULE: VariantFiltration from GATK4
             // Filter variant calls based on certain criteria
-            if (!skip_variantfiltration && !bam_csi_index) {
+            if ('variantfiltration' in tools && !bam_csi_index) {
 
                 GATK4_VARIANTFILTRATION(
                     haplotypecaller_vcf_tbi,
@@ -311,7 +305,7 @@ workflow RNAVAR {
             }
 
             // SUBWORKFLOW: Annotate variants using snpEff and Ensembl VEP if enabled.
-            if ((!skip_variantannotation) && (tools.contains('bcfann') || tools.contains('merge') || tools.contains('snpeff') || tools.contains('vep'))) {
+            if ('bcfann' in tools || 'merge' in tools || 'snpeff' in tools || 'vep' in tools) {
 
                 final_vcf = final_vcf.mix(parsed_input.vcf.map { meta, vcf, _tbi -> [meta, vcf] })
 

@@ -291,12 +291,8 @@ workflow NFCORE_RNAVAR {
         params.bam_csi_index,
         params.extract_umi,
         params.generate_gvcf,
-        params.skip_baserecalibration,
-        params.skip_intervallisttools,
-        params.skip_variantannotation,
-        params.skip_variantfiltration,
         params.star_ignore_sjdbgtf,
-        params.tools ?: "no_tools",
+        setup_tools(params.skip_baserecalibration, params.skip_intervallisttools, params.skip_variantfiltration, params.tools),
     )
 
     reports = reports.mix(RNAVAR.out.reports)
@@ -311,9 +307,7 @@ workflow NFCORE_RNAVAR {
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-//
 // Get workflow summary for MultiQC
-//
 def paramsSummaryMultiqc(summary_params) {
     def summary_section = ''
     summary_params
@@ -343,4 +337,24 @@ def paramsSummaryMultiqc(summary_params) {
     yaml_file_text += "${summary_section}"
 
     return yaml_file_text
+}
+
+// Setup list of tools to run
+def setup_tools(skip_baserecalibration, skip_intervallisttools, skip_variantfiltration, input_tools) {
+
+    // opt in tools
+    def tools_list = input_tools ? input_tools.tokenize(',').sort().unique() : []
+
+    // opt out tools
+    if (!skip_baserecalibration) {
+        tools_list << 'baserecalibration'
+    }
+    if (!skip_intervallisttools) {
+        tools_list << 'intervallisttools'
+    }
+    if (!skip_variantfiltration) {
+        tools_list << 'variantfiltration'
+    }
+
+    return tools_list
 }
