@@ -4,24 +4,21 @@
 ========================================================================================
 */
 
-include { GATK4_APPLYBQSR } from '../../../modules/nf-core/gatk4/applybqsr'
-include { SAMTOOLS_INDEX  } from '../../../modules/nf-core/samtools/index'
-include { SAMTOOLS_STATS  } from '../../../modules/nf-core/samtools/stats'
+include { GATK4_APPLYBQSR    } from '../../../modules/nf-core/gatk4/applybqsr'
+include { SAMTOOLS_INDEX     } from '../../../modules/nf-core/samtools/index'
+include { BAM_STATS_SAMTOOLS } from '../../../subworkflows/nf-core/bam_stats_samtools'
 
 workflow RECALIBRATE {
     take:
-    skip_samtools // boolean: true/false
     bam // channel: [mandatory] bam
     dict // channel: [mandatory] dict
     fai // channel: [mandatory] fai
-    fasta // channel: [mandatory] fasta
+    fasta // channel: [mandatory] meta, fasta
 
     main:
-    def ch_reports = channel.empty()
-
     GATK4_APPLYBQSR(
         bam,
-        fasta,
+        fasta.map { _meta, fasta_ -> [fasta_] },
         fai,
         dict,
     )
@@ -34,12 +31,11 @@ workflow RECALIBRATE {
 
     def bam_recalibrated_index = GATK4_APPLYBQSR.out.bam.join(bam_indices, failOnMismatch: true, failOnDuplicate: true)
 
-    if (!skip_samtools) {
-        SAMTOOLS_STATS(bam_recalibrated_index, [[], []])
-        ch_reports = SAMTOOLS_STATS.out.stats
-    }
+    BAM_STATS_SAMTOOLS(bam_recalibrated_index, fasta)
 
     emit:
-    bam = bam_recalibrated_index
-    qc  = ch_reports
+    bam      = bam_recalibrated_index
+    flagstat = BAM_STATS_SAMTOOLS.out.flagstat
+    idxstats = BAM_STATS_SAMTOOLS.out.idxstats
+    stats    = BAM_STATS_SAMTOOLS.out.stats
 }

@@ -1,7 +1,7 @@
 {
     "-profile test --input all.csv": {
         "content": [
-            80,
+            86,
             {
                 "CAT_FASTQ": {
                     "cat": "9.5"
@@ -177,7 +177,9 @@
                 "reports/stats",
                 "reports/stats/GM12878_bam",
                 "reports/stats/GM12878_bam/samtools",
-                "reports/stats/GM12878_bam/samtools/GM12878_bam.stats",
+                "reports/stats/GM12878_bam/samtools/GM12878_bam.recal.flagstat",
+                "reports/stats/GM12878_bam/samtools/GM12878_bam.recal.idxstats",
+                "reports/stats/GM12878_bam/samtools/GM12878_bam.recal.stats",
                 "reports/stats/GM12878_cram",
                 "reports/stats/GM12878_cram/mosdepth",
                 "reports/stats/GM12878_cram/mosdepth/GM12878_cram.mosdepth.global.dist.txt",
@@ -185,7 +187,9 @@
                 "reports/stats/GM12878_cram/mosdepth/GM12878_cram.per-base.bed.gz",
                 "reports/stats/GM12878_cram/mosdepth/GM12878_cram.per-base.bed.gz.csi",
                 "reports/stats/GM12878_cram/samtools",
-                "reports/stats/GM12878_cram/samtools/GM12878_cram.stats",
+                "reports/stats/GM12878_cram/samtools/GM12878_cram.recal.flagstat",
+                "reports/stats/GM12878_cram/samtools/GM12878_cram.recal.idxstats",
+                "reports/stats/GM12878_cram/samtools/GM12878_cram.recal.stats",
                 "reports/stats/GM12878_fastq",
                 "reports/stats/GM12878_fastq/STAR_log",
                 "reports/stats/GM12878_fastq/STAR_log/GM12878_fastq.Log.final.out",
@@ -200,8 +204,15 @@
                 "reports/stats/GM12878_fastq/markduplicates",
                 "reports/stats/GM12878_fastq/markduplicates/GM12878_fastq.md.metrics.txt",
                 "reports/stats/GM12878_fastq/samtools",
-                "reports/stats/GM12878_fastq/samtools/GM12878_fastq.flagstat",
-                "reports/stats/GM12878_fastq/samtools/GM12878_fastq.stats",
+                "reports/stats/GM12878_fastq/samtools/GM12878_fastq.aligned.flagstat",
+                "reports/stats/GM12878_fastq/samtools/GM12878_fastq.aligned.idxstats",
+                "reports/stats/GM12878_fastq/samtools/GM12878_fastq.aligned.stats",
+                "reports/stats/GM12878_fastq/samtools/GM12878_fastq.md.flagstat",
+                "reports/stats/GM12878_fastq/samtools/GM12878_fastq.md.idxstats",
+                "reports/stats/GM12878_fastq/samtools/GM12878_fastq.md.stats",
+                "reports/stats/GM12878_fastq/samtools/GM12878_fastq.recal.flagstat",
+                "reports/stats/GM12878_fastq/samtools/GM12878_fastq.recal.idxstats",
+                "reports/stats/GM12878_fastq/samtools/GM12878_fastq.recal.stats",
                 "variant_calling",
                 "variant_calling/GM12878_bam",
                 "variant_calling/GM12878_bam/GM12878_bam.haplotypecaller.filtered.vcf.gz",
@@ -224,15 +235,15 @@
                 "gatk-base-recalibrator-quality-scores-plot_Pre-recalibration_Percent.txt:md5,b7c9321b4bb0acaab9dc2f0f25163f59",
                 "multiqc_citations.txt:md5,cf0010a27fe09ed8eabf89422df32550",
                 "multiqc_picard_dups.txt:md5,da7a65bf9367599256c4694f173a61a7",
-                "multiqc_samtools_idxstats.txt:md5,139e6bb3bb170aab59568cfc00d98123",
+                "multiqc_samtools_idxstats.txt:md5,c6739d8755306b3bff37efba0e508e0c",
                 "multiqc_star.txt:md5,b9ffabd8529481860a9dea0859d778fb",
                 "picard_MarkIlluminaAdapters_histogram.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "picard_MeanQualityByCycle_histogram.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "picard_MeanQualityByCycle_histogram_1.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "picard_QualityScoreDistribution_histogram.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
-                "samtools-idxstats-mapped-reads-plot_Normalised_Counts.txt:md5,5bb6f3b328f037608e25d6b6ad39123d",
-                "samtools-idxstats-mapped-reads-plot_Observed_over_Expected_Counts.txt:md5,5bb6f3b328f037608e25d6b6ad39123d",
-                "samtools-idxstats-mapped-reads-plot_Raw_Counts.txt:md5,d1b00eecb52d1c0c47fceb1f31177c2e",
+                "samtools-idxstats-mapped-reads-plot_Normalised_Counts.txt:md5,79c95dec0eaf7be432adbfbe4e374e81",
+                "samtools-idxstats-mapped-reads-plot_Observed_over_Expected_Counts.txt:md5,79c95dec0eaf7be432adbfbe4e374e81",
+                "samtools-idxstats-mapped-reads-plot_Raw_Counts.txt:md5,eaaa9fa35782dae4e4d355fb6672a7f8",
                 "star_alignment_plot.txt:md5,f525d4d1f43f66ba171f3db4d68b928c",
                 "star_summary_table.txt:md5,6b67b1b7c130f55075939b7acd887671",
                 "GM12878_cram.mosdepth.global.dist.txt:md5,da4f2a9da24de7763247444ed9fc6d53",
@@ -260,10 +271,10 @@
             ],
             "No warnings"
         ],
+        "timestamp": "2026-03-06T17:44:00.771541339",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.3"
-        },
-        "timestamp": "2026-02-06T10:53:02.352989427"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
+        }
     }
 }

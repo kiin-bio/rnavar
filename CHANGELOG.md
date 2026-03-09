@@ -7,9 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- [#293](https://github.com/nf-core/rnavar/pull/293) - Adding idxstats and flagstat to recalibrated bam files
+
 ### Changed
 
+- [#293](https://github.com/nf-core/rnavar/pull/293) - Prefix for the samtools stats files (idxstats, flagstat, stats)
+
 ### Fixed
+
+- [#293](https://github.com/nf-core/rnavar/pull/293) - Rescue idxstats files
+- [#293](https://github.com/nf-core/rnavar/pull/293) - No more overwrite of any of the samtools stats files (idxstats, flagstat, stats)
 
 ### Removed
 
