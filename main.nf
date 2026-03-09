@@ -343,7 +343,7 @@ def paramsSummaryMultiqc(summary_params) {
 def setup_tools(skip_baserecalibration, skip_intervallisttools, skip_variantfiltration, input_tools) {
 
     // opt in tools
-    def tools_list = input_tools ? input_tools.tokenize(',').sort().unique() : []
+    def tools_list = input_tools ? input_tools.tokenize(',') : []
 
     // opt out tools
     if (!skip_baserecalibration) {
