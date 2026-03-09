@@ -131,7 +131,7 @@ workflow RNAVAR {
         interval_list_split = GATK4_INTERVALLISTTOOLS.out.interval_list.map { _meta, bed -> [bed] }.collect()
     }
     else {
-        interval_list_split = interval_list.map { _meta, bed -> [bed] }.collect()
+        interval_list_split = interval_list.map { _meta, bed -> [[bed]] }.collect()
     }
 
     // MODULE: HLATyping with Seq2HLA
