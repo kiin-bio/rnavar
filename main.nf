@@ -70,23 +70,15 @@ workflow {
         params.help,
         params.help_full,
         params.show_hidden,
+        params.bam_csi_index,
+        params.dbsnp,
+        params.gff,
+        params.gtf,
+        params.known_indels,
+        params.skip_tools,
+        params.tools,
+        params.umitools_bc_pattern,
     )
-
-    // Fails for missing params
-    if (params.gtf && params.gff) {
-        error("Using both --gtf and --gff is not supported. Please use only one of these parameters")
-    }
-    else if (!params.gtf && !params.gff) {
-        error("Missing required parameters: --gtf or --gff")
-    }
-
-    if (params.extract_umi && !params.umitools_bc_pattern) {
-        error("Expected --umitools_bc_pattern when --extract_umi is specified.")
-    }
-
-    if (!params.skip_baserecalibration && !params.dbsnp && !params.known_indels) {
-        error("Known sites are required for performing base recalibration. Supply them with either --dbsnp and/or --known_indels or disable base recalibration with --skip_baserecalibration")
-    }
 
     // Download cache
     if (params.download_cache) {
@@ -142,6 +134,7 @@ workflow {
         snpeff_cache,
         vep_cache,
         vep_extra_files,
+        tools,
     )
 
     def collated_versions = softwareVersionsToYAML(
@@ -159,7 +152,7 @@ workflow {
     def multiqc_report = channel.empty()
 
     // MULTIQC
-    if (!params.skip_multiqc) {
+    if (!('multiqc' in tools)) {
         def multiqc_files = channel.empty()
 
         multiqc_files = multiqc_files.mix(collated_versions)
@@ -207,7 +200,7 @@ workflow {
     publish:
     multiqc = MULTIQC.out.data.mix(MULTIQC.out.plots, MULTIQC.out.report)
     reports = channel.topic("multiqc_files").filter { _meta, _process, tool, _file ->
-        return !(tool == 'snpeff' && !params.tools.split(',').contains('snpeff'))
+        return !(tool == 'snpeff' && !('snpeff' in tools))
     }
 }
 
@@ -238,6 +231,7 @@ workflow NFCORE_RNAVAR {
     snpeff_cache
     vep_cache
     vep_extra_files
+    tools
 
     main:
     reports = channel.empty()
@@ -259,16 +253,7 @@ workflow NFCORE_RNAVAR {
         params.feature_type,
         align,
         params.genome ?: "genome",
-        setup_tools(
-            params.bam_csi_index,
-            params.extract_umi,
-            params.generate_gvcf,
-            params.skip_baserecalibration,
-            params.skip_exon_bed_check,
-            params.skip_intervallisttools,
-            params.skip_variantfiltration,
-            params.tools,
-        ),
+        tools,
     )
 
     // WORKFLOW: Run pipeline
@@ -298,16 +283,7 @@ workflow NFCORE_RNAVAR {
         vep_extra_files,
         params.aligner,
         params.star_ignore_sjdbgtf,
-        setup_tools(
-            params.bam_csi_index,
-            params.extract_umi,
-            params.generate_gvcf,
-            params.skip_baserecalibration,
-            params.skip_exon_bed_check,
-            params.skip_intervallisttools,
-            params.skip_variantfiltration,
-            params.tools,
-        ),
+        tools,
     )
 
     reports = reports.mix(RNAVAR.out.reports)
@@ -352,36 +328,4 @@ def paramsSummaryMultiqc(summary_params) {
     yaml_file_text += "${summary_section}"
 
     return yaml_file_text
-}
-
-// Setup list of tools to run
-def setup_tools(bam_csi_index, extract_umi, generate_gvcf, skip_baserecalibration, skip_exon_bed_check, skip_intervallisttools, skip_variantfiltration, input_tools) {
-
-    // opt in tools
-    def tools_list = input_tools ? input_tools.tokenize(',') : []
-
-    if (extract_umi) {
-        tools_list << 'umitools_extract'
-    }
-
-    if (generate_gvcf) {
-        tools_list << 'gatk4_combinegvcfs'
-    }
-
-    // opt out tools
-    if (!skip_baserecalibration) {
-        tools_list << 'gatk4_baserecalibrator'
-    }
-    if (!skip_exon_bed_check) {
-        tools_list << 'removeunknownregions'
-    }
-    if (!skip_intervallisttools) {
-        tools_list << 'gatk4_intervallisttools'
-    }
-    // no variantfiltration if skip_variantfiltration and bam_csi_index as GATK4_VARIANTFILTRATION does not support csi index
-    if (!(skip_variantfiltration) && !(bam_csi_index)) {
-        tools_list << 'gatk4_variantfiltration'
-    }
-
-    return tools_list
 }

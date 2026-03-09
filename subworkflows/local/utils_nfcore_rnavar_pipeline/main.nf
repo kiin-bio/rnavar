@@ -38,6 +38,14 @@ workflow PIPELINE_INITIALISATION {
     help // boolean: Display help message and exit
     help_full // boolean: Show the full help message
     show_hidden // boolean: Show hidden parameters in the help message
+    bam_csi_index // params: params.bam_csi_index
+    dbsnp // params: params.dbsnp
+    gff // params: params.gff
+    gtf // params: params.gtf
+    known_indels // params: params.known_indels
+    skip_tools // params: params.skip_tools
+    input_tools // params: params.tools
+    umitools_bc_pattern // params: params.umitools_bc_pattern
 
     main:
 
@@ -116,6 +124,26 @@ workflow PIPELINE_INITIALISATION {
     log.info(before_text)
     log.info(paramsSummaryLog(summary_options, workflow))
     log.info(after_text)
+
+    def tools = setup_tools(bam_csi_index, skip_tools, input_tools)
+
+    log.info("tools: " + tools.join(','))
+
+    // Fails for missing params
+    if (gtf && gff) {
+        error("Using both --gtf and --gff is not supported. Please use only one of these parameters")
+    }
+    else if (!gtf && !gff) {
+        error("Missing required parameters: --gtf or --gff")
+    }
+
+    if (('umitools' in tools) && !umitools_bc_pattern) {
+        error("Expected --umitools_bc_pattern when --tools umitools is specified.")
+    }
+
+    if (!('baserecalibrator' in tools) && !dbsnp && !known_indels) {
+        error("Known sites are required for performing base recalibration. Supply them with either --dbsnp and/or --known_indels or disable base recalibration with --skip_tools baserecalibrator")
+    }
 
     //
     // Validate the parameters using nextflow_schema.json or the schema
@@ -284,6 +312,37 @@ def genomeExistsError() {
         def error_string = "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n" + "  Genome '${params.genome}' not found in any config files provided to the pipeline.\n" + "  Currently, the available genome keys are:\n" + "  ${params.genomes.keySet().join(", ")}\n" + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
         error(error_string)
     }
+}
+
+
+// Setup list of tools to run
+def setup_tools(bam_csi_index, input_skip, input_tools) {
+
+    // opt in tools
+    def tools_list = input_tools ? input_tools.tokenize(',') : []
+
+    // opt out tools
+    def skip_list = input_skip ? input_skip.tokenize(',') : []
+    if (!('baserecalibrator' in skip_list)) {
+        tools_list << 'baserecalibrator'
+    }
+    if (!('intervallisttools' in skip_list)) {
+        tools_list << 'intervallisttools'
+    }
+    if (!('variantfiltration' in skip_list)) {
+        tools_list << 'variantfiltration'
+    }
+    if (!('removeunknownregions' in skip_list)) {
+        tools_list << 'removeunknownregions'
+    }
+
+    // Specific tools not to execute depending of params
+    // no variantfiltration if bam_csi_index as GATK4_VARIANTFILTRATION does not support csi index
+    if (bam_csi_index) {
+        tools_list = tools_list - 'variantfiltration'
+    }
+
+    return tools_list
 }
 
 //

@@ -239,8 +239,6 @@
                 "Input/output options",
                 "  input                     : [PATH]/tests/csv/1.0/fastq_single.csv",
                 "  outdir                    : [PATH]/tests/[NFT_HASH]/output",
-                "Alignment options",
-                "  star_index                : https://raw.githubusercontent.com/nf-core/test-datasets/rnavar/data//genomics/homo_sapiens/genome/index/star/star.tar.gz",
                 "Variant filtering",
                 "  gatk_vf_qd_filter         : 2.0",
                 "  gatk_vf_fs_filter         : 30.0",
@@ -255,6 +253,7 @@
                 "  fasta                     : https://raw.githubusercontent.com/nf-core/test-datasets/rnavar/data//genomics/homo_sapiens/genome/genome.fasta",
                 "  dict                      : https://raw.githubusercontent.com/nf-core/test-datasets/rnavar/data//genomics/homo_sapiens/genome/genome.dict",
                 "  gff                       : https://raw.githubusercontent.com/nf-core/test-datasets/rnavar/data//genomics/homo_sapiens/genome/genome.gff3",
+                "  star_index                : https://raw.githubusercontent.com/nf-core/test-datasets/rnavar/data//genomics/homo_sapiens/genome/index/star/star.tar.gz",
                 "  known_indels              : https://raw.githubusercontent.com/nf-core/test-datasets/rnavar/data//genomics/homo_sapiens/genome/vcf/mills_and_1000G.indels.vcf.gz",
                 "  known_indels_tbi          : https://raw.githubusercontent.com/nf-core/test-datasets/rnavar/data//genomics/homo_sapiens/genome/vcf/mills_and_1000G.indels.vcf.gz.tbi",
                 "  dbsnp                     : https://raw.githubusercontent.com/nf-core/test-datasets/rnavar/data//genomics/homo_sapiens/genome/vcf/dbsnp_146.hg38.vcf.gz",
@@ -284,6 +283,7 @@
                 "    https://doi.org/10.1038/s41587-020-0439-x",
                 "* Software dependencies",
                 "    https://github.com/nf-core/rnavar/blob/master/CITATIONS.md",
+                "tools: baserecalibrator,intervallisttools,variantfiltration,removeunknownregions",
                 "[NXF_HASH] Submitted process > MULTIQC (rnavar)",
                 "[NXF_HASH] Submitted process > NFCORE_RNAVAR:PREPARE_GENOME:GFFREAD (testdata.nf-core.rnavar)",
                 "[NXF_HASH] Submitted process > NFCORE_RNAVAR:PREPARE_GENOME:GTF2BED (testdata.nf-core.rnavar)",
@@ -329,7 +329,7 @@
                 "[NXF_HASH] Submitted process > NFCORE_RNAVAR:RNAVAR:TABIX (GM12878)"
             ]
         ],
-        "timestamp": "2026-03-06T17:54:48.932783387",
+        "timestamp": "2026-03-09T16:19:40.223503806",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "25.10.4"
@@ -567,7 +567,7 @@
             ],
             "No warnings"
         ],
-        "timestamp": "2026-03-06T17:59:03.683205298",
+        "timestamp": "2026-03-09T16:24:10.304825729",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "25.10.4"
@@ -805,7 +805,7 @@
             ],
             "No warnings"
         ],
-        "timestamp": "2026-03-06T17:56:59.702551967",
+        "timestamp": "2026-03-09T16:21:53.811725817",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "25.10.4"

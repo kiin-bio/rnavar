@@ -7,9 +7,9 @@ nextflow_pipeline {
 
     def test_scenario = [
         [
-            name: "-profile test --skip_variantfiltration",
+            name: "-profile test --skip_tools variantfiltration",
             params: [
-                skip_variantfiltration: true
+                skip_tools: 'variantfiltration'
             ]
         ]
     ]

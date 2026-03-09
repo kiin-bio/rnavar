@@ -110,7 +110,7 @@ workflow RNAVAR {
     // MODULE: Extract UMIs from reads
 
     def umi_extracted_reads = channel.empty()
-    if ('umitools_extract' in tools) {
+    if ('umitools' in tools) {
         UMITOOLS_EXTRACT(cat_fastq)
 
         umi_extracted_reads = UMITOOLS_EXTRACT.out.reads
@@ -126,7 +126,7 @@ workflow RNAVAR {
 
     // MODULE: Scatter one interval-list into many interval-files using GATK4 IntervalListTools
     def interval_list_split = channel.empty()
-    if ('gatk4_intervallisttools' in tools) {
+    if ('intervallisttools' in tools) {
         GATK4_INTERVALLISTTOOLS(interval_list)
         interval_list_split = GATK4_INTERVALLISTTOOLS.out.interval_list.map { _meta, bed -> [bed] }.collect()
     }
@@ -192,7 +192,7 @@ workflow RNAVAR {
         // Generates a recalibration table based on various co-variates
         def bam_variant_calling = channel.empty()
 
-        if ('gatk4_baserecalibrator' in tools) {
+        if ('baserecalibrator' in tools) {
             def splitncigar_bam_bai_interval = splitncigar_bam_bai.combine(interval_list.map { _meta, bed -> [bed] }.flatten())
 
             GATK4_BASERECALIBRATOR(
@@ -260,7 +260,7 @@ workflow RNAVAR {
 
         def haplotypecaller_vcf = channel.empty()
 
-        if ('gatk4_combinegvcfs' in tools) {
+        if ('combinegvcfs' in tools) {
             // MODULE: CombineGVCFS from GATK4
             // Merge multiple GVCF files into one GVCF
             GATK4_COMBINEGVCFS(
@@ -293,7 +293,7 @@ workflow RNAVAR {
 
             // MODULE: VariantFiltration from GATK4
             // Filter variant calls based on certain criteria
-            if ('gatk4_variantfiltration' in tools) {
+            if ('variantfiltration' in tools) {
 
                 GATK4_VARIANTFILTRATION(
                     haplotypecaller_vcf_tbi,

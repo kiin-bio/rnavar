@@ -7,9 +7,9 @@ nextflow_pipeline {
 
     def test_scenario = [
         [
-            name: "-profile test --skip_intervallisttools",
+            name: "-profile test --skip_tools intervallisttools",
             params: [
-                skip_intervallisttools: true
+                skip_tools: 'intervallisttools'
             ]
         ]
     ]

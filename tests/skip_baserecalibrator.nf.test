@@ -7,9 +7,9 @@ nextflow_pipeline {
 
     def test_scenario = [
         [
-            name: "-profile test --skip_baserecalibration",
+            name: "-profile test --skip_tools baserecalibrator",
             params: [
-                skip_baserecalibration: true
+                skip_tools: 'baserecalibrator'
             ]
         ]
     ]

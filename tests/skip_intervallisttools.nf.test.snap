@@ -1,5 +1,5 @@
 {
-    "-profile test --skip_intervallisttools": {
+    "-profile test --skip_tools gatk4_intervallisttools": {
         "content": [
             34,
             {
@@ -223,7 +223,7 @@
             ],
             "No warnings"
         ],
-        "timestamp": "2026-03-09T10:35:56.781535212",
+        "timestamp": "2026-03-09T14:44:24.686438932",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "25.10.4"
