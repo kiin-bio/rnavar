@@ -70,6 +70,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#289](https://github.com/nf-core/rnavar/pull/289) - Replace local modules for annotation by nf-core/modules versions
 - [#290](https://github.com/nf-core/rnavar/pull/290) - Remove unused modules
 - [#292](https://github.com/nf-core/rnavar/pull/292) - Reorder config files
+- [#294](https://github.com/nf-core/rnavar/pull/294) - All tools to run now follow an internal list of tools defined in the root main.nf
 
 #### Fixed
 
