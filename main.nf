@@ -257,9 +257,18 @@ workflow NFCORE_RNAVAR {
         params.known_indels_tbi,
         params.star_index,
         params.feature_type,
-        params.skip_exon_bed_check,
         align,
         params.genome ?: "genome",
+        setup_tools(
+            params.bam_csi_index,
+            params.extract_umi,
+            params.generate_gvcf,
+            params.skip_baserecalibration,
+            params.skip_exon_bed_check,
+            params.skip_intervallisttools,
+            params.skip_variantfiltration,
+            params.tools,
+        ),
     )
 
     // WORKFLOW: Run pipeline
@@ -288,15 +297,17 @@ workflow NFCORE_RNAVAR {
         vep_cache,
         vep_extra_files,
         params.aligner,
-        params.bam_csi_index,
-        params.extract_umi,
-        params.generate_gvcf,
-        params.skip_baserecalibration,
-        params.skip_intervallisttools,
-        params.skip_variantannotation,
-        params.skip_variantfiltration,
         params.star_ignore_sjdbgtf,
-        params.tools ?: "no_tools",
+        setup_tools(
+            params.bam_csi_index,
+            params.extract_umi,
+            params.generate_gvcf,
+            params.skip_baserecalibration,
+            params.skip_exon_bed_check,
+            params.skip_intervallisttools,
+            params.skip_variantfiltration,
+            params.tools,
+        ),
     )
 
     reports = reports.mix(RNAVAR.out.reports)
@@ -311,9 +322,7 @@ workflow NFCORE_RNAVAR {
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-//
 // Get workflow summary for MultiQC
-//
 def paramsSummaryMultiqc(summary_params) {
     def summary_section = ''
     summary_params
@@ -343,4 +352,36 @@ def paramsSummaryMultiqc(summary_params) {
     yaml_file_text += "${summary_section}"
 
     return yaml_file_text
+}
+
+// Setup list of tools to run
+def setup_tools(bam_csi_index, extract_umi, generate_gvcf, skip_baserecalibration, skip_exon_bed_check, skip_intervallisttools, skip_variantfiltration, input_tools) {
+
+    // opt in tools
+    def tools_list = input_tools ? input_tools.tokenize(',') : []
+
+    if (extract_umi) {
+        tools_list << 'umitools_extract'
+    }
+
+    if (generate_gvcf) {
+        tools_list << 'gatk4_combinegvcfs'
+    }
+
+    // opt out tools
+    if (!skip_baserecalibration) {
+        tools_list << 'gatk4_baserecalibrator'
+    }
+    if (!skip_exon_bed_check) {
+        tools_list << 'removeunknownregions'
+    }
+    if (!skip_intervallisttools) {
+        tools_list << 'gatk4_intervallisttools'
+    }
+    // no variantfiltration if skip_variantfiltration and bam_csi_index as GATK4_VARIANTFILTRATION does not support csi index
+    if (!(skip_variantfiltration) && !(bam_csi_index)) {
+        tools_list << 'gatk4_variantfiltration'
+    }
+
+    return tools_list
 }

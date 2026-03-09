@@ -7,20 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- [#293](https://github.com/nf-core/rnavar/pull/293) - Adding idxstats and flagstat to recalibrated bam files
+- [#293](https://github.com/nf-core/rnavar/pull/293) - Adding `idxstats` and `flagstat` to recalibrated bam files
+- [#293](https://github.com/nf-core/rnavar/pull/293) - Added prefix for the `samtools` statistics files (`idxstats`, `flagstat`, `stats`)
 
 ### Changed
 
-- [#293](https://github.com/nf-core/rnavar/pull/293) - Prefix for the samtools stats files (idxstats, flagstat, stats)
-
 ### Fixed
 
-- [#293](https://github.com/nf-core/rnavar/pull/293) - Rescue idxstats files
-- [#293](https://github.com/nf-core/rnavar/pull/293) - No more overwrite of any of the samtools stats files (idxstats, flagstat, stats)
+- [#293](https://github.com/nf-core/rnavar/pull/293) - Rescue `idxstats` files
+- [#293](https://github.com/nf-core/rnavar/pull/293) - No more overwrite of any of the `samtools` statistics files (`idxstats`, `flagstat`, `stats`)
 
 ### Removed
 
-- [#287](https://github.com/nf-core/rnavar/pull/287) - Removed hook_url params, cf [tools#4051](https://github.com/nf-core/tools/pull/4051)
+- [#287](https://github.com/nf-core/rnavar/pull/287) - Removed `hook_url` params, cf [tools#4051](https://github.com/nf-core/tools/pull/4051)
+- [#294](https://github.com/nf-core/rnavar/pull/294) - Removed `skip_variantannotation` params
 
 ### Dependencies
 
@@ -30,9 +30,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Parameter
 
-| Old name | New name |
-| -------- | -------- |
-| hook_url |          |
+| Old name               | New name |
+| ---------------------- | -------- |
+| hook_url               |          |
+| skip_variantannotation |          |
 
 ### Schema input
 
@@ -69,6 +70,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#289](https://github.com/nf-core/rnavar/pull/289) - Replace local modules for annotation by nf-core/modules versions
 - [#290](https://github.com/nf-core/rnavar/pull/290) - Remove unused modules
 - [#292](https://github.com/nf-core/rnavar/pull/292) - Reorder config files
+- [#294](https://github.com/nf-core/rnavar/pull/294) - All tools to run now follow an internal list of tools defined in the root main.nf
 
 #### Fixed
 

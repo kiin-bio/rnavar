@@ -437,30 +437,25 @@
                     "description": "Skip the process of base recalibration steps i.e., GATK BaseRecalibrator and GATK ApplyBQSR.",
                     "help_text": "This parameter disable the base recalibration step, thus using a un-calibrated BAM file for variant calling."
                 },
+                "skip_exon_bed_check": {
+                    "type": "boolean",
+                    "description": "Skip the check of the exon bed",
+                    "help_text": "Set this parameter if you don't want to the pipeline to check and filter unknown regions in the exon bed file."
+                },
                 "skip_intervallisttools": {
                     "type": "boolean",
                     "description": "Skip the process of preparing interval lists for the GATK variant calling step",
                     "help_text": "This parameter disable preparing multiple interval lists to use with HaplotypeCaller module of GATK. It is recommended not to disable the step as it is required to run the variant calling correctly."
-                },
-                "skip_variantfiltration": {
-                    "type": "boolean",
-                    "description": "Skip variant filtering of GATK",
-                    "help_text": "Set this parameter if you don't want to filter any variants."
-                },
-                "skip_variantannotation": {
-                    "type": "boolean",
-                    "description": "Skip variant annotation",
-                    "help_text": "Set this parameter if you don't want to run variant annotation."
                 },
                 "skip_multiqc": {
                     "type": "boolean",
                     "description": "Skip MultiQC reports",
                     "help_text": "This parameter disable all QC reports"
                 },
-                "skip_exon_bed_check": {
+                "skip_variantfiltration": {
                     "type": "boolean",
-                    "description": "Skip the check of the exon bed",
-                    "help_text": "Set this parameter if you don't want to the pipeline to check and filter unknown regions in the exon bed file."
+                    "description": "Skip variant filtering of GATK",
+                    "help_text": "Set this parameter if you don't want to filter any variants."
                 }
             }
         },
