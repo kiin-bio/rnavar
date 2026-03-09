@@ -29,7 +29,7 @@ workflow VCF_ANNOTATE_ALL {
     tab_ann = channel.empty()
     vcf_ann = channel.empty()
 
-    if (tools.split(',').contains('bcfann')) {
+    if ('bcfann' in tools) {
         if (bcftools_columns) {
             bcftools_in = vcf
                 .combine(bcftools_annotations)
@@ -52,13 +52,13 @@ workflow VCF_ANNOTATE_ALL {
     }
 
 
-    if (tools.split(',').contains('merge') || tools.split(',').contains('snpeff')) {
+    if ('merge' in tools || 'snpeff' in tools) {
         VCF_ANNOTATE_SNPEFF(vcf, snpeff_db, snpeff_cache)
 
         vcf_ann = vcf_ann.mix(VCF_ANNOTATE_SNPEFF.out.vcf_tbi)
     }
 
-    if (tools.split(',').contains('merge')) {
+    if ('merge' in tools) {
         vcf_ann_for_merge = VCF_ANNOTATE_SNPEFF.out.vcf_tbi.map { meta, vcf_, _tbi -> [meta, vcf_, []] }
         VCF_ANNOTATE_MERGE(vcf_ann_for_merge, fasta, vep_genome, vep_species, vep_cache_version, vep_cache, vep_extra_files)
 
@@ -67,7 +67,7 @@ workflow VCF_ANNOTATE_ALL {
         json_ann = json_ann.mix(VCF_ANNOTATE_MERGE.out.json)
     }
 
-    if (tools.split(',').contains('vep')) {
+    if ('vep' in tools) {
         vcf_for_vep = vcf.map { meta, vcf_ -> [meta, vcf_, []] }
         VCF_ANNOTATE_ENSEMBLVEP(vcf_for_vep, fasta, vep_genome, vep_species, vep_cache_version, vep_cache, vep_extra_files)
 
