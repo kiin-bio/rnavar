@@ -39,9 +39,9 @@
                 "skip_tools": {
                     "type": "string",
                     "fa_icon": "fas fa-hammer",
-                    "description": "Specify which tools RNAvar should skip. Values can be 'baserecalibrator', 'combinegvcfs', 'intervallisttools', 'variantfiltration', 'multiqc' and 'removeunknownregions'",
-                    "help_text": "List of opt-out tools to be skipped: 'baserecalibrator', 'combinegvcfs', 'intervallisttools', 'variantfiltration', 'multiqc' and 'removeunknownregions'",
-                    "pattern": "^((baserecalibrator|combinegvcfs|intervallisttools|variantfiltration|multiqc|removeunknownregions)*(,)*)*$",
+                    "description": "Specify which tools RNAvar should skip. Values can be 'baserecalibrator', 'intervallisttools', 'variantfiltration', 'multiqc' and 'removeunknownregions'",
+                    "help_text": "List of opt-out tools to be skipped: 'baserecalibrator', 'intervallisttools', 'variantfiltration', 'multiqc' and 'removeunknownregions'",
+                    "pattern": "^((baserecalibrator|intervallisttools|variantfiltration|multiqc|removeunknownregions)*(,)*)*$",
                     "hidden": true
                 },
                 "save_merged_fastq": {
@@ -192,6 +192,11 @@
                     "description": "The minimum phred-scaled confidence threshold at which variants should be called.",
                     "help_text": "Specify the minimum phred-scaled confidence threshold at which variants should be called.",
                     "hidden": false
+                },
+                "generate_gvcf": {
+                    "type": "boolean",
+                    "description": "Enable generation of GVCFs by sample additionnaly to the VCFs.",
+                    "help_text": "This parameter enables GATK HAPLOTYPECALLER to generate GVCFs. Default false."
                 },
                 "gatk_interval_scatter_count": {
                     "type": "integer",

@@ -65,7 +65,7 @@ params.vep_species       = getGenomeAttribute('vep_species')
 workflow {
 
     main:
-    def tools = setup_tools(params.bam_csi_index, params.skip_tools, params.tools)
+    def tools = setup_tools(params.bam_csi_index, params.generate_gvcf, params.skip_tools, params.tools)
 
     // SUBWORKFLOW: Run initialisation tasks
     PIPELINE_INITIALISATION(

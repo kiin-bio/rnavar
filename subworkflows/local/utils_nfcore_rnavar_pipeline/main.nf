@@ -318,7 +318,7 @@ def genomeExistsError() {
 
 
 // Setup list of tools to run
-def setup_tools(bam_csi_index, input_skip, input_tools) {
+def setup_tools(bam_csi_index, generate_gvcf, input_skip, input_tools) {
 
     // opt in tools
     def tools_list = input_tools ? input_tools.tokenize(',') : []
@@ -336,6 +336,10 @@ def setup_tools(bam_csi_index, input_skip, input_tools) {
     }
     if (!('removeunknownregions' in skip_list)) {
         tools_list << 'removeunknownregions'
+    }
+
+    if (generate_gvcf) {
+        tools_list << 'combinegvcfs'
     }
 
     // Specific tools not to execute depending of params
