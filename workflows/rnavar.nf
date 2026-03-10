@@ -110,7 +110,7 @@ workflow RNAVAR {
     // MODULE: Extract UMIs from reads
     UMITOOLS_EXTRACT(reads_input_all.filter { 'umitools' in tools })
 
-    def reads_preprocessed = UMITOOLS_EXTRACT.out.reads ?: reads_input_all
+    def reads_preprocessed = 'umitools' in tools ? UMITOOLS_EXTRACT.out.reads : reads_input_all
 
     // MODULE: Prepare the interval list from the GTF file using GATK4 BedToIntervalList
     GATK4_BEDTOINTERVALLIST(exon_bed, dict)

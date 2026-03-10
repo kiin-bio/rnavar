@@ -193,11 +193,6 @@
                     "help_text": "Specify the minimum phred-scaled confidence threshold at which variants should be called.",
                     "hidden": false
                 },
-                "generate_gvcf": {
-                    "type": "boolean",
-                    "description": "Enable generation of GVCFs by sample additionnaly to the VCFs.",
-                    "help_text": "This parameter enables GATK HAPLOTYPECALLER to generate GVCFs. Default false."
-                },
                 "gatk_interval_scatter_count": {
                     "type": "integer",
                     "default": 25,
