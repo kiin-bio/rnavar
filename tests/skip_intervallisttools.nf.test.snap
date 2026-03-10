@@ -1,5 +1,5 @@
 {
-    "-profile test --skip_tools gatk4_intervallisttools": {
+    "-profile test --skip_tools intervallisttools": {
         "content": [
             34,
             {

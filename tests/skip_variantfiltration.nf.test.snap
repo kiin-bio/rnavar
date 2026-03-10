@@ -1,5 +1,5 @@
 {
-    "-profile test --skip_tools gatk4_variantfiltration": {
+    "-profile test --skip_tools variantfiltration": {
         "content": [
             42,
             {
