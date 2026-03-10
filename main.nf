@@ -268,7 +268,7 @@ workflow NFCORE_RNAVAR {
         samplesheet,
         PREPARE_GENOME.out.bcfann,
         PREPARE_GENOME.out.bcfann_tbi,
-        params.bcftools_columns ? channel.fromPath(params.bcftools_columns).collect() : channel.value([]),
+        params.bcftools_columns ? channel.fromPath(params.bcftools_columns).collect() : false,
         params.bcftools_header_lines ? channel.fromPath(params.bcftools_header_lines).collect() : channel.empty(),
         PREPARE_GENOME.out.dbsnp,
         PREPARE_GENOME.out.dbsnp_tbi,

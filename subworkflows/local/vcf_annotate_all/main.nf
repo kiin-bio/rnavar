@@ -33,16 +33,16 @@ workflow VCF_ANNOTATE_ALL {
         vcf_for_bcfann = vcf
             .combine(bcftools_annotations)
             .combine(bcftools_annotations_index)
+            .combine(bcftools_columns)
             .combine(bcftools_header_lines)
-            .map { meta, vcf_, annotation, annotation_index, header_file -> [meta, vcf_, [], annotation, annotation_index, [], header_file, []] }
+            .map { meta, vcf_, annotation, annotation_index, columns, header_file -> [meta, vcf_, [], annotation, annotation_index, columns, header_file, []] }
     }
     else {
         vcf_for_bcfann = vcf
             .combine(bcftools_annotations)
             .combine(bcftools_annotations_index)
-            .combine(bcftools_columns)
             .combine(bcftools_header_lines)
-            .map { meta, vcf_, annotation, annotation_index, columns, header_file -> [meta, vcf_, [], annotation, annotation_index, columns, header_file, []] }
+            .map { meta, vcf_, annotation, annotation_index, header_file -> [meta, vcf_, [], annotation, annotation_index, [], header_file, []] }
     }
 
     BCFTOOLS_ANNOTATE(vcf_for_bcfann.filter { 'bcfann' in tools })
