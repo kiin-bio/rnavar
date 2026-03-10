@@ -277,13 +277,15 @@
                 "  configFiles               : [PATH]/nextflow.config, [PATH]/nextflow.config, [PATH]/tests/nextflow.config",
                 "!! Only displaying parameters that differ from the pipeline defaults !!",
                 "------------------------------------------------------",
+                "Extra informations",
+                "  Tools selected to be run  : baserecalibrator,intervallisttools,removeunknownregions,variantfiltration",
+                "------------------------------------------------------",
                 "* The pipeline",
                 "    https://doi.org/10.5281/zenodo.6669636",
                 "* The nf-core framework",
                 "    https://doi.org/10.1038/s41587-020-0439-x",
                 "* Software dependencies",
                 "    https://github.com/nf-core/rnavar/blob/master/CITATIONS.md",
-                "tools: baserecalibrator,intervallisttools,variantfiltration,removeunknownregions",
                 "[NXF_HASH] Submitted process > MULTIQC (rnavar)",
                 "[NXF_HASH] Submitted process > NFCORE_RNAVAR:PREPARE_GENOME:GFFREAD (testdata.nf-core.rnavar)",
                 "[NXF_HASH] Submitted process > NFCORE_RNAVAR:PREPARE_GENOME:GTF2BED (testdata.nf-core.rnavar)",
@@ -329,7 +331,7 @@
                 "[NXF_HASH] Submitted process > NFCORE_RNAVAR:RNAVAR:TABIX (GM12878)"
             ]
         ],
-        "timestamp": "2026-03-09T16:19:40.223503806",
+        "timestamp": "2026-03-10T17:49:17.718238065",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "25.10.4"

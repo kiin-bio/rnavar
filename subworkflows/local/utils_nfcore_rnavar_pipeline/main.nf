@@ -122,9 +122,10 @@ workflow PIPELINE_INITIALISATION {
     }
     log.info(before_text)
     log.info(paramsSummaryLog(summary_options, workflow))
+    log.info("\033[1;37mExtra informations\033[0m")
+    log.info("\033[0;34m  Tools selected to be run  :\033[0;32m " + tools.join(",") + "\033[0m")
+    log.info("-\033[2m----------------------------------------------------\033[0m-")
     log.info(after_text)
-
-    log.info("tools: " + tools.join(', '))
 
     // Fails for missing params
     if (gtf && gff) {
@@ -343,7 +344,7 @@ def setup_tools(bam_csi_index, input_skip, input_tools) {
         tools_list = tools_list - 'variantfiltration'
     }
 
-    return tools_list
+    return tools_list.sort()
 }
 
 //
