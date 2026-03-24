@@ -133,7 +133,7 @@ workflow RNAVAR {
             star_index,
             gtf,
             star_ignore_sjdbgtf,
-            fasta,
+            fasta.join(fasta_fai).collect(),
             [[:], []],
         )
 
@@ -142,14 +142,10 @@ workflow RNAVAR {
         reports = reports.mix(FASTQ_ALIGN_STAR.out.log_final.collect { _meta, log -> log }.ifEmpty([]))
 
         // SUBWORKFLOW: Mark duplicates with GATK4
-        BAM_MARKDUPLICATES_PICARD(FASTQ_ALIGN_STAR.out.bam, fasta, fasta_fai)
-
-        def markduplicate_indices = BAM_MARKDUPLICATES_PICARD.out.bai
-            .mix(BAM_MARKDUPLICATES_PICARD.out.csi)
-            .mix(BAM_MARKDUPLICATES_PICARD.out.crai)
+        BAM_MARKDUPLICATES_PICARD(FASTQ_ALIGN_STAR.out.bam, fasta.join(fasta_fai).collect())
 
         def genome_bam_bai = BAM_MARKDUPLICATES_PICARD.out.bam
-            .join(markduplicate_indices, failOnDuplicate: true, failOnMismatch: true)
+            .join(BAM_MARKDUPLICATES_PICARD.out.index, failOnDuplicate: true, failOnMismatch: true)
             .mix(PREPARE_ALIGNMENT.out.reads_index)
 
         //Gather QC reports
@@ -199,7 +195,7 @@ workflow RNAVAR {
             RECALIBRATE(
                 applybqsr_bam_bai_interval,
                 dict.map { _meta, dict_ -> [dict_] },
-                fasta_fai.map { _meta, fai -> fai },
+                fasta_fai,
                 fasta,
             )
 

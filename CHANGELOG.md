@@ -16,24 +16,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [#293](https://github.com/nf-core/rnavar/pull/293) - Rescue `idxstats` files
 - [#293](https://github.com/nf-core/rnavar/pull/293) - No more overwrite of any of the `samtools` statistics files (`idxstats`, `flagstat`, `stats`)
+- [#295](https://github.com/nf-core/rnavar/pull/295) - All tools can be selected or skipped via `params.tools` or `params.skip_tools`
 
 ### Removed
 
 - [#287](https://github.com/nf-core/rnavar/pull/287) - Removed `hook_url` params, cf [tools#4051](https://github.com/nf-core/tools/pull/4051)
 - [#294](https://github.com/nf-core/rnavar/pull/294) - Removed `skip_variantannotation` params
 
+### Deprecated
+
+- [#295](https://github.com/nf-core/rnavar/pull/295) - Deprecating multiple params that are still supported but will be removed in future release: `skip_baserecalibration`, `skip_exon_bed_check`, `skip_intervallisttools`, `skip_multiqc`, `skip_variantfiltration`, `extract_umi`
+
 ### Dependencies
 
 | Dependency | Old version | New version |
 | ---------- | ----------- | ----------- |
+| samtools   | 1.22.1      | 1.23.1      |
 | snpeff     | 5.4.0a      | 5.0.4c      |
 
 ### Parameter
 
-| Old name               | New name |
-| ---------------------- | -------- |
-| hook_url               |          |
-| skip_variantannotation |          |
+| Old name               | New name                  |
+| ---------------------- | ------------------------- |
+| hook_url               |                           |
+| skip_variantannotation |                           |
+|                        | vep_cache_preflight_check |
 
 ### Schema input
 
