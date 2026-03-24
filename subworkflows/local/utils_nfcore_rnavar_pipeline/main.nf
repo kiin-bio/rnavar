@@ -43,7 +43,7 @@ workflow PIPELINE_INITIALISATION {
     gff // params: params.gff
     gtf // params: params.gtf
     known_indels // params: params.known_indels
-    tools // params: params.tools
+    tools // array: list of tools to run, determined by params on launch time
     umitools_bc_pattern // params: params.umitools_bc_pattern
 
     main:
