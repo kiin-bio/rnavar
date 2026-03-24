@@ -140,7 +140,7 @@ workflow PIPELINE_INITIALISATION {
     }
 
     if (!('baserecalibrator' in tools) && !dbsnp && !known_indels) {
-        error("Known sites are required for performing base recalibration. Supply them with either --dbsnp and/or --known_indels or disable base recalibration with --skip_tools baserecalibrator")
+        error("Known sites are required for performing base recalibration. Supply them with either --dbsnp and/or --known_indels or disable base recalibration with --skip_baserecalibration")
     }
 
     if ('variantfiltration' in tools && bam_csi_index) {
@@ -316,34 +316,40 @@ def genomeExistsError() {
     }
 }
 
-
-// Setup list of tools to run
-def setup_tools(bam_csi_index, generate_gvcf, input_skip, input_tools) {
+// Define list of tools to run
+def defineToolsList(bam_csi_index, extract_umi, generate_gvcf, input_skip, input_tools, skip_baserecalibration, skip_exon_bed_check, skip_intervallisttools, skip_multiqc, skip_variantfiltration) {
 
     // opt in tools
     def tools_list = input_tools ? input_tools.tokenize(',') : []
 
     // opt out tools
     def skip_list = input_skip ? input_skip.tokenize(',') : []
-    if (!('baserecalibrator' in skip_list)) {
+    if (!('baserecalibrator' in skip_list || skip_baserecalibration)) {
         tools_list << 'baserecalibrator'
     }
-    if (!('intervallisttools' in skip_list)) {
+    if (!('intervallisttools' in skip_list || skip_intervallisttools)) {
         tools_list << 'intervallisttools'
     }
-    if (!('variantfiltration' in skip_list)) {
-        tools_list << 'variantfiltration'
+    if (!('multiqc' in skip_list || skip_multiqc)) {
+        tools_list << 'multiqc'
     }
-    if (!('removeunknownregions' in skip_list)) {
+    if (!('removeunknownregions' in skip_list || skip_exon_bed_check)) {
         tools_list << 'removeunknownregions'
     }
+    if (!('variantfiltration' in skip_list || skip_variantfiltration)) {
+        tools_list << 'variantfiltration'
+    }
 
+    // opt in tools
+    if (extract_umi) {
+        tools_list << 'umitools'
+    }
     if (generate_gvcf) {
         tools_list << 'combinegvcfs'
     }
 
     // Specific tools not to execute depending of params
-    // no variantfiltration if bam_csi_index as GATK4_VARIANTFILTRATION does not support csi index
+    // No variantfiltration if bam_csi_index as GATK4_VARIANTFILTRATION does not support csi index
     if (bam_csi_index) {
         tools_list = tools_list - 'variantfiltration'
     }

@@ -29,7 +29,7 @@ include { paramsSummaryMap                 } from 'plugin/nf-schema'
 include { softwareVersionsToYAML           } from 'plugin/nf-core-utils'
 
 // tools selections
-include { setup_tools                      } from './subworkflows/local/utils_nfcore_rnavar_pipeline'
+include { defineToolsList                  } from './subworkflows/local/utils_nfcore_rnavar_pipeline'
 
 // references
 include { getGenomeAttribute               } from 'plugin/nf-core-utils'
@@ -65,7 +65,18 @@ params.vep_species       = getGenomeAttribute('vep_species')
 workflow {
 
     main:
-    def tools = setup_tools(params.bam_csi_index, params.generate_gvcf, params.skip_tools, params.tools)
+    def tools = defineToolsList(
+        params.bam_csi_index,
+        params.extract_umi,
+        params.generate_gvcf,
+        params.skip_tools,
+        params.tools,
+        params.skip_baserecalibration,
+        params.skip_exon_bed_check,
+        params.skip_intervallisttools,
+        params.skip_multiqc,
+        params.skip_variantfiltration,
+    )
 
     // SUBWORKFLOW: Run initialisation tasks
     PIPELINE_INITIALISATION(
@@ -159,40 +170,38 @@ workflow {
     def multiqc_report = channel.empty()
 
     // MULTIQC
-    if (!('multiqc' in tools)) {
-        def multiqc_files = channel.empty()
+    def multiqc_files = channel.empty()
 
-        multiqc_files = multiqc_files.mix(collated_versions)
+    multiqc_files = multiqc_files.mix(collated_versions)
 
-        multiqc_files = multiqc_files.mix(
-            channel.topic("multiqc_files").map { _meta, _process, _tool, reports -> reports },
-            NFCORE_RNAVAR.out.reports,
-        )
+    multiqc_files = multiqc_files.mix(
+        channel.topic("multiqc_files").map { _meta, _process, _tool, reports -> reports },
+        NFCORE_RNAVAR.out.reports,
+    )
 
-        def summary_params = paramsSummaryMap(workflow, parameters_schema: "nextflow_schema.json")
-        def workflow_summary = channel.value(paramsSummaryMultiqc(summary_params))
-        def multiqc_custom_methods_description = params.multiqc_methods_description ? file(params.multiqc_methods_description, checkIfExists: true) : file("${projectDir}/assets/methods_description_template.yml", checkIfExists: true)
-        def methods_description = channel.value(methodsDescriptionText(multiqc_custom_methods_description))
+    def summary_params = paramsSummaryMap(workflow, parameters_schema: "nextflow_schema.json")
+    def workflow_summary = channel.value(paramsSummaryMultiqc(summary_params))
+    def multiqc_custom_methods_description = params.multiqc_methods_description ? file(params.multiqc_methods_description, checkIfExists: true) : file("${projectDir}/assets/methods_description_template.yml", checkIfExists: true)
+    def methods_description = channel.value(methodsDescriptionText(multiqc_custom_methods_description))
 
-        multiqc_files = multiqc_files.mix(workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
-        multiqc_files = multiqc_files.mix(methods_description.collectFile(name: 'methods_description_mqc.yaml', sort: true))
+    multiqc_files = multiqc_files.mix(workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
+    multiqc_files = multiqc_files.mix(methods_description.collectFile(name: 'methods_description_mqc.yaml', sort: true))
 
-        MULTIQC(
-            multiqc_files.flatten().collect().map { files ->
-                [
-                    [id: 'rnavar'],
-                    files,
-                    params.multiqc_config
-                        ? file(params.multiqc_config, checkIfExists: true)
-                        : file("${projectDir}/assets/multiqc_config.yml", checkIfExists: true),
-                    params.multiqc_logo ? file(params.multiqc_logo, checkIfExists: true) : [],
-                    [],
-                    [],
-                ]
-            }
-        )
-        multiqc_report = MULTIQC.out.report.map { _meta, report -> [report] }.toList()
-    }
+    MULTIQC(
+        multiqc_files.flatten().collect().map { files ->
+            [
+                [id: 'rnavar'],
+                files,
+                params.multiqc_config
+                    ? file(params.multiqc_config, checkIfExists: true)
+                    : file("${projectDir}/assets/multiqc_config.yml", checkIfExists: true),
+                params.multiqc_logo ? file(params.multiqc_logo, checkIfExists: true) : [],
+                [],
+                [],
+            ]
+        }.filter { ('multiqc' in tools) }
+    )
+    multiqc_report = MULTIQC.out.report.map { _meta, report -> [report] }.toList()
 
     // SUBWORKFLOW: Run completion tasks
     PIPELINE_COMPLETION(
