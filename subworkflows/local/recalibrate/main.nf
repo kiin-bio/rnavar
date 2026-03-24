@@ -12,7 +12,7 @@ workflow RECALIBRATE {
     take:
     bam // channel: [mandatory] bam
     dict // channel: [mandatory] dict
-    fai // channel: [mandatory] fai
+    fai // channel: [mandatory] meta, fai
     fasta // channel: [mandatory] meta, fasta
 
     main:
