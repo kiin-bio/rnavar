@@ -9,9 +9,9 @@ nextflow_pipeline {
         [
             name: "-profile test --generate_gvcf",
             params: [
-                generate_gvcf   : true
-            ]
-        ]
+                generate_gvcf   : true,
+            ],
+        ],
     ]
 
     // Generate tests for each scenario

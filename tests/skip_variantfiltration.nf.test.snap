@@ -1,5 +1,5 @@
 {
-    "-profile test --skip_tools variantfiltration": {
+    "-profile test --skip_variantfiltration": {
         "content": [
             42,
             {
@@ -220,7 +220,7 @@
             ],
             "No warnings"
         ],
-        "timestamp": "2026-03-09T14:47:05.644421718",
+        "timestamp": "2026-03-09T10:22:10.510776212",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "25.10.4"
