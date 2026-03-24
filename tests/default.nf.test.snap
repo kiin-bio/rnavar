@@ -227,7 +227,7 @@
             "No warnings",
             [
                 "N E X T F L O W  ~  version [VERSION]",
-                "Launching `[PATH]/tests/../main.nf` [RUN_NAME] DSL2 - revision: [REVISION]",
+                "Launching `[PATH]/tests/../main.nf` [RUN_NAME] - revision: [REVISION]",
                 "------------------------------------------------------",
                 "                                        ,--./,-.",
                 "        ___     __   __   __   ___     /,-._.--~'",
@@ -278,7 +278,7 @@
                 "!! Only displaying parameters that differ from the pipeline defaults !!",
                 "------------------------------------------------------",
                 "Extra informations",
-                "  Tools selected to be run  : baserecalibrator,intervallisttools,removeunknownregions,variantfiltration",
+                "  Tools selected to be run  : baserecalibrator,intervallisttools,multiqc,removeunknownregions,variantfiltration",
                 "------------------------------------------------------",
                 "* The pipeline",
                 "    https://doi.org/10.5281/zenodo.6669636",
@@ -331,10 +331,10 @@
                 "[NXF_HASH] Submitted process > NFCORE_RNAVAR:RNAVAR:TABIX (GM12878)"
             ]
         ],
-        "timestamp": "2026-03-10T17:49:17.718238065",
+        "timestamp": "2026-03-24T15:28:35.497764202",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "25.10.4"
+            "nf-test": "0.9.5",
+            "nextflow": "26.03.0"
         }
     },
     "-profile test --dbsnp_tbi false --known_indels false --known_indels_tbi false": {
