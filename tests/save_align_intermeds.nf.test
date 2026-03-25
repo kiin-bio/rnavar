@@ -9,9 +9,9 @@ nextflow_pipeline {
         [
             name: "-profile test --save_align_intermeds",
             params: [
-                save_align_intermeds: true
-            ]
-        ]
+                save_align_intermeds: true,
+            ],
+        ],
     ]
 
     // Generate tests for each scenario

@@ -9,9 +9,9 @@ nextflow_pipeline {
         [
             name: "-profile test --remove_duplicates",
             params: [
-                remove_duplicates: true
-            ]
-        ]
+                remove_duplicates: true,
+            ],
+        ],
     ]
 
     // Generate tests for each scenario

@@ -1,5 +1,3 @@
-def projectDir = new File('.').absolutePath
-
 nextflow_pipeline {
 
     name "Test pipeline"
@@ -9,11 +7,10 @@ nextflow_pipeline {
 
     def test_scenario = [
         [
-            name: "-profile test --input bam.csv",
+            name: "-profile test --generate_gvcf",
             params: [
-                input: "${projectDir}/tests/csv/1.0/bam.csv"
+                generate_gvcf   : true,
             ],
-            exclude_recal_bam: true,
         ],
     ]
 

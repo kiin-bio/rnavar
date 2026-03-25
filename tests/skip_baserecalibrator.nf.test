@@ -9,9 +9,9 @@ nextflow_pipeline {
         [
             name: "-profile test --skip_baserecalibration",
             params: [
-                skip_baserecalibration: true
-            ]
-        ]
+                skip_baserecalibration: true,
+            ],
+        ],
     ]
 
     // Generate tests for each scenario

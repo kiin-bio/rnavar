@@ -23,9 +23,9 @@ workflow PREPARE_ALIGNMENT {
 
     SAMTOOLS_INDEX(alignment_branch.not_indexed_bam.mix(alignment_branch.not_indexed_cram))
 
-    def alignment_out = alignment_branch.indexed
-        .mix(alignment_branch.not_indexed_bam.join(SAMTOOLS_INDEX.out.bai, failOnMismatch: true, failOnDuplicate: true))
-        .mix(alignment_branch.not_indexed_cram.join(SAMTOOLS_INDEX.out.crai, failOnMismatch: true, failOnDuplicate: true))
+    def alignment_out = alignment_branch.indexed.mix(
+        alignment_branch.not_indexed_bam.mix(alignment_branch.not_indexed_cram).join(SAMTOOLS_INDEX.out.index, failOnMismatch: true, failOnDuplicate: true)
+    )
 
     emit:
     reads_index = alignment_out // [ val(meta), path(bam|cram), path(bai|crai) ]

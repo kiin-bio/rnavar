@@ -24,10 +24,15 @@ include { PIPELINE_COMPLETION              } from './subworkflows/local/utils_nf
 
 // MULTIQC
 include { MULTIQC                          } from './modules/nf-core/multiqc'
-include { getGenomeAttribute               } from 'plugin/nf-core-utils'
-include { softwareVersionsToYAML           } from 'plugin/nf-core-utils'
 include { methodsDescriptionText           } from './subworkflows/local/utils_nfcore_rnavar_pipeline'
 include { paramsSummaryMap                 } from 'plugin/nf-schema'
+include { softwareVersionsToYAML           } from 'plugin/nf-core-utils'
+
+// tools selections
+include { defineToolsList                  } from './subworkflows/local/utils_nfcore_rnavar_pipeline'
+
+// references
+include { getGenomeAttribute               } from 'plugin/nf-core-utils'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -60,6 +65,19 @@ params.vep_species       = getGenomeAttribute('vep_species')
 workflow {
 
     main:
+    def tools = defineToolsList(
+        params.bam_csi_index,
+        params.extract_umi,
+        params.generate_gvcf,
+        params.skip_tools,
+        params.tools,
+        params.skip_baserecalibration,
+        params.skip_exon_bed_check,
+        params.skip_intervallisttools,
+        params.skip_multiqc,
+        params.skip_variantfiltration,
+    )
+
     // SUBWORKFLOW: Run initialisation tasks
     PIPELINE_INITIALISATION(
         params.version,
@@ -70,30 +88,22 @@ workflow {
         params.help,
         params.help_full,
         params.show_hidden,
+        params.bam_csi_index,
+        params.dbsnp,
+        params.gff,
+        params.gtf,
+        params.known_indels,
+        tools,
+        params.umitools_bc_pattern,
     )
 
-    // Fails for missing params
-    if (params.gtf && params.gff) {
-        error("Using both --gtf and --gff is not supported. Please use only one of these parameters")
-    }
-    else if (!params.gtf && !params.gff) {
-        error("Missing required parameters: --gtf or --gff")
-    }
-
-    if (params.extract_umi && !params.umitools_bc_pattern) {
-        error("Expected --umitools_bc_pattern when --extract_umi is specified.")
-    }
-
-    if (!params.skip_baserecalibration && !params.dbsnp && !params.known_indels) {
-        error("Known sites are required for performing base recalibration. Supply them with either --dbsnp and/or --known_indels or disable base recalibration with --skip_baserecalibration")
-    }
 
     // Download cache
     if (params.download_cache) {
         // Assuming that even if the cache is provided, if the user specify download_cache, rnavar will download the cache
         ensemblvep_info = channel.of([[id: "${params.vep_cache_version}_${params.vep_genome}"], params.vep_genome, params.vep_species, params.vep_cache_version])
         snpeff_info = channel.of([[id: "${params.snpeff_db}"], params.snpeff_db])
-        CACHE_DOWNLOAD_ENSEMBLVEP_SNPEFF(ensemblvep_info, snpeff_info)
+        CACHE_DOWNLOAD_ENSEMBLVEP_SNPEFF(ensemblvep_info, snpeff_info, params.vep_cache_preflight_check)
         snpeff_cache = CACHE_DOWNLOAD_ENSEMBLVEP_SNPEFF.out.snpeff_cache
         vep_cache = CACHE_DOWNLOAD_ENSEMBLVEP_SNPEFF.out.ensemblvep_cache
     }
@@ -142,6 +152,7 @@ workflow {
         snpeff_cache,
         vep_cache,
         vep_extra_files,
+        tools,
     )
 
     def collated_versions = softwareVersionsToYAML(
@@ -159,40 +170,38 @@ workflow {
     def multiqc_report = channel.empty()
 
     // MULTIQC
-    if (!params.skip_multiqc) {
-        def multiqc_files = channel.empty()
+    def multiqc_files = channel.empty()
 
-        multiqc_files = multiqc_files.mix(collated_versions)
+    multiqc_files = multiqc_files.mix(collated_versions)
 
-        multiqc_files = multiqc_files.mix(
-            channel.topic("multiqc_files").map { _meta, _process, _tool, reports -> reports },
-            NFCORE_RNAVAR.out.reports,
-        )
+    multiqc_files = multiqc_files.mix(
+        channel.topic("multiqc_files").map { _meta, _process, _tool, reports -> reports },
+        NFCORE_RNAVAR.out.reports,
+    )
 
-        def summary_params = paramsSummaryMap(workflow, parameters_schema: "nextflow_schema.json")
-        def workflow_summary = channel.value(paramsSummaryMultiqc(summary_params))
-        def multiqc_custom_methods_description = params.multiqc_methods_description ? file(params.multiqc_methods_description, checkIfExists: true) : file("${projectDir}/assets/methods_description_template.yml", checkIfExists: true)
-        def methods_description = channel.value(methodsDescriptionText(multiqc_custom_methods_description))
+    def summary_params = paramsSummaryMap(workflow, parameters_schema: "nextflow_schema.json")
+    def workflow_summary = channel.value(paramsSummaryMultiqc(summary_params))
+    def multiqc_custom_methods_description = params.multiqc_methods_description ? file(params.multiqc_methods_description, checkIfExists: true) : file("${projectDir}/assets/methods_description_template.yml", checkIfExists: true)
+    def methods_description = channel.value(methodsDescriptionText(multiqc_custom_methods_description))
 
-        multiqc_files = multiqc_files.mix(workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
-        multiqc_files = multiqc_files.mix(methods_description.collectFile(name: 'methods_description_mqc.yaml', sort: true))
+    multiqc_files = multiqc_files.mix(workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
+    multiqc_files = multiqc_files.mix(methods_description.collectFile(name: 'methods_description_mqc.yaml', sort: true))
 
-        MULTIQC(
-            multiqc_files.flatten().collect().map { files ->
-                [
-                    [id: 'rnavar'],
-                    files,
-                    params.multiqc_config
-                        ? file(params.multiqc_config, checkIfExists: true)
-                        : file("${projectDir}/assets/multiqc_config.yml", checkIfExists: true),
-                    params.multiqc_logo ? file(params.multiqc_logo, checkIfExists: true) : [],
-                    [],
-                    [],
-                ]
-            }
-        )
-        multiqc_report = MULTIQC.out.report.map { _meta, report -> [report] }.toList()
-    }
+    MULTIQC(
+        multiqc_files.flatten().collect().map { files ->
+            [
+                [id: 'rnavar'],
+                files,
+                params.multiqc_config
+                    ? file(params.multiqc_config, checkIfExists: true)
+                    : file("${projectDir}/assets/multiqc_config.yml", checkIfExists: true),
+                params.multiqc_logo ? file(params.multiqc_logo, checkIfExists: true) : [],
+                [],
+                [],
+            ]
+        }.filter { ('multiqc' in tools) }
+    )
+    multiqc_report = MULTIQC.out.report.map { _meta, report -> [report] }.toList()
 
     // SUBWORKFLOW: Run completion tasks
     PIPELINE_COMPLETION(
@@ -207,7 +216,7 @@ workflow {
     publish:
     multiqc = MULTIQC.out.data.mix(MULTIQC.out.plots, MULTIQC.out.report)
     reports = channel.topic("multiqc_files").filter { _meta, _process, tool, _file ->
-        return !(tool == 'snpeff' && !params.tools.split(',').contains('snpeff'))
+        return !(tool == 'snpeff' && !('snpeff' in tools))
     }
 }
 
@@ -238,6 +247,7 @@ workflow NFCORE_RNAVAR {
     snpeff_cache
     vep_cache
     vep_extra_files
+    tools
 
     main:
     reports = channel.empty()
@@ -259,16 +269,7 @@ workflow NFCORE_RNAVAR {
         params.feature_type,
         align,
         params.genome ?: "genome",
-        setup_tools(
-            params.bam_csi_index,
-            params.extract_umi,
-            params.generate_gvcf,
-            params.skip_baserecalibration,
-            params.skip_exon_bed_check,
-            params.skip_intervallisttools,
-            params.skip_variantfiltration,
-            params.tools,
-        ),
+        tools,
     )
 
     // WORKFLOW: Run pipeline
@@ -276,7 +277,7 @@ workflow NFCORE_RNAVAR {
         samplesheet,
         PREPARE_GENOME.out.bcfann,
         PREPARE_GENOME.out.bcfann_tbi,
-        params.bcftools_columns ? channel.fromPath(params.bcftools_columns).collect() : channel.value([]),
+        params.bcftools_columns ? channel.fromPath(params.bcftools_columns).collect() : false,
         params.bcftools_header_lines ? channel.fromPath(params.bcftools_header_lines).collect() : channel.empty(),
         PREPARE_GENOME.out.dbsnp,
         PREPARE_GENOME.out.dbsnp_tbi,
@@ -298,16 +299,7 @@ workflow NFCORE_RNAVAR {
         vep_extra_files,
         params.aligner,
         params.star_ignore_sjdbgtf,
-        setup_tools(
-            params.bam_csi_index,
-            params.extract_umi,
-            params.generate_gvcf,
-            params.skip_baserecalibration,
-            params.skip_exon_bed_check,
-            params.skip_intervallisttools,
-            params.skip_variantfiltration,
-            params.tools,
-        ),
+        tools,
     )
 
     reports = reports.mix(RNAVAR.out.reports)
@@ -352,36 +344,4 @@ def paramsSummaryMultiqc(summary_params) {
     yaml_file_text += "${summary_section}"
 
     return yaml_file_text
-}
-
-// Setup list of tools to run
-def setup_tools(bam_csi_index, extract_umi, generate_gvcf, skip_baserecalibration, skip_exon_bed_check, skip_intervallisttools, skip_variantfiltration, input_tools) {
-
-    // opt in tools
-    def tools_list = input_tools ? input_tools.tokenize(',') : []
-
-    if (extract_umi) {
-        tools_list << 'umitools_extract'
-    }
-
-    if (generate_gvcf) {
-        tools_list << 'gatk4_combinegvcfs'
-    }
-
-    // opt out tools
-    if (!skip_baserecalibration) {
-        tools_list << 'gatk4_baserecalibrator'
-    }
-    if (!skip_exon_bed_check) {
-        tools_list << 'removeunknownregions'
-    }
-    if (!skip_intervallisttools) {
-        tools_list << 'gatk4_intervallisttools'
-    }
-    // no variantfiltration if skip_variantfiltration and bam_csi_index as GATK4_VARIANTFILTRATION does not support csi index
-    if (!(skip_variantfiltration) && !(bam_csi_index)) {
-        tools_list << 'gatk4_variantfiltration'
-    }
-
-    return tools_list
 }

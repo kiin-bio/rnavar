@@ -25,15 +25,15 @@ nextflow_workflow {
                     file(params.modules_testdata_base_path + 'genomics/homo_sapiens/genome/genome.filtered_intervals.interval_list', checkIfExists: true)
                 ])
                 input[1] = channel.value([
-                    [id:"fasta"],
+                    [id:"genome"],
                     file(params.pipelines_testdata_base_path + 'genomics/homo_sapiens/genome/genome.fasta', checkIfExists: true)
                 ])
                 input[2] = channel.value([
-                    [id:"fai"],
+                    [id:"genome"],
                     file(params.pipelines_testdata_base_path + 'genomics/homo_sapiens/genome/genome.fasta.fai', checkIfExists: true)
                 ])
                 input[3] = channel.value([
-                    [id:"dict"],
+                    [id:"genome"],
                     file(params.pipelines_testdata_base_path + 'genomics/homo_sapiens/genome/genome.dict', checkIfExists: true)
                 ])
                 input[4] = channel.value([
@@ -75,11 +75,12 @@ nextflow_workflow {
                 input[1] = channel.value(
                     file(params.pipelines_testdata_base_path + 'genomics/homo_sapiens/genome/genome.dict', checkIfExists: true)
                 )
-                input[2] = channel.value(
+                input[2] = channel.of([
+                    [ id:'genome' ], // meta map
                     file(params.pipelines_testdata_base_path + 'genomics/homo_sapiens/genome/genome.fasta.fai', checkIfExists: true)
-                )
+                ])
                 input[3] = channel.of([
-                    [ id:'test' ], // meta map
+                    [ id:'genome' ], // meta map
                     file(params.pipelines_testdata_base_path + 'genomics/homo_sapiens/genome/genome.fasta', checkIfExists: true)
                 ])
                 """

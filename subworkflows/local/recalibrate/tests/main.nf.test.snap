@@ -29,15 +29,15 @@
                         {
                             "id": "test"
                         },
-                        "test.stats:md5,289e500ac75862b17464ada137bc0ed2"
+                        "test.stats:md5,f9edb58a16396d0ef2a145ca83284f4f"
                     ]
                 ]
             }
         ],
-        "timestamp": "2026-03-06T17:51:45.883136382",
+        "timestamp": "2026-03-24T19:07:32.532705801",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "25.10.4"
+            "nf-test": "0.9.5",
+            "nextflow": "26.03.0"
         }
     }
 }

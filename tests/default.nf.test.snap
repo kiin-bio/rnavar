@@ -46,25 +46,25 @@
                     "python": "3.8.3"
                 },
                 "SAMTOOLS_FAIDX": {
-                    "samtools": "1.22.1"
+                    "samtools": "1.23.1"
                 },
                 "SAMTOOLS_FLAGSTAT": {
-                    "samtools": "1.22.1"
+                    "samtools": "1.23.1"
                 },
                 "SAMTOOLS_IDXSTATS": {
-                    "samtools": "1.22.1"
+                    "samtools": "1.23.1"
                 },
                 "SAMTOOLS_INDEX": {
-                    "samtools": "1.22.1"
+                    "samtools": "1.23.1"
                 },
                 "SAMTOOLS_MERGE": {
-                    "samtools": "1.22.1"
+                    "samtools": "1.23.1"
                 },
                 "SAMTOOLS_SORT": {
-                    "samtools": "1.22.1"
+                    "samtools": "1.23.1"
                 },
                 "SAMTOOLS_STATS": {
-                    "samtools": "1.22.1"
+                    "samtools": "1.23.1"
                 },
                 "STAR_ALIGN": {
                     "gawk": "5.1.0",
@@ -239,8 +239,6 @@
                 "Input/output options",
                 "  input                     : [PATH]/tests/csv/1.0/fastq_single.csv",
                 "  outdir                    : [PATH]/tests/[NFT_HASH]/output",
-                "Alignment options",
-                "  star_index                : https://raw.githubusercontent.com/nf-core/test-datasets/rnavar/data//genomics/homo_sapiens/genome/index/star/star.tar.gz",
                 "Variant filtering",
                 "  gatk_vf_qd_filter         : 2.0",
                 "  gatk_vf_fs_filter         : 30.0",
@@ -255,6 +253,7 @@
                 "  fasta                     : https://raw.githubusercontent.com/nf-core/test-datasets/rnavar/data//genomics/homo_sapiens/genome/genome.fasta",
                 "  dict                      : https://raw.githubusercontent.com/nf-core/test-datasets/rnavar/data//genomics/homo_sapiens/genome/genome.dict",
                 "  gff                       : https://raw.githubusercontent.com/nf-core/test-datasets/rnavar/data//genomics/homo_sapiens/genome/genome.gff3",
+                "  star_index                : https://raw.githubusercontent.com/nf-core/test-datasets/rnavar/data//genomics/homo_sapiens/genome/index/star/star.tar.gz",
                 "  known_indels              : https://raw.githubusercontent.com/nf-core/test-datasets/rnavar/data//genomics/homo_sapiens/genome/vcf/mills_and_1000G.indels.vcf.gz",
                 "  known_indels_tbi          : https://raw.githubusercontent.com/nf-core/test-datasets/rnavar/data//genomics/homo_sapiens/genome/vcf/mills_and_1000G.indels.vcf.gz.tbi",
                 "  dbsnp                     : https://raw.githubusercontent.com/nf-core/test-datasets/rnavar/data//genomics/homo_sapiens/genome/vcf/dbsnp_146.hg38.vcf.gz",
@@ -277,6 +276,9 @@
                 "  profile                   : test,[CONTAINER]",
                 "  configFiles               : [PATH]/nextflow.config, [PATH]/nextflow.config, [PATH]/tests/nextflow.config",
                 "!! Only displaying parameters that differ from the pipeline defaults !!",
+                "------------------------------------------------------",
+                "Extra informations",
+                "  Tools selected to be run  : baserecalibrator,intervallisttools,multiqc,removeunknownregions,variantfiltration",
                 "------------------------------------------------------",
                 "* The pipeline",
                 "    https://doi.org/10.5281/zenodo.6669636",
@@ -329,10 +331,10 @@
                 "[NXF_HASH] Submitted process > NFCORE_RNAVAR:RNAVAR:TABIX (GM12878)"
             ]
         ],
-        "timestamp": "2026-03-06T17:54:48.932783387",
+        "timestamp": "2026-03-24T18:35:23.632974223",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "25.10.4"
+            "nf-test": "0.9.5",
+            "nextflow": "26.03.0"
         }
     },
     "-profile test --dbsnp_tbi false --known_indels false --known_indels_tbi false": {
@@ -382,25 +384,25 @@
                     "python": "3.8.3"
                 },
                 "SAMTOOLS_FAIDX": {
-                    "samtools": "1.22.1"
+                    "samtools": "1.23.1"
                 },
                 "SAMTOOLS_FLAGSTAT": {
-                    "samtools": "1.22.1"
+                    "samtools": "1.23.1"
                 },
                 "SAMTOOLS_IDXSTATS": {
-                    "samtools": "1.22.1"
+                    "samtools": "1.23.1"
                 },
                 "SAMTOOLS_INDEX": {
-                    "samtools": "1.22.1"
+                    "samtools": "1.23.1"
                 },
                 "SAMTOOLS_MERGE": {
-                    "samtools": "1.22.1"
+                    "samtools": "1.23.1"
                 },
                 "SAMTOOLS_SORT": {
-                    "samtools": "1.22.1"
+                    "samtools": "1.23.1"
                 },
                 "SAMTOOLS_STATS": {
-                    "samtools": "1.22.1"
+                    "samtools": "1.23.1"
                 },
                 "STAR_ALIGN": {
                     "gawk": "5.1.0",
@@ -567,10 +569,10 @@
             ],
             "No warnings"
         ],
-        "timestamp": "2026-03-06T17:59:03.683205298",
+        "timestamp": "2026-03-24T18:40:06.241772608",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "25.10.4"
+            "nf-test": "0.9.5",
+            "nextflow": "26.03.0"
         }
     },
     "-profile test --dbsnp false --dbsnp_tbi false --known_indels_tbi false": {
@@ -620,25 +622,25 @@
                     "python": "3.8.3"
                 },
                 "SAMTOOLS_FAIDX": {
-                    "samtools": "1.22.1"
+                    "samtools": "1.23.1"
                 },
                 "SAMTOOLS_FLAGSTAT": {
-                    "samtools": "1.22.1"
+                    "samtools": "1.23.1"
                 },
                 "SAMTOOLS_IDXSTATS": {
-                    "samtools": "1.22.1"
+                    "samtools": "1.23.1"
                 },
                 "SAMTOOLS_INDEX": {
-                    "samtools": "1.22.1"
+                    "samtools": "1.23.1"
                 },
                 "SAMTOOLS_MERGE": {
-                    "samtools": "1.22.1"
+                    "samtools": "1.23.1"
                 },
                 "SAMTOOLS_SORT": {
-                    "samtools": "1.22.1"
+                    "samtools": "1.23.1"
                 },
                 "SAMTOOLS_STATS": {
-                    "samtools": "1.22.1"
+                    "samtools": "1.23.1"
                 },
                 "STAR_ALIGN": {
                     "gawk": "5.1.0",
@@ -805,10 +807,10 @@
             ],
             "No warnings"
         ],
-        "timestamp": "2026-03-06T17:56:59.702551967",
+        "timestamp": "2026-03-24T18:37:44.51247969",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "25.10.4"
+            "nf-test": "0.9.5",
+            "nextflow": "26.03.0"
         }
     }
 }

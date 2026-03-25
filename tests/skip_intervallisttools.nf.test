@@ -9,9 +9,9 @@ nextflow_pipeline {
         [
             name: "-profile test --skip_intervallisttools",
             params: [
-                skip_intervallisttools: true
-            ]
-        ]
+                skip_intervallisttools: true,
+            ],
+        ],
     ]
 
     // Generate tests for each scenario

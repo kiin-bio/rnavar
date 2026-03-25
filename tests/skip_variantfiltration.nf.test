@@ -9,9 +9,9 @@ nextflow_pipeline {
         [
             name: "-profile test --skip_variantfiltration",
             params: [
-                skip_variantfiltration: true
-            ]
-        ]
+                skip_variantfiltration: true,
+            ],
+        ],
     ]
 
     // Generate tests for each scenario
