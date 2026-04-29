@@ -89,7 +89,7 @@ workflow RNAVAR {
     // MODULE: Prepare the alignment files (index BAM/CRAM files that are missing an index)
     PREPARE_ALIGNMENT(parsed_input.bam, parsed_input.cram)
 
-    MOSDEPTH(parsed_input.cram.map { meta, cram, crai -> [meta, cram, crai, []] }, fasta)
+    MOSDEPTH(parsed_input.cram.map { meta, cram, crai -> [meta, cram, crai, []] }, fasta, false)
 
     // MODULE: Concatenate FastQ files from same sample if required
     CAT_FASTQ(parsed_input.multiple)

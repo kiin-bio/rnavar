@@ -59,7 +59,7 @@
                     },
                     "gatk4/haplotypecaller": {
                         "branch": "master",
-                        "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
+                        "git_sha": "b73338eca19d798eb0ef6ed112ef4d27a30d2871",
                         "installed_by": ["modules"]
                     },
                     "gatk4/intervallisttools": {
@@ -89,12 +89,12 @@
                     },
                     "gunzip": {
                         "branch": "master",
-                        "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
+                        "git_sha": "0902eac3012baaf4f9ab6513c8c55acc9353c96c",
                         "installed_by": ["modules"]
                     },
                     "mosdepth": {
                         "branch": "master",
-                        "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
+                        "git_sha": "cd1912cb4928c5808bb1b39ed3015919733286fc",
                         "installed_by": ["modules"],
                         "patch": "modules/nf-core/mosdepth/mosdepth.diff"
                     },
@@ -205,7 +205,7 @@
                 "nf-core": {
                     "bam_markduplicates_picard": {
                         "branch": "master",
-                        "git_sha": "01e9676391c9749e536bf85fa0c666d36de517f5",
+                        "git_sha": "1298fbd2004c2913d6682ce4a419647d97a8fc3f",
                         "installed_by": ["subworkflows"]
                     },
                     "bam_sort_stats_samtools": {
