@@ -24,23 +24,25 @@ class UTILS {
         ]
 
         // stable_name: All files + folders in ${outdir}/ with a stable name
-        def stable_name = getAllFilesFromDir(outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}'])
+        def stable_name = getAllFilesFromPath(outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}'])
         // stable_content: All files in ${outdir}/ with stable content
-        def stable_content = getAllFilesFromDir(outdir, ignoreFile: 'tests/.nftignore', ignore: [scenario.ignoreFiles])
+        def stable_content = getAllFilesFromPath(outdir, ignoreFile: 'tests/.nftignore', ignore: [scenario.ignoreFiles])
 
         // bam_files: All bam files
-        def bam_files = getAllFilesFromDir(outdir, include: ['**/*.bam'], ignore: [scenario.ignoreFiles])
-        // bam_files: All bam files
-        def recal_bam_files = getAllFilesFromDir(outdir, include: ['**/*.recal.bam']) - bam_files
+        def bam_files = getAllFilesFromPath(outdir, include: ['**/*.bam'], ignore: [scenario.ignoreFiles])
+        // recal_bam_files: All recalibrated bam files
+        def recal_bam_files = getAllFilesFromPath(outdir, include: ['**/*.recal.bam']) - bam_files
         // cram_files: All cram files
-        def cram_files = getAllFilesFromDir(outdir, include: ['**/*.cram'], ignore: [scenario.ignoreFiles])
+        def cram_files = getAllFilesFromPath(outdir, include: ['**/*.cram'], ignore: [scenario.ignoreFiles])
         // Fasta file for cram verification with nft-bam
         def fasta_base = 'https://raw.githubusercontent.com/nf-core/test-datasets/modules/data/'
         def fasta = fasta_base + 'genomics/homo_sapiens/genome/genome.fasta'
         // vcf_files: All vcf files
-        def vcf_files = getAllFilesFromDir(outdir, include: ['**/*.vcf{,.gz}'], ignore: [scenario.ignoreFiles])
+        def vcf_files = getAllFilesFromPath(outdir, include: ['**/*.vcf{,.gz}'], ignore: [scenario.ignoreFiles])
 
         def assertion = []
+        // getAllFilesFromPath returns relative paths (strings), so this resolves to an absolute path
+        def absolutePath = { file -> file.toString().startsWith('/') ? file.toString() : "${outdir}/${file}" }
 
         if (!scenario.failure) {
             assertion.add(workflow.trace.succeeded().size())
@@ -51,11 +53,11 @@ class UTILS {
         assertion.add(stable_name)
 
         if (!scenario.stub) {
-            assertion.add(stable_content.isEmpty() ? 'No stable content' : stable_content)
-            assertion.add(bam_files.isEmpty() ? 'No BAM files' : bam_files.collect { file -> file.getName() + ":md5," + bam(file.toString()).readsMD5 })
-            assertion.add(recal_bam_files.isEmpty() ? 'No unstable recal BAM files' : recal_bam_files.collect { file -> file.getName() + ":stats" + bam(file.toString()).getStatistics() })
-            assertion.add(cram_files.isEmpty() ? 'No CRAM files' : cram_files.collect { file -> file.getName() + ":md5," + cram(file.toString(), fasta).readsMD5 })
-            assertion.add(vcf_files.isEmpty() ? 'No VCF files' : vcf_files.collect { file -> file.getName() + ":md5," + path(file.toString()).vcf.variantsMD5 })
+            assertion.add(stable_content.isEmpty() ? 'No stable content' : stable_content.collect { file -> path(absolutePath(file)) })
+            assertion.add(bam_files.isEmpty() ? 'No BAM files' : bam_files.collect { file -> file.tokenize('/').last() + ":md5," + bam(absolutePath(file)).readsMD5 })
+            assertion.add(recal_bam_files.isEmpty() ? 'No unstable recal BAM files' : recal_bam_files.collect { file -> file.tokenize('/').last() + ":stats" + bam(absolutePath(file)).getStatistics() })
+            assertion.add(cram_files.isEmpty() ? 'No CRAM files' : cram_files.collect { file -> file.tokenize('/').last() + ":md5," + cram(absolutePath(file), fasta).readsMD5 })
+            assertion.add(vcf_files.isEmpty() ? 'No VCF files' : vcf_files.collect { file -> file.tokenize('/').last() + ":md5," + path(absolutePath(file)).vcf.variantsMD5 })
         }
 
         // If we have a snapshot options in scenario then we allow to capture either stderr, stdout or both
