@@ -3,7 +3,7 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## dev
+## [1.3.0](https://github.com/nf-core/rnavar/releases/tag/1.3.0) - Silent Nostromo
 
 ### Added
 
@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [#300](https://github.com/nf-core/rnavar/pull/300) - Update all modules and subworkflows to the latest versions in nf-core/modules
 - [#306](https://github.com/nf-core/rnavar/pull/306) - Upgrade all modules, remove deprecated modules and update config files accordingly.
+- [#311](https://github.com/nf-core/rnavar/pull/311) - Prepare RC 1.3.0
 
 ### Fixed
 
