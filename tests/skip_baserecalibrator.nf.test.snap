@@ -68,8 +68,9 @@
                 "STAR_INDEXVERSION": {
                     "star": "2.7.11b"
                 },
-                "TABIX": {
-                    "tabix": "1.21"
+                "TABIX_HAPLOTYPECALLER": {
+                    "htslib": "1.23.1",
+                    "xz": "5.8.3"
                 },
                 "UNTAR": {
                     "untar": "1.34"
@@ -201,7 +202,7 @@
             ],
             "No warnings"
         ],
-        "timestamp": "2026-06-01T11:37:50.341515607",
+        "timestamp": "2026-06-01T15:49:35.215119673",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.3"
@@ -276,8 +277,9 @@
                 "STAR_INDEXVERSION": {
                     "star": "2.7.11b"
                 },
-                "TABIX": {
-                    "tabix": "1.21"
+                "TABIX_HAPLOTYPECALLER": {
+                    "htslib": "1.23.1",
+                    "xz": "5.8.3"
                 },
                 "UNTAR": {
                     "untar": "1.34"
@@ -409,7 +411,7 @@
             ],
             "No warnings"
         ],
-        "timestamp": "2026-06-01T11:39:54.770699453",
+        "timestamp": "2026-06-01T15:51:54.921004725",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.3"
