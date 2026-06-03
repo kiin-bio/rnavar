@@ -3,6 +3,112 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0](https://github.com/nf-core/rnavar/releases/tag/1.3.0) - Silent Nostromo
+
+### Added
+
+- [#293](https://github.com/nf-core/rnavar/pull/293) - Adding `idxstats` and `flagstat` to recalibrated bam files
+- [#293](https://github.com/nf-core/rnavar/pull/293) - Added prefix for the `samtools` statistics files (`idxstats`, `flagstat`, `stats`)
+
+### Changed
+
+- [#300](https://github.com/nf-core/rnavar/pull/300) - Update all modules and subworkflows to the latest versions in nf-core/modules
+- [#306](https://github.com/nf-core/rnavar/pull/306) - Upgrade all modules, remove deprecated modules and update config files accordingly.
+- [#311](https://github.com/nf-core/rnavar/pull/311) - Prepare RC 1.3.0
+- [#314](https://github.com/nf-core/rnavar/pull/314) - Refactor `PREPARE_GENOME` by replacing `if/else` and `channel.empty()` with `.filter()` pattern for conditional module inputs
+- [#314](https://github.com/nf-core/rnavar/pull/314) - Refactor `VCF_ANNOTATE_ALL` to reduce duplication
+- [#314](https://github.com/nf-core/rnavar/pull/314) - Simplify `SPLITNCIGAR` by moving else branch to initial assignment
+- [#314](https://github.com/nf-core/rnavar/pull/314) - Simplify `PREPARE_ALIGNMENT` logic and remove format-specific branches
+
+### Fixed
+
+- [#293](https://github.com/nf-core/rnavar/pull/293) - Rescue `idxstats` files
+- [#293](https://github.com/nf-core/rnavar/pull/293) - No more overwrite of any of the `samtools` statistics files (`idxstats`, `flagstat`, `stats`)
+- [#295](https://github.com/nf-core/rnavar/pull/295) - All tools can be selected or skipped via `params.tools` or `params.skip_tools`
+- [#307](https://github.com/nf-core/rnavar/pull/307) - Add missing `vep_version` parameter and fix `loftee_path` for the VEP LoFTEE plugin
+- [#308](https://github.com/nf-core/rnavar/pull/308) - Fix inverted condition in `prepare_genome` that discarded cleaned BED and deadlocked when `removeunknownregions` was skipped
+- [#309](https://github.com/nf-core/rnavar/pull/309) - Fix implicit operator precedence and missing null guard in reports filter expression
+- [#313](https://github.com/nf-core/rnavar/pull/313) - Fix skip tools logic for base recalibration
+- [#314](https://github.com/nf-core/rnavar/pull/314) - Fix heading typos in changelog entries (`Parameter` → `Parameters`)
+
+### Removed
+
+- [#287](https://github.com/nf-core/rnavar/pull/287) - Removed `hook_url` params, cf [tools#4051](https://github.com/nf-core/tools/pull/4051)
+- [#294](https://github.com/nf-core/rnavar/pull/294) - Removed `skip_variantannotation` params
+- [#306](https://github.com/nf-core/rnavar/pull/306) - Remove deprecated `tabix/tabix` and `tabix/bgziptabix` modules
+
+### Deprecated
+
+- [#295](https://github.com/nf-core/rnavar/pull/295) - Deprecating multiple params that are still supported but will be removed in future release: `skip_baserecalibration`, `skip_exon_bed_check`, `skip_intervallisttools`, `skip_multiqc`, `skip_variantfiltration`, `extract_umi`
+
+### Dependencies
+
+| Dependency | Old version | New version |
+| ---------- | ----------- | ----------- |
+| bcftools   | 1.22        | 1.23.1      |
+| samtools   | 1.22.1      | 1.23.1      |
+| snpeff     | 5.4.0a      | 5.0.4c      |
+
+### Parameters
+
+| Old name               | New name                  |
+| ---------------------- | ------------------------- |
+| hook_url               | -                         |
+| skip_variantannotation | -                         |
+| -                      | vep_cache_preflight_check |
+
+### Schema input
+
+| Old name | New name     |
+| -------- | ------------ |
+| -        | seq_center   |
+| -        | seq_platform |
+
+### Modules / Subworkflows
+
+| Dependency   | Old name                        | New name                         |
+| ------------ | ------------------------------- | -------------------------------- |
+| Modules      | REMOVE_UNKNOWN_REGIONS          | REMOVEUNKNOWNREGIONS             |
+| Modules      | tabix/bgziptabix                | htslib/bgziptabix                |
+| Modules      | tabix/tabix                     | -                                |
+| Subworkflows | ANNOTATION_CACHE_INITIALISATION | UTILS_ANNOTATION_CACHE           |
+| Subworkflows | DOWNLOAD_CACHE_SNPEFF_VEP       | CACHE_DOWNLOAD_ENSEMBLVEP_SNPEFF |
+
+### Plugins
+
+| Dependency | Old version | New version |
+| ---------- | ----------- | ----------- |
+| nft-utils  | 0.0.7       | 1.0.0       |
+| nf-test    | 0.9.4       | 0.9.5       |
+
+### Developer section
+
+#### Added
+
+- [#291](https://github.com/nf-core/rnavar/pull/291) - Add tests for save_align_intermeds
+- [#305](https://github.com/nf-core/rnavar/pull/305) - Added megatests snapshots
+
+#### Changed
+
+- [#284](https://github.com/nf-core/rnavar/pull/284) - Back to dev
+- [#287](https://github.com/nf-core/rnavar/pull/287) - Update all modules and subworkflows
+- [#288](https://github.com/nf-core/rnavar/pull/288) - Add meta.yml for most local modules and subworkflows
+- [#289](https://github.com/nf-core/rnavar/pull/289) - Replace local modules for annotation by nf-core/modules versions
+- [#290](https://github.com/nf-core/rnavar/pull/290) - Remove unused modules
+- [#292](https://github.com/nf-core/rnavar/pull/292) - Reorder config files
+- [#294](https://github.com/nf-core/rnavar/pull/294) - All tools to run now follow an internal list of tools defined in the root main.nf
+- [#294](https://github.com/nf-core/rnavar/pull/294) - Workflow outputs for multiqc_files via topic
+- [#297](https://github.com/nf-core/rnavar/pull/297) - Improve nf-test pipeline tests setup
+- [#302](https://github.com/nf-core/rnavar/pull/302) - Template update for nf-core/tools v4.0.1
+- [#306](https://github.com/nf-core/rnavar/pull/306) - Replace `tabix/bgziptabix` and `tabix/tabix` modules by `htslib/bgziptabix`
+- [#310](https://github.com/nf-core/rnavar/pull/310) - Increase nf-test runner disk volume to 40gb
+
+#### Fixed
+
+- [#306](https://github.com/nf-core/rnavar/pull/306) - Fix `prepare_genome` subworkflow to handle `bcftools_annotations` filenames correctly
+
+#### Removed
+
 ## [1.2.3](https://github.com/nf-core/rnavar/releases/tag/1.2.3) - Yellow Hammer Head
 
 ### Added
@@ -24,7 +130,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | multiqc    | 1.31        | 1.33        |
 | snpeff     | 5.3.0       | 5.4.0       |
 
-### Parameter
+### Parameters
 
 | Old name | New name |
 | -------- | -------- |
@@ -104,7 +210,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | snpeff      | 5.1d        | 5.3.0a      |
 | umi_tools   | 1.1.5       | 1.1.6       |
 
-### Parameter
+### Parameters
 
 | Old name | New name         |
 | -------- | ---------------- |
@@ -177,7 +283,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | multiqc    | 1.29        | 1.30        |
 | ensemblvep | 114.2       | 115.1       |
 
-### Parameter
+### Parameters
 
 | Old name | New name |
 | -------- | -------- |
@@ -221,7 +327,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | ensemblvep | 113.0       | 114.2       |
 | seq2hla    |             | 2.3         |
 
-### Parameter
+### Parameters
 
 | Old name                  | New name |
 | ------------------------- | -------- |
@@ -268,7 +374,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | multiqc    | 1.27        | 1.29        |
 | tabix      | 1.2         | 1.21        |
 
-### Parameter
+### Parameters
 
 | Old name | New name |
 | -------- | -------- |
@@ -374,7 +480,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | vep        | 111.0       | 113.4       |
 | r-base     | 3.5.0       | 3.5.1       |
 
-### Parameter
+### Parameters
 
 | Old name         | New name |
 | ---------------- | -------- |

@@ -12,79 +12,79 @@ class UTILS {
         // Pass down workflow for std capture
         def workflow = args.workflow
 
+        // These strings are not stable and should be ignored
+        def snapshot_ignore_list = [
+            "Creating env using",
+            "Downloading plugin",
+            "Got an interrupted  exception while taking agent result",
+            "Pulling Singularity image",
+            "Staging foreign file",
+            "Unable to resume cached task",
+            "Unable to stage foreign file",
+        ]
+
         // stable_name: All files + folders in ${outdir}/ with a stable name
-        def stable_name = getAllFilesFromDir(outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}'])
-
+        def stable_name = getAllFilesFromPath(outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}'])
         // stable_content: All files in ${outdir}/ with stable content
-        def stable_content = getAllFilesFromDir(outdir, ignoreFile: 'tests/.nftignore')
+        def stable_content = getAllFilesFromPath(outdir, ignoreFile: 'tests/.nftignore', ignore: [scenario.ignoreFiles])
 
-        // Somehow some recal bam files are unstable
-        // So only capturing stats in snapshots
-        // By using the exclude_recal_bam scenario
-        def bam_files = ''
-        def recal_bam_files = ''
-
-        if (scenario.exclude_recal_bam) {
-            // bam_files: All bam files but recal
-            bam_files = getAllFilesFromDir(outdir, include: ['**/*.bam'], ignore: ['**/*.recal.bam'])
-            // recal_bam_files: All unstable recal.bam files
-            recal_bam_files = getAllFilesFromDir(outdir, include: ['**/*.recal.bam'])
-        } else {
-            // bam_files: All bam files
-            bam_files = getAllFilesFromDir(outdir, include: ['**/*.bam'])
-            // recal_bam_files: No unstable recal bam files here, so empty list
-        }
-
+        // bam_files: All bam files
+        def bam_files = getAllFilesFromPath(outdir, include: ['**/*.bam'], ignore: [scenario.ignoreFiles])
+        // recal_bam_files: All recalibrated bam files
+        def recal_bam_files = getAllFilesFromPath(outdir, include: ['**/*.recal.bam']) - bam_files
         // cram_files: All cram files
-        def cram_files = getAllFilesFromDir(outdir, include: ['**/*.cram'])
-
+        def cram_files = getAllFilesFromPath(outdir, include: ['**/*.cram'], ignore: [scenario.ignoreFiles])
         // Fasta file for cram verification with nft-bam
         def fasta_base = 'https://raw.githubusercontent.com/nf-core/test-datasets/modules/data/'
         def fasta = fasta_base + 'genomics/homo_sapiens/genome/genome.fasta'
-
         // vcf_files: All vcf files
-        def vcf_files = getAllFilesFromDir(outdir, include: ['**/*.vcf{,.gz}'])
+        def vcf_files = getAllFilesFromPath(outdir, include: ['**/*.vcf{,.gz}'], ignore: [scenario.ignoreFiles])
 
         def assertion = []
+        // getAllFilesFromPath returns relative paths (strings), so this resolves to an absolute path
+        def absolutePath = { file -> file.toString().startsWith('/') ? file.toString() : "${outdir}/${file}" }
 
         if (!scenario.failure) {
             assertion.add(workflow.trace.succeeded().size())
-            assertion.add(removeFromYamlMap("${outdir}/pipeline_info/nf_core_rnavar_software_mqc_versions.yml", "Workflow"))
+            assertion.add(removeFromYamlMap("${outdir}/pipeline_info/nf_core_rnavar_software_mqc_versions.yml", "Workflow")?: 'No versions')
         }
 
         // At least always pipeline_info/ is created and stable
         assertion.add(stable_name)
 
         if (!scenario.stub) {
-            assertion.add(stable_content.isEmpty() ? 'No stable content' : stable_content)
-            assertion.add(bam_files.isEmpty() ? 'No BAM files' : bam_files.collect { file -> file.getName() + ":md5," + bam(file.toString()).readsMD5 })
-            assertion.add(recal_bam_files.isEmpty() ? 'No unstable recal BAM files' : recal_bam_files.collect { file -> file.getName() + ":stats" + bam(file.toString()).getStatistics() })
-            assertion.add(cram_files.isEmpty() ? 'No CRAM files' : cram_files.collect { file -> file.getName() + ":md5," + cram(file.toString(), fasta).readsMD5 })
-            assertion.add(vcf_files.isEmpty() ? 'No VCF files' : vcf_files.collect { file -> file.getName() + ":md5," + path(file.toString()).vcf.variantsMD5 })
+            assertion.add(stable_content.isEmpty() ? 'No stable content' : stable_content.collect { file -> path(absolutePath(file)) })
+            assertion.add(bam_files.isEmpty() ? 'No BAM files' : bam_files.collect { file -> file.tokenize('/').last() + ":md5," + bam(absolutePath(file)).readsMD5 })
+            assertion.add(recal_bam_files.isEmpty() ? 'No unstable recal BAM files' : recal_bam_files.collect { file -> file.tokenize('/').last() + ":stats" + bam(absolutePath(file)).getStatistics() })
+            assertion.add(cram_files.isEmpty() ? 'No CRAM files' : cram_files.collect { file -> file.tokenize('/').last() + ":md5," + cram(absolutePath(file), fasta).readsMD5 })
+            assertion.add(vcf_files.isEmpty() ? 'No VCF files' : vcf_files.collect { file -> file.tokenize('/').last() + ":md5," + path(absolutePath(file)).vcf.variantsMD5 })
         }
 
-        // Always capture stdout and stderr for any WARN message
-        if (scenario.snapshot_ignoreWarning) {
-            assertion.add(filterNextflowOutput(workflow.stderr + workflow.stdout, include: ["WARN"], ignore: ["Creating env using", "Pulling Singularity image", "unable to stage foreign file", scenario.snapshot_ignoreWarning] ) ?: "No warnings")
-        } else {
-            assertion.add(filterNextflowOutput(workflow.stderr + workflow.stdout, include: ["WARN"], ignore: ["Creating env using", "Pulling Singularity image", "unable to stage foreign file"] ) ?: "No warnings")
-        }
+        // If we have a snapshot options in scenario then we allow to capture either stderr, stdout or both
+        // With options to include specific stings
+        def workflow_std = []
+        // Otherwise, we always capture stdout and stderr for any WARN message
+        // Both have additional possibilities to ignore some strings
+        def filter_args = [ignore: snapshot_ignore_list + (scenario.snapshot_ignore ?: [])]
 
-        // Capture std for snapshot
-        // Allow to capture either stderr, stdout or both
-        // Additional possibilities to include and/or ignore some string
+        workflow_std = workflow.stderr + workflow.stdout
+        filter_args.include = ["WARN"]
+
+        assertion.add(filterNextflowOutput(workflow_std, filter_args) ?: "No warnings")
+
         if (scenario.snapshot) {
-            def workflow_std = []
+            workflow_std = scenario.snapshot.split(',')
+                .findAll { it in ['stderr', 'stdout'] }
+                .collect { workflow."$it" }
+                .flatten()
 
-            scenario.snapshot.split(',').each { std ->
-                if (std in ['stderr', 'stdout']) { workflow_std.add(workflow."$std") }
-            }
+            filter_args.remove('include')
 
             if (scenario.snapshot_include) {
-                assertion.add(filterNextflowOutput(workflow_std.flatten(), ignore: ["Creating env using", "Pulling Singularity image", "unable to stage foreign file", scenario.snapshot_ignore], include:[scenario.snapshot_include]))
-            } else {
-                assertion.add(filterNextflowOutput(workflow_std.flatten(), ignore: ["Creating env using", "Pulling Singularity image", "unable to stage foreign file", scenario.snapshot_ignore]))
+                filter_args.include = [scenario.snapshot_include]
             }
+
+            assertion.add(filterNextflowOutput(workflow_std, filter_args) ?: "No content")
         }
 
         return assertion
@@ -115,11 +115,7 @@ class UTILS {
             tag "pipeline"
             tag "pipeline_rnavar"
 
-            if (scenario.stub) {
-                options "-stub"
-            }
-
-            options "-output-dir $outputDir"
+            options "-output-dir ${outputDir}${scenario.stub ? ' -stub' : ''}"
 
             if (scenario.gpu) {
                 tag "gpu${!scenario.no_conda ? '_conda' : ''}${scenario.stub ? '_stub' : ''}"
@@ -168,10 +164,10 @@ class UTILS {
                     println ""
                     println "CLEANUP"
                     println "Set NFT_CLEANUP to false to disable."
-                    println "The following folders will be deleted:"
-                    println "- ${workDir}"
+                    println "The following folder will be deleted:"
+                    println "- ${launchDir}"
 
-                    new File("${workDir}").deleteDir()
+                    new File("${launchDir}").deleteDir()
                 }
             }
         }

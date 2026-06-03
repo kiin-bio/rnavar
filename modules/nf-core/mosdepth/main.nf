@@ -3,29 +3,30 @@ process MOSDEPTH {
     label 'process_medium'
 
     conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/00/00d32b53160c26794959da7303ee6e2107afd4d292060c9f287b0af1fddbd847/data' :
-        'community.wave.seqera.io/library/mosdepth_htslib:0f58993cb6d93294'}"
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
+        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/a3/a3dc5ea2ce788c24079d24d1721ed28086874152c43b5e7dde3f638dcf64336a/data' :
+        'community.wave.seqera.io/library/htslib_mosdepth_gzip:4108dd38be84e40a'}"
 
     input:
     tuple val(meta),  path(bam), path(bai), path(bed)
     tuple val(meta2), path(fasta)
+    val(quantize_labels)
 
     output:
-    tuple val(meta), path('*.global.dist.txt')      , emit: global_txt
-    tuple val(meta), path('*.summary.txt')          , emit: summary_txt
-    tuple val(meta), path('*.region.dist.txt')      , optional:true, emit: regions_txt
+    tuple val(meta), val("${task.process}"), val('mosdepth'), path("*.global.dist.txt"), topic: multiqc_files, emit: global_txt
+    tuple val(meta), val("${task.process}"), val('mosdepth'), path("*.summary.txt"), topic: multiqc_files, emit: summary_txt
+    tuple val(meta), val("${task.process}"), val('mosdepth'), path("*.region.dist.txt"), topic: multiqc_files, emit: regions_txt, optional: true
     tuple val(meta), path('*.per-base.d4')          , optional:true, emit: per_base_d4
-    tuple val(meta), path('*.per-base.bed.gz')      , optional:true, emit: per_base_bed
-    tuple val(meta), path('*.per-base.bed.gz.csi')  , optional:true, emit: per_base_csi
-    tuple val(meta), path('*.regions.bed.gz')       , optional:true, emit: regions_bed
-    tuple val(meta), path('*.regions.bed.gz.csi')   , optional:true, emit: regions_csi
+    tuple val(meta), val("${task.process}"), val('mosdepth'), path("*.per-base.bed.gz"), topic: multiqc_files, emit: per_base_bed, optional: true
+    tuple val(meta), val("${task.process}"), val('mosdepth'), path("*.per-base.bed.gz.csi"), topic: multiqc_files, emit: per_base_csi, optional: true
+    tuple val(meta), val("${task.process}"), val('mosdepth'), path("*.regions.bed.gz"), topic: multiqc_files, emit: regions_bed, optional: true
+    tuple val(meta), val("${task.process}"), val('mosdepth'), path("*.regions.bed.gz.csi"), topic: multiqc_files, emit: regions_csi, optional: true
     tuple val(meta), path('*.quantized.bed.gz')     , optional:true, emit: quantized_bed
     tuple val(meta), path('*.quantized.bed.gz.csi') , optional:true, emit: quantized_csi
     tuple val(meta), path('*.thresholds.bed.gz')    , optional:true, emit: thresholds_bed
     tuple val(meta), path('*.thresholds.bed.gz.csi'), optional:true, emit: thresholds_csi
     tuple val("${task.process}"), val('mosdepth'), eval("mosdepth --version | sed 's/mosdepth //g'"), topic: versions, emit: versions_mosdepth
-
+    tuple val("${task.process}"), val('gzip'), eval("gzip -V 2>&1 | sed 's/gzip \\([0-9.]*\\).*/\\1/;q'"), topic: versions, emit: versions_gzip
     when:
     task.ext.when == null || task.ext.when
 
@@ -34,6 +35,12 @@ process MOSDEPTH {
     def prefix = task.ext.prefix ?: "${meta.id}"
     def reference = fasta ? "--fasta ${fasta}" : ""
     def interval = bed ? "--by ${bed}" : ""
+    def quantize_env_vars = []
+    if (quantize_labels instanceof List && quantize_labels.size() > 0) {
+        quantize_labels.eachWithIndex { label, index ->
+            quantize_env_vars << "MOSDEPTH_Q${index}=${label}"
+        }
+    }
     if (bed && (args.contains("--by") || args.contains("-b "))) {
         error "'--by' can only be specified once when running mosdepth! Either remove input BED file definition or remove '--by' from 'ext.args' definition"
     }
@@ -42,7 +49,7 @@ process MOSDEPTH {
     }
 
     """
-    mosdepth \\
+    ${quantize_env_vars.join(" ")} mosdepth \\
         --threads $task.cpus \\
         $interval \\
         $reference \\

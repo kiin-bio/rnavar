@@ -15,7 +15,6 @@ include { completionEmail      } from 'plugin/nf-core-utils'
 include { completionSummary    } from 'plugin/nf-core-utils'
 include { dumpParametersToJSON } from 'plugin/nf-core-utils'
 include { getWorkflowVersion   } from 'plugin/nf-core-utils'
-include { imNotification       } from 'plugin/nf-core-utils'
 
 include { paramsHelp           } from 'plugin/nf-schema'
 include { paramsSummaryLog     } from 'plugin/nf-schema'
@@ -33,12 +32,20 @@ workflow PIPELINE_INITIALISATION {
     take:
     version // boolean: Display version and exit
     validate_params // boolean: Boolean whether to validate parameters against the schema at runtime
-    nextflow_cli_args //   array: List of positional nextflow CLI args
-    outdir //  string: The output directory where the results will be saved
-    input //  string: Path to input samplesheet
+    monochrome_logs // boolean: Disable ANSI colour codes in log output
+    nextflow_cli_args // array: List of positional nextflow CLI args
+    outdir // string: The output directory where the results will be saved
+    input // string: Path to input samplesheet
     help // boolean: Display help message and exit
     help_full // boolean: Show the full help message
     show_hidden // boolean: Show hidden parameters in the help message
+    bam_csi_index // params: params.bam_csi_index
+    dbsnp // params: params.dbsnp
+    gff // params: params.gff
+    gtf // params: params.gtf
+    known_indels // params: params.known_indels
+    tools // array: list of tools to run, determined by params on launch time
+    umitools_bc_pattern // params: params.umitools_bc_pattern
 
     main:
 
@@ -64,6 +71,10 @@ workflow PIPELINE_INITIALISATION {
 
     // Validate parameters and generate parameter summary to stdout
     //
+
+    def before_text = ""
+    def extra_text = ""
+    def after_text = ""
     before_text = """
 -\033[2m----------------------------------------------------\033[0m-
                                         \033[0;32m,--.\033[0;30m/\033[0;32m,-.\033[0m
@@ -81,6 +92,10 @@ workflow PIPELINE_INITIALISATION {
 * Software dependencies
     https://github.com/nf-core/rnavar/blob/master/CITATIONS.md
 """
+    if (monochrome_logs) {
+        before_text = before_text.replaceAll(/\033\[[0-9;]*m/, '')
+    }
+
     command = "nextflow run ${workflow.manifest.name} -profile <docker/singularity/.../institute> --input samplesheet.csv --outdir <OUTDIR>"
 
     if (help || help_full) {
@@ -116,7 +131,40 @@ workflow PIPELINE_INITIALISATION {
     }
     log.info(before_text)
     log.info(paramsSummaryLog(summary_options, workflow))
+
+    extra_text = """
+\033[1;37mExtra informations\033[0m
+\033[0;34m  Tools selected to be run  :\033[0;32m ${tools.join(",")} \033[0m
+-\033[2m----------------------------------------------------\033[0m-
+"""
+
+    if (monochrome_logs) {
+        extra_text = extra_text.replaceAll(/\033\[[0-9;]*m/, '')
+    }
+
+    log.info(extra_text)
+
     log.info(after_text)
+
+    // Fails for missing params
+    if (gtf && gff) {
+        error("Using both --gtf and --gff is not supported. Please use only one of these parameters")
+    }
+    else if (!gtf && !gff) {
+        error("Missing required parameters: --gtf or --gff")
+    }
+
+    if (('umitools' in tools) && !umitools_bc_pattern) {
+        error("Expected --umitools_bc_pattern when --tools umitools is specified.")
+    }
+
+    if (('baserecalibrator' in tools) && !dbsnp && !known_indels) {
+        error("Known sites are required for performing base recalibration. Supply them with either --dbsnp and/or --known_indels or disable base recalibration with --skip_baserecalibration")
+    }
+
+    if ('variantfiltration' in tools && bam_csi_index) {
+        log.warn('GATK4_VARIANTFILTRATION will not run with params.bam_csi_index')
+    }
 
     //
     // Validate the parameters using nextflow_schema.json or the schema
@@ -150,8 +198,8 @@ workflow PIPELINE_INITIALISATION {
         }
 
     emit:
-    samplesheet = ch_samplesheet
     align       = bool_align
+    samplesheet = ch_samplesheet
     versions    = ch_versions
 }
 
@@ -163,13 +211,12 @@ workflow PIPELINE_INITIALISATION {
 
 workflow PIPELINE_COMPLETION {
     take:
-    email //  string: email address
-    email_on_fail //  string: email address sent on pipeline failure
+    email // string: email address
+    email_on_fail // string: email address sent on pipeline failure
     plaintext_email // boolean: Send plain-text email instead of HTML
-    outdir //    path: Path to output directory where results will be published
+    outdir // path: Path to output directory where results will be published
     monochrome_logs // boolean: Disable ANSI colour codes in log output
-    hook_url //  string: hook URL for notifications
-    multiqc_report //  string: Path to MultiQC report
+    multiqc_report // string: Path to MultiQC report
 
     main:
     summary_params = paramsSummaryMap(workflow, parameters_schema: "nextflow_schema.json")
@@ -192,13 +239,10 @@ workflow PIPELINE_COMPLETION {
         }
 
         completionSummary(monochrome_logs)
-        if (hook_url) {
-            imNotification(summary_params, hook_url)
-        }
     }
 
     workflow.onError {
-        log.error("Pipeline failed. Please refer to troubleshooting docs: https://nf-co.re/docs/usage/troubleshooting")
+        log.error("Pipeline failed. Please refer to troubleshooting docs for common issues: https://nf-co.re/docs/running/troubleshooting")
     }
 }
 
@@ -289,6 +333,47 @@ def genomeExistsError() {
         def error_string = "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n" + "  Genome '${params.genome}' not found in any config files provided to the pipeline.\n" + "  Currently, the available genome keys are:\n" + "  ${params.genomes.keySet().join(", ")}\n" + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
         error(error_string)
     }
+}
+
+// Define list of tools to run
+def defineToolsList(bam_csi_index, extract_umi, generate_gvcf, input_skip, input_tools, skip_baserecalibration, skip_exon_bed_check, skip_intervallisttools, skip_multiqc, skip_variantfiltration) {
+
+    // opt in tools
+    def tools_list = input_tools ? input_tools.tokenize(',') : []
+
+    // opt out tools
+    def skip_list = input_skip ? input_skip.tokenize(',') : []
+    if (!('baserecalibrator' in skip_list) && !skip_baserecalibration) {
+        tools_list << 'baserecalibrator'
+    }
+    if (!('intervallisttools' in skip_list) && !skip_intervallisttools) {
+        tools_list << 'intervallisttools'
+    }
+    if (!('multiqc' in skip_list) && !skip_multiqc) {
+        tools_list << 'multiqc'
+    }
+    if (!('removeunknownregions' in skip_list) && !skip_exon_bed_check) {
+        tools_list << 'removeunknownregions'
+    }
+    if (!('variantfiltration' in skip_list) && !skip_variantfiltration) {
+        tools_list << 'variantfiltration'
+    }
+
+    // opt in tools
+    if (extract_umi) {
+        tools_list << 'umitools'
+    }
+    if (generate_gvcf) {
+        tools_list << 'combinegvcfs'
+    }
+
+    // Specific tools not to execute depending of params
+    // No variantfiltration if bam_csi_index as GATK4_VARIANTFILTRATION does not support csi index
+    if (bam_csi_index) {
+        tools_list = tools_list - 'variantfiltration'
+    }
+
+    return tools_list.sort()
 }
 
 //

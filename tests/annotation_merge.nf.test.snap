@@ -6,7 +6,7 @@
                 "ENSEMBLVEP_VEP": {
                     "ensemblvep": "115.2",
                     "perl-math-cdf": "0.1",
-                    "tabix": "1.21"
+                    "tabix": "1.23.1"
                 },
                 "GATK4_BEDTOINTERVALLIST": {
                     "gatk4": "4.6.2.0"
@@ -20,21 +20,21 @@
                 "GTF2BED": {
                     "Rscript": "3.5.1 (2018-07-02)"
                 },
-                "REMOVE_UNKNOWN_REGIONS": {
+                "HTSLIB_BGZIPTABIX": {
+                    "htslib": "1.23.1",
+                    "xz": "5.8.3"
+                },
+                "REMOVEUNKNOWNREGIONS": {
                     "python": "3.8.3"
                 },
                 "SAMTOOLS_FAIDX": {
-                    "samtools": "1.22.1"
+                    "samtools": "1.23.1"
                 },
                 "SNPEFF_SNPEFF": {
-                    "snpeff": "5.4a"
+                    "snpeff": "5.4c"
                 },
                 "STAR_INDEXVERSION": {
                     "star": "2.7.11b"
-                },
-                "TABIX_BGZIPTABIX": {
-                    "bgzip": "1.21",
-                    "tabix": "1.21"
                 }
             },
             [
@@ -124,11 +124,11 @@
             ],
             "No warnings"
         ],
+        "timestamp": "2026-06-02T10:14:55.066427973",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.3"
-        },
-        "timestamp": "2026-02-09T11:47:46.898860143"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.3"
+        }
     },
     "-profile test --tools merge": {
         "content": [
@@ -137,7 +137,7 @@
                 "ENSEMBLVEP_VEP": {
                     "ensemblvep": "115.2",
                     "perl-math-cdf": "0.1",
-                    "tabix": "1.21"
+                    "tabix": "1.23.1"
                 },
                 "GATK4_BEDTOINTERVALLIST": {
                     "gatk4": "4.6.2.0"
@@ -151,21 +151,21 @@
                 "GTF2BED": {
                     "Rscript": "3.5.1 (2018-07-02)"
                 },
-                "REMOVE_UNKNOWN_REGIONS": {
+                "HTSLIB_BGZIPTABIX": {
+                    "htslib": "1.23.1",
+                    "xz": "5.8.3"
+                },
+                "REMOVEUNKNOWNREGIONS": {
                     "python": "3.8.3"
                 },
                 "SAMTOOLS_FAIDX": {
-                    "samtools": "1.22.1"
+                    "samtools": "1.23.1"
                 },
                 "SNPEFF_SNPEFF": {
-                    "snpeff": "5.4a"
+                    "snpeff": "5.4c"
                 },
                 "STAR_INDEXVERSION": {
                     "star": "2.7.11b"
-                },
-                "TABIX_BGZIPTABIX": {
-                    "bgzip": "1.21",
-                    "tabix": "1.21"
                 }
             },
             [
@@ -242,10 +242,10 @@
             ],
             "No warnings"
         ],
+        "timestamp": "2026-06-02T10:14:10.608788984",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.3"
-        },
-        "timestamp": "2026-02-09T11:47:04.670461053"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.3"
+        }
     }
 }
