@@ -29,20 +29,18 @@ workflow VCF_ANNOTATE_ALL {
     tab_ann = channel.empty()
     vcf_ann = channel.empty()
 
+    def vcf_for_bcfann = vcf
+        .combine(bcftools_annotations)
+        .combine(bcftools_annotations_index)
+        .combine(bcftools_header_lines)
+
     if (bcftools_columns) {
-        vcf_for_bcfann = vcf
-            .combine(bcftools_annotations)
-            .combine(bcftools_annotations_index)
+        vcf_for_bcfann = vcf_for_bcfann
             .combine(bcftools_columns)
-            .combine(bcftools_header_lines)
-            .map { meta, vcf_, annotation, annotation_index, columns, header_file -> [meta, vcf_, [], annotation, annotation_index, columns, header_file, []] }
+            .map { meta, vcf_, annotation, annotation_index, header_file, columns -> [meta, vcf_, [], annotation, annotation_index, columns, header_file, []] }
     }
     else {
-        vcf_for_bcfann = vcf
-            .combine(bcftools_annotations)
-            .combine(bcftools_annotations_index)
-            .combine(bcftools_header_lines)
-            .map { meta, vcf_, annotation, annotation_index, header_file -> [meta, vcf_, [], annotation, annotation_index, [], header_file, []] }
+        vcf_for_bcfann = vcf_for_bcfann.map { meta, vcf_, annotation, annotation_index, header_file -> [meta, vcf_, [], annotation, annotation_index, [], header_file, []] }
     }
 
     BCFTOOLS_ANNOTATE(vcf_for_bcfann.filter { 'bcfann' in tools })

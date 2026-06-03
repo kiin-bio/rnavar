@@ -15,24 +15,21 @@ workflow SPLITNCIGAR {
     intervals // channel: [ interval_list]
 
     main:
-    def bam_for_splincigarreads = channel.empty()
+    def bam_for_splincigarreads = bam.map { meta, bam_, bai -> [meta + [interval_count: 1, sample: meta.id], bam_, bai, []] }
 
     if (intervals) {
         bam_for_splincigarreads = bam
             .combine(intervals)
             .map { meta, bam_, bai, intervals_ ->
                 [
-                    meta + [interval_count: intervals_ instanceof List ? intervals_.size() : 1],
+                    meta + [interval_count: intervals_ instanceof List ? intervals_.size() : 1, sample: meta.id],
                     bam_,
                     bai,
                     intervals_ instanceof List ? intervals_ : [intervals_],
                 ]
             }
             .transpose(by: 3)
-            .map { meta, bam_, bai, interval -> [meta + [id: "${meta.id}_${interval.baseName}", sample: meta.id], bam_, bai, interval] }
-    }
-    else {
-        bam_for_splincigarreads = bam.map { meta, bam_, bai -> [meta + [interval_count: 1, sample: meta.id], bam_, bai, []] }
+            .map { meta, bam_, bai, interval -> [meta + [id: "${meta.id}_${interval.baseName}"], bam_, bai, interval] }
     }
 
     GATK4_SPLITNCIGARREADS(bam_for_splincigarreads, fasta, fai, dict)

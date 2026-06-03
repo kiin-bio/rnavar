@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#300](https://github.com/nf-core/rnavar/pull/300) - Update all modules and subworkflows to the latest versions in nf-core/modules
 - [#306](https://github.com/nf-core/rnavar/pull/306) - Upgrade all modules, remove deprecated modules and update config files accordingly.
 - [#311](https://github.com/nf-core/rnavar/pull/311) - Prepare RC 1.3.0
+- [#314](https://github.com/nf-core/rnavar/pull/314) - Refactor `PREPARE_GENOME` by replacing `if/else` and `channel.empty()` with `.filter()` pattern for conditional module inputs
+- [#314](https://github.com/nf-core/rnavar/pull/314) - Refactor `VCF_ANNOTATE_ALL` to reduce duplication
+- [#314](https://github.com/nf-core/rnavar/pull/314) - Simplify `SPLITNCIGAR` by moving else branch to initial assignment
+- [#314](https://github.com/nf-core/rnavar/pull/314) - Simplify `PREPARE_ALIGNMENT` logic and remove format-specific branches
 
 ### Fixed
 
@@ -25,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#308](https://github.com/nf-core/rnavar/pull/308) - Fix inverted condition in `prepare_genome` that discarded cleaned BED and deadlocked when `removeunknownregions` was skipped
 - [#309](https://github.com/nf-core/rnavar/pull/309) - Fix implicit operator precedence and missing null guard in reports filter expression
 - [#313](https://github.com/nf-core/rnavar/pull/313) - Fix skip tools logic for base recalibration
+- [#314](https://github.com/nf-core/rnavar/pull/314) - Fix heading typos in changelog entries (`Parameter` → `Parameters`)
 
 ### Removed
 
@@ -44,7 +49,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | samtools   | 1.22.1      | 1.23.1      |
 | snpeff     | 5.4.0a      | 5.0.4c      |
 
-### Parameter
+### Parameters
 
 | Old name               | New name                  |
 | ---------------------- | ------------------------- |
@@ -125,7 +130,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | multiqc    | 1.31        | 1.33        |
 | snpeff     | 5.3.0       | 5.4.0       |
 
-### Parameter
+### Parameters
 
 | Old name | New name |
 | -------- | -------- |
@@ -205,7 +210,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | snpeff      | 5.1d        | 5.3.0a      |
 | umi_tools   | 1.1.5       | 1.1.6       |
 
-### Parameter
+### Parameters
 
 | Old name | New name         |
 | -------- | ---------------- |
@@ -278,7 +283,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | multiqc    | 1.29        | 1.30        |
 | ensemblvep | 114.2       | 115.1       |
 
-### Parameter
+### Parameters
 
 | Old name | New name |
 | -------- | -------- |
@@ -322,7 +327,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | ensemblvep | 113.0       | 114.2       |
 | seq2hla    |             | 2.3         |
 
-### Parameter
+### Parameters
 
 | Old name                  | New name |
 | ------------------------- | -------- |
@@ -369,7 +374,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | multiqc    | 1.27        | 1.29        |
 | tabix      | 1.2         | 1.21        |
 
-### Parameter
+### Parameters
 
 | Old name | New name |
 | -------- | -------- |
@@ -475,7 +480,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | vep        | 111.0       | 113.4       |
 | r-base     | 3.5.0       | 3.5.1       |
 
-### Parameter
+### Parameters
 
 | Old name         | New name |
 | ---------------- | -------- |
