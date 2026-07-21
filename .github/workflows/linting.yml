@@ -15,8 +15,6 @@ jobs:
 
       - name: Install Nextflow
         uses: nf-core/setup-nextflow@b4ec1bc7c16a94435159de94a05253542fddf6ef # v3
-        with:
-          version: "25.10.7"
 
       - name: Validate Kiin production profile
         run: tests/kiin_profile.sh
@@ -32,8 +30,6 @@ jobs:
 
       - name: Install Nextflow
         uses: nf-core/setup-nextflow@b4ec1bc7c16a94435159de94a05253542fddf6ef # v3
-        with:
-          version: "25.10.7"
 
       - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
         with:
